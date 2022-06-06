@@ -1,15 +1,25 @@
 # Information model
 The information model for the product.
 
+## Services and products
+
 ```mermaid
-sequenceDiagram
-    participant dotcom
-    participant iframe
-    participant viewscreen
-    dotcom->>iframe: loads html w/ iframe url
-    iframe->>viewscreen: request template
-    viewscreen->>iframe: html & javascript
-    iframe->>dotcom: iframe ready
-    dotcom->>iframe: set mermaid data on iframe
-    iframe->>iframe: render mermaid
+erDiagram
+    Service ||--|{ ServiceVersion : "has"
+    Service {
+        string name
+    }
+    ServiceVersion {
+        string version
+    }
+    ServiceVersion ||--o{ ProductVersion: "consists of"
+    Product ||--|{ ProductVersion : "has"
+    Product {
+        string name
+    }
+    ProductVersion {
+        string version
+    }
 ```
+
+## Issues

@@ -1,7 +1,0 @@
-= Ways of working
-Tomas Stenlund
-PA1 2022-06-06
-:description: How to participate in the community that develops and maintains this product.
-:page-layout: portrait
-
-{description}

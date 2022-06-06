@@ -1,7 +1,0 @@
-= Toolchain
-Tomas Stenlund
-PA1 2022-06-06
-:description: All tools used when managing this product throughout its lifecycle.
-:page-layout: portrait
-
-{description}
