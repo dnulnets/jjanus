@@ -5,3 +5,17 @@ PA1 2022-06-06
 :page-layout: portrait
 
 {description}
+
+[mermaid]
+----
+graph LR
+    A[Square Rect] -- Link text --> B((Circle))
+    A --> C(Round Rect)
+    B --> D{Rhombus}
+    C --> D
+----
+
+[plantuml]
+----
+Bob -> Alice : hello
+----
