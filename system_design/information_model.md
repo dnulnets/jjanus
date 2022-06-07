@@ -46,7 +46,7 @@ erDiagram
         string name
     }
     Issue ||--|| State : "state"
-    Issue ||--|| IssueTemplae : "type"
+    Issue ||--|| IssueTemplate : "type"
     IssueTemplate ||--|| StateMachine : "machine"
     IssueTemplate ||--|{ State : "state"
     State ||--|| Transition : "from"
