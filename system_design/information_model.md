@@ -50,13 +50,18 @@ erDiagram
         string name
         string value
     }
+    AttributeTemplate {
+        string id
+        string name
+        string defaultValue
+    }    
     Issue ||--o{ Issue: "subissues"
     Issue ||--o{ Attribute : "attributes"
     Issue ||--|| State : "state"
     Issue ||--|| IssueTemplate : "type"
     IssueTemplate ||--|| StateMachine : "machine"
     IssueTemplate ||--|{ State : "states"
-    IssueTemplate ||--o{ Attribute : "attributes"
+    IssueTemplate ||--o{ AttributeTemplate : "attributes"
     State ||--|| Transition : "from"
     Transition ||--|| State : "to"
 ```
