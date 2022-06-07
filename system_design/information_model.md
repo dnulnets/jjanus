@@ -21,5 +21,34 @@ erDiagram
         string version
     }
 ```
-
-## Issues
+## Issues 
+```mermaid
+erDiagram
+    Issue {
+        string id
+        string title
+        string description
+    }
+    IssueTemplate {
+        string id
+        string name
+    }
+    StateMachine {
+        string id
+        string startState
+    }
+    State {
+        string id
+        string name
+    }
+    Transition {
+        string id
+        string name
+    }
+    Issue ||--|| State : "state"
+    Issue ||--|| IssueTemplae : "type"
+    IssueTemplate ||--|| StateMachine : "machine"
+    IssueTemplate ||--|{ State : "state"
+    State ||--|| Transition : "from"
+    Transition ||--|| State : "to"
+```
