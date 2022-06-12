@@ -4,23 +4,24 @@ The information model for the product.
 ## Services and products
 
 ```mermaid
-erDiagram
-    Service ||--|{ ServiceVersion : "has"
-    Service {
+classDiagram
+    class Service {
         string name
     }
-    ServiceVersion {
+    class ServiceVersion {
         string version
     }
-    ServiceVersion ||--o{ ProductVersion: "consists of"
-    Product ||--|{ ProductVersion : "has"
-    Product {
+    Service "1" --> "1..*" ServiceVersion : provides
+    class Product {
         string name
     }
-    ProductVersion {
+    class ProductVersion {
         string version
     }
+    Product "1" --> "1..*" ProductVersion : provides
+    ServiceVersion "1" --> "*" ProductVersion : uses
 ```
+
 ## Issues 
 ```mermaid
 erDiagram
