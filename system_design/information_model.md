@@ -1,15 +1,18 @@
 # Information model
-The information model for the product.
+The logical information model for the application.
 
 ## Services and products
 
 ```mermaid
 classDiagram
     class Service {
+        string id
         string name
     }
     class Product {
+        string id
         string name
+        string description
     }
     class ProductVersion {
         string version
@@ -18,6 +21,14 @@ classDiagram
     Product "1" --> "1" ProductVersion : latest
     Service "1" --> "*" ProductVersion : uses
 ```
+### Product
+
+|Name|Type|Value Set|Description|   |
+|---|---|---|---|---|
+|id|string|alfanumeric|The identity of the product, typical a shortening of the name|   |
+|name|string|alfanumeric|The name of the product|   |
+|description|string|alfanumeric|A description of the product|   |
+
 
 ## Requirements
 ```mermaid
