@@ -12,6 +12,7 @@ classDiagram
         string version
     }
     Service "1" --> "1..*" ServiceVersion : provides
+    Service "1" --> "1" ServiceVersion : latest
     class Product {
         string name
     }
@@ -19,7 +20,32 @@ classDiagram
         string version
     }
     Product "1" --> "1..*" ProductVersion : provides
+    Product "1" --> "1" ProductVersion : latest
     ServiceVersion "1" --> "*" ProductVersion : uses
+```
+
+## Requirements
+```mermaid
+classDiagram
+    class Product {
+        string id
+        string name
+    }
+    class ProductVersion {
+        string version
+    }
+    class Requirement {
+        string id
+    }
+    class RequirementVersion {
+        string version
+        string name
+        string description
+    }
+    Requirement "1" --> "1..*" RequirementVersion : has
+    Requirement "1" --> "1" RequirementVersion : latest
+    ProductVersion "*" --> "*" RequirementVersion : implements
+    Product "1" --> "*" Requirement : contains
 ```
 
 ## Issues 
