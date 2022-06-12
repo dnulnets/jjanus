@@ -19,9 +19,12 @@ classDiagram
     }
     Product "1" --> "1..*" ProductVersion : has
     Product "1" --> "1" ProductVersion : latest
-    Service "1" --> "*" ProductVersion : uses
+    Service "1" --> "*" ProductVersion : installed
 ```
-### Product
+### Product and ProductVersion
+
+#### Product
+A product is a software application that is released in different versions. They can be installed and run and is then considered a service or a part of a service.
 
 |Name|Type|Value Set|Description|   |
 |---|---|---|---|---|
@@ -29,6 +32,14 @@ classDiagram
 |name|string|alfanumeric|The name of the product|   |
 |description|string|alfanumeric|A description of the product|   |
 
+#### ProductVersion
+A product is released as a specific version. Most of the work related to a product is connected to its specific target version.
+
+|Name|Type|Value Set|Description|   |
+|---|---|---|---|---|
+|version|string|alfanumeric|The version of the product, or release of a product|   |
+
+### Service
 
 ## Requirements
 ```mermaid
