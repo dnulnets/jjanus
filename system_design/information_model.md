@@ -8,20 +8,15 @@ classDiagram
     class Service {
         string name
     }
-    class ServiceVersion {
-        string version
-    }
-    Service "1" --> "1..*" ServiceVersion : provides
-    Service "1" --> "1" ServiceVersion : latest
     class Product {
         string name
     }
     class ProductVersion {
         string version
     }
-    Product "1" --> "1..*" ProductVersion : provides
+    Product "1" --> "1..*" ProductVersion : has
     Product "1" --> "1" ProductVersion : latest
-    ServiceVersion "1" --> "*" ProductVersion : uses
+    Service "1" --> "*" ProductVersion : uses
 ```
 
 ## Requirements
@@ -36,16 +31,18 @@ classDiagram
     }
     class Requirement {
         string id
-    }
-    class RequirementVersion {
-        string version
         string name
         string description
+        RequirementType type
     }
-    Requirement "1" --> "1..*" RequirementVersion : has
-    Requirement "1" --> "1" RequirementVersion : latest
-    ProductVersion "*" --> "*" RequirementVersion : implements
-    Product "1" --> "*" Requirement : contains
+    Product "1" --> "1..*" ProductVersion : has
+    Product "1" --> "1" ProductVersion : latest
+    ProductVersion "*" --> "*" Requirement : implements
+    class RequirementType {
+        <<enumeration>>
+        Functional
+        NonFunctional
+    }
 ```
 
 ## Issues 
