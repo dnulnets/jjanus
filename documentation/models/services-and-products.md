@@ -1,16 +1,15 @@
 ```mermaid
 classDiagram
     class Service {
-        pk id
+        string id
         string name
     }
     class Product {
-        pk id
+        string id
         string name
         string description
     }
     class ProductVersion {
-        pk id
         string version
     }
     Product "1" --> "1..*" ProductVersion : has
