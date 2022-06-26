@@ -11,14 +11,3 @@ The project is in the design and startup phase. It started 2022-06-06 and is cur
 ## Introduction
 This section points mostly to other documents covering different areas for the product.
 
-### Ways of working
-
-### System Design
-
-### Toolchain
-
-### Frontend
-
-### Backend
-
-### Documentation
