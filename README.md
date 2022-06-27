@@ -9,4 +9,4 @@ It will contain support for teams, product owners and single individuals tasks t
 The project is in the design and startup phase. It started 2022-06-06 and is currently working on a first sprint of the system design that will contain early sketches of the solution, information model and user interface to get started.
 
 
-See [wiki][https://github.com/dnulnets/janus/wiki/]
+See [wiki](https://github.com/dnulnets/janus/wiki/)
