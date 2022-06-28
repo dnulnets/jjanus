@@ -12,14 +12,15 @@ classDiagram
         string type
     }   
     class Role {
+        string id
         string name
         string description
     }
     class AnyObject {
     }
-    User "1" --> "1..*" Role : has
+    User "*" --> "*" Role : has
     User "1" --> "1..*" Principal : identity
-    ObjectRole "*" --> "1..*" Role : has
-    ObjectRole "*" <-- "1" User : has
+    ObjectRole "*" --> "1" Role : has
+    ObjectRole "*" <-- "*" User : has
     AnyObject "1" <-- "1" ObjectRole : validFor
 ```
