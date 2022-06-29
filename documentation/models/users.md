@@ -18,7 +18,7 @@ classDiagram
     }
     User "*" --> "*" Role : has
     User "1" --> "1..*" Principal : identity
-    ObjectRole "*" --> "1" Role : has
+    ObjectRole "*" --> "1" Role : derivesFrom
     ObjectRole "*" <-- "*" User : has
     Any "1" <-- "1" ObjectRole : validFor
     Product --|> Any : inherits
