@@ -12,7 +12,7 @@ classDiagram
     class RelationType {
         string name
     }
-    Issue "*" <-- "*" ProductVersion : implements
+    Issue "1" <-- "*" ProductVersion : implements
     IssueRelation "*" --> "1" RelationType : relationType
     Product "1" --> "*" Issue : has
     Issue "1" --> "*" IssueRelation : child

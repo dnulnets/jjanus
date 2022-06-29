@@ -11,9 +11,7 @@ classDiagram
         string description
     }
     Product "1" --> "*" UserNeed : has
-    Product "1" --> "*" ProductVersion : has
-    Product "1" --> "0..1" ProductVersion : latest
-    UserNeed "1" --> "*" Requirement : derives
+    UserNeed "1" --> "*" Requirement : has
     UserNeed "*" <-- "*" ProductVersion : supports
     Requirement "*" <-- "*" ProductVersion : implements
     Product "1" --> "*" Requirement : has
