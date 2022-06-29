@@ -9,18 +9,18 @@ classDiagram
         string id
     }
     class ObjectRole {
-        string type
+        string objectType
     }   
     class Role {
         string id
         string name
         string description
     }
-    class AnyObject {
-    }
     User "*" --> "*" Role : has
     User "1" --> "1..*" Principal : identity
     ObjectRole "*" --> "1" Role : has
     ObjectRole "*" <-- "*" User : has
-    AnyObject "1" <-- "1" ObjectRole : validFor
+    Any "1" <-- "1" ObjectRole : validFor
+    Product --|> Any : inherits
+    Service --|> Any : inherits
 ```

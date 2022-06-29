@@ -10,11 +10,6 @@ classDiagram
         string name
         string description
     }
-    class Product {
-    }
-    class ProductVersion {
-    }
-
     Product "1" --> "*" UserNeed : has
     Product "1" --> "*" ProductVersion : has
     Product "1" --> "0..1" ProductVersion : latest
