@@ -22,8 +22,13 @@ database "Postgresql" {
 
 }
 
+SMTP-->[Mailserver]
+GIT-->[Repository]
+
 [Janus BE] --> Postgresql
 [Janus BE] --> OIDC
+[Janus BE] --> SMTP
+[Janus BE] --> GIT
 [proxy] --> API
 [proxy] --> SPA
 [proxy] --> OIDC
