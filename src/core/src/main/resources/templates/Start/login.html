@@ -10,15 +10,15 @@
                 <form action="/j_security_check" method="post">
 
                     <div class="form-outline mb-4">
-                        <label class="form-label" for="user">Username</label>
+                        <label class="form-label" for="user">{msg:login_username}</label>
                         <input type="text" name="user" id="user" class="form-control form-control-lg"
-                            placeholder="Enter a user name" />
+                            placeholder="{msg:login_enter_username}" />
                     </div>
 
                     <div class="form-outline mb-3">
-                        <label class="form-label" for="password">Password</label>
+                        <label class="form-label" for="password">{msg:login_password}</label>
                         <input type="password" name="password" id="password" class="form-control form-control-lg"
-                            placeholder="Enter password" />
+                            placeholder="{msg:login_enter_password}" />
                     </div>
 
                     <div class="text-center text-lg-start mt-4 pt-2">

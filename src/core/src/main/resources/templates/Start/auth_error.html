@@ -1,9 +1,9 @@
 {#include base-simple.html}
 {#content}
 <div id="workarea">
-    <h1>Unable to authenticate</h1>
-    <br/>This message is because you have failed to authenticate. Try again!
-    <a href="/janus/login">Go to login</a>
+    <h1>{msg:login_fail_header}</h1>
+    <br/>{msg:login_fail_message}
+    <a href="/janus/login">{msg:login_fail_back}</a>
 </div>
 {/content}
 {/include}

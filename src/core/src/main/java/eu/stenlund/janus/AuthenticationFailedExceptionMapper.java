@@ -17,6 +17,11 @@ public class AuthenticationFailedExceptionMapper implements ExceptionMapper<Auth
     @Context
     UriInfo uriInfo;
 
+    /*
+     * Make sure we notify the client that we were not authenticated.
+     * 
+     * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
+     */
     @Override
     public Response toResponse(AuthenticationFailedException exception) {
         return Response.status(401).header("WWW-Authenticate", "Basic realm=\"janus\"").build();
