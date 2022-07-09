@@ -2,14 +2,10 @@
 @startuml
 
 node "cluster" {
-[proxy]
+[haproxy]
 
-package "Frontend" {
-  SPA-->[Janus FE]
-}
-
-package "Backend" {
-  API-->[Janus BE]
+package "Janus" {
+  HTTP-->[Janus Core]
 }
 
 package "IAM" {
@@ -25,14 +21,13 @@ database "Postgresql" {
 SMTP-->[Mailserver]
 GIT-->[Repository]
 
-[Janus BE] --> Postgresql
-[Janus BE] --> OIDC
-[Janus BE] --> SMTP
-[Janus BE] --> GIT
-[proxy] --> API
-[proxy] --> SPA
-[proxy] --> OIDC
-HTTP --> proxy
+[Janus Core] --> Postgresql
+[Janus Core] --> OIDC
+[Janus Core] --> SMTP
+[Janus Core] --> GIT
+[haproxy] --> HTTP
+[haproxy] --> OIDC
+HTTPS --> haproxy
 
 @enduml
 ```
