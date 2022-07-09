@@ -1,29 +1,20 @@
 package eu.stenlund.janus;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.CompletionStage;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.reactive.RestCookie;
-import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
@@ -32,10 +23,6 @@ import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.smallrye.mutiny.Uni;
-import io.vertx.core.http.Cookie;
-import io.vertx.core.http.CookieSameSite;
-import io.vertx.ext.web.RoutingContext;
-import io.quarkus.qute.Location;
 
 @Path("janus")
 @Produces(MediaType.TEXT_HTML)
@@ -68,13 +55,13 @@ public class Start {
     @GET
     @Path("start")
     @RolesAllowed({"user"})
-    public Uni<String> start() {
+    public Uni<RestResponse<String>> start() {
 
         Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
         
-        return di.onFailure().invoke(()->Uni.createFrom().item("Error"))
-            .onItem().transformToUni(result -> Uni.createFrom().completionStage(() -> Templates.start().setAttribute("locale", Locale.forLanguageTag("en")).renderAsync()));
-
+        return di.onItem().transformToUni(item -> Uni.createFrom().completionStage(() -> Templates.start().setAttribute("locale", Locale.forLanguageTag("en")).renderAsync()))
+                 .onItem().transform(item -> ResponseBuilder.ok(item).build())
+                 .onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
     
     /**
@@ -82,7 +69,7 @@ public class Start {
      */
     @GET
     @Path("login")
-    public CompletionStage<String> login() {
+    public CompletionStage<String> login() {        
         return Templates.login().setAttribute("locale", Locale.forLanguageTag("en")).renderAsync();
     }
 
