@@ -6,6 +6,9 @@ import io.quarkus.qute.i18n.MessageBundle;
 @MessageBundle 
 public interface Messages {
 
+    @Message("en")
+    String language();
+
     @Message("Enter your user name") 
     String login_enter_username();
 

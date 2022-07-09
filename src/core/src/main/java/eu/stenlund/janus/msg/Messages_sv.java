@@ -6,6 +6,9 @@ import io.quarkus.qute.i18n.Localized;
 @Localized("sv")
 public interface Messages_sv extends Messages {
 
+    @Message("sv")
+    String language();
+
     @Message("Ange ditt användarnamn") 
     String login_enter_username();
 
