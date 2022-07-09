@@ -1,4 +1,7 @@
 # Janus
+
+![Janus login page](/documentation/login.png)
+
 An issue and requirements tracker for development and maintenance of products and services, focusing on the entire life cycle.
 
 **_NOTE:_** From **wikipedia**: In ancient Roman religion and myth, Janus (/ˈdʒeɪnəs/ JAY-nəs; Latin: Ianus [ˈi̯aːnʊs]) is the god of beginnings, gates, transitions, time, duality, doorways, passages, frames, and endings.
