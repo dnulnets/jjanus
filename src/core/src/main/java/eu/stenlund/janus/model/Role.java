@@ -9,13 +9,13 @@ import javax.persistence.Table;
 import eu.stenlund.janus.model.base.JanusEntity;
 
 @Entity
-@Table(name = "identity")
-public class Identity extends JanusEntity {
+@Table(name = "role")
+public class Role extends JanusEntity {
     
     @Column(unique = true, length = 64, nullable = false, updatable = false)
-    public String identity;
+    public String name;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    public Person user;
+    @Column(unique = false, length = 256, nullable = true, updatable = true)
+    public String description;
 
 }

@@ -109,7 +109,7 @@ public class Start {
         newId.identity = "tomas";
         Identity newId2 = new Identity();
         newId2.identity = "gurkan";
-        User newUser = new User();
+        Person newUser = new Person();
         newUser.name = "Tomas Stenlund";
         newUser.email = "tomas.stenlund@telia.com";
         newUser.credential = "dehifewhidi";
@@ -117,7 +117,7 @@ public class Start {
         newId2.user = newUser;
 
         // Create the asynch operations we want to do
-        Uni<User> dd = Panache.withTransaction(newUser::persist);
+        Uni<Person> dd = Panache.withTransaction(newUser::persist);
         Uni<Identity> d = Panache.withTransaction(newId::persist);
         Uni<Identity> d2 = Panache.withTransaction(newId2::persist);
 

@@ -5,8 +5,8 @@ classDiagram
         string email
         string credential
     }
-    class Principal {
-        string id
+    class Identity {
+        string identity
     }
     class ObjectRole {
         string objectType
@@ -17,7 +17,7 @@ classDiagram
         string description
     }
     User "*" --> "*" Role : has
-    User "1" --> "1..*" Principal : identity
+    User "1" --> "1..*" Identity : identity
     ObjectRole "*" --> "1" Role : derivesFrom
     ObjectRole "*" <-- "*" User : has
     Any "1" <-- "1" ObjectRole : validFor

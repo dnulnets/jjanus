@@ -13,11 +13,17 @@ import org.hibernate.annotations.Parameter;
 import eu.stenlund.janus.model.base.JanusEntity;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "\"User\"")
-public class User extends JanusEntity {
+@Table(name = "person")
+public class Person extends JanusEntity {
 
     @Column(length = 64, nullable = false, updatable = true)
     public String name;
@@ -27,4 +33,12 @@ public class User extends JanusEntity {
 
     @Column(length = 128, nullable = false, updatable = true)
     public String credential;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "person_role", 
+        joinColumns = { @JoinColumn(name = "id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "name") }
+    )
+    public Set<Role> roles;
 }
