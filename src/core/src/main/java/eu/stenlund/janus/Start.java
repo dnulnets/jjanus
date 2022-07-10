@@ -24,6 +24,11 @@ import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.smallrye.mutiny.Uni;
 
+import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
+import io.quarkus.hibernate.reactive.panache.Panache;
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
+import eu.stenlund.janus.model.*;
+
 @Path("janus")
 @Produces(MediaType.TEXT_HTML)
 @RequestScoped
@@ -96,9 +101,29 @@ public class Start {
     @GET
     @Path("fragment1")
     @RolesAllowed({"user"})
-    public CompletionStage<String> fragment1() {
-        return Templates.fragment1().renderAsync();
-    }
+    @ReactiveTransactional
+    public Uni<String> fragment1() {
+
+        // Just testcreate something for hibernate
+        Identity newId = new Identity();
+        newId.identity = "tomas";
+        Identity newId2 = new Identity();
+        newId2.identity = "gurkan";
+        User newUser = new User();
+        newUser.name = "Tomas Stenlund";
+        newUser.email = "tomas.stenlund@telia.com";
+        newUser.credential = "dehifewhidi";
+        newId.user = newUser;
+        newId2.user = newUser;
+
+        Uni<User> dd = Panache.withTransaction(newUser::persist);
+        Uni<Identity> d = Panache.withTransaction(newId::persist);
+        Uni<Identity> d2 = Panache.withTransaction(newId2::persist);
+
+        return dd.chain(item -> d).chain(item->d2)
+            .chain(item -> Uni.createFrom().completionStage(() -> Templates.fragment1().setAttribute("locale", Locale.forLanguageTag("en")).renderAsync()));
+
+   }
 
     @GET
     @Path("fragment2")
