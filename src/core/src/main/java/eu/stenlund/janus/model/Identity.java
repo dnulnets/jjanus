@@ -6,6 +6,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import eu.stenlund.janus.model.base.JanusEntity;
+
 @Entity
 @Table(name = "\"Identity\"")
 public class Identity extends JanusEntity {

@@ -116,10 +116,12 @@ public class Start {
         newId.user = newUser;
         newId2.user = newUser;
 
+        // Create the asynch operations we want to do
         Uni<User> dd = Panache.withTransaction(newUser::persist);
         Uni<Identity> d = Panache.withTransaction(newId::persist);
         Uni<Identity> d2 = Panache.withTransaction(newId2::persist);
 
+        // Return with the final asynch
         return dd.chain(item -> d).chain(item->d2)
             .chain(item -> Uni.createFrom().completionStage(() -> Templates.fragment1().setAttribute("locale", Locale.forLanguageTag("en")).renderAsync()));
 

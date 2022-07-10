@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import eu.stenlund.janus.model.base.JanusEntity;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 
 import java.util.UUID;

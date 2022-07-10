@@ -1,4 +1,4 @@
-package eu.stenlund.janus.model;
+package eu.stenlund.janus.model.base;
 
 import java.util.UUID;
 
