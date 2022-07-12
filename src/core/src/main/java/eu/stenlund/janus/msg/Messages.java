@@ -3,22 +3,22 @@ package eu.stenlund.janus.msg;
 import io.quarkus.qute.i18n.Message;
 import io.quarkus.qute.i18n.MessageBundle;
 
-@MessageBundle 
+@MessageBundle
 public interface Messages {
 
     @Message("en")
     String language();
 
-    @Message("Enter your user name") 
+    @Message("Enter your user name")
     String login_enter_username();
 
-    @Message("Enter your password") 
+    @Message("Enter your password")
     String login_enter_password();
 
-    @Message("Username") 
+    @Message("Username")
     String login_username();
 
-    @Message("Password") 
+    @Message("Password")
     String login_password();
 
     @Message("Unable to authenticate")

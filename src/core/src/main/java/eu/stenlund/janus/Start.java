@@ -1,6 +1,7 @@
 package eu.stenlund.janus;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.CompletionStage;
 
@@ -14,20 +15,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.hibernate.reactive.mutiny.Mutiny;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
+import eu.stenlund.janus.base.JanusTemplate;
+import eu.stenlund.janus.model.Role;
+import eu.stenlund.janus.model.User;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.smallrye.mutiny.Uni;
-
-import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
-import io.quarkus.hibernate.reactive.panache.Panache;
-import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
-import eu.stenlund.janus.model.*;
 
 @Path("janus")
 @Produces(MediaType.TEXT_HTML)
@@ -47,7 +47,10 @@ public class Start {
 
     @Inject
     public CurrentIdentityAssociation securityIdentityAssociation;
-   
+
+    @Inject
+    Mutiny.SessionFactory sf;
+    
     @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance start();
@@ -100,31 +103,23 @@ public class Start {
 
     @GET
     @Path("fragment1")
-    @RolesAllowed({"user"})
-    @ReactiveTransactional
     public Uni<String> fragment1() {
 
         // Just testcreate something for hibernate
-        Identity newId = new Identity();
-        newId.identity = "tomas";
-        Identity newId2 = new Identity();
-        newId2.identity = "gurkan";
-        Person newUser = new Person();
+        User newUser = new User();
+        newUser.username = "tomas";
         newUser.name = "Tomas Stenlund";
         newUser.email = "tomas.stenlund@telia.com";
-        newUser.credential = "dehifewhidi";
-        newId.user = newUser;
-        newId2.user = newUser;
-
-        // Create the asynch operations we want to do
-        Uni<Person> dd = Panache.withTransaction(newUser::persist);
-        Uni<Identity> d = Panache.withTransaction(newId::persist);
-        Uni<Identity> d2 = Panache.withTransaction(newId2::persist);
+        newUser.roles = new HashSet<Role>();
+        newUser.setPassword("mandelmassa");
 
         // Return with the final asynch
-        return dd.chain(item -> d).chain(item->d2)
-            .chain(item -> Uni.createFrom().completionStage(() -> Templates.fragment1().setAttribute("locale", Locale.forLanguageTag("en")).renderAsync()));
-
+        return sf.withTransaction((s,t) -> Role.findByName(s, "user")
+                .chain(role -> {
+                    newUser.roles.add(role);
+                    return User.addUser(s, newUser);
+                })
+                .chain(item ->  JanusTemplate.createFrom(Templates.fragment1())));
    }
 
     @GET
