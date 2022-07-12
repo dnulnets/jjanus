@@ -1,4 +1,4 @@
-package eu.stenlund.janus;
+package eu.stenlund.janus.security;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;

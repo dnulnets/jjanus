@@ -20,7 +20,7 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
-import eu.stenlund.janus.base.JanusTemplate;
+import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.User;
 import io.quarkus.qute.CheckedTemplate;
@@ -67,8 +67,7 @@ public class Start {
 
         Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
         
-        return di.onItem().transformToUni(item -> Uni.createFrom().completionStage(() -> Templates.start().setAttribute("locale", Locale.forLanguageTag("en")).renderAsync()))
-                 .onItem().transform(item -> ResponseBuilder.ok(item).build())
+        return di.chain(item -> JanusTemplateHelper.createResponseFrom(Templates.start()))
                  .onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
     
@@ -77,8 +76,9 @@ public class Start {
      */
     @GET
     @Path("login")
-    public CompletionStage<String> login() {        
-        return Templates.login().setAttribute("locale", Locale.forLanguageTag("en")).renderAsync();
+    public Uni<RestResponse<String>> login() {
+        return JanusTemplateHelper.createResponseFrom(Templates.login())
+            .onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
     /**
@@ -92,13 +92,14 @@ public class Start {
     public RestResponse<Object> logout() {
         return ResponseBuilder.seeOther(URI.create(LOGIN_PAGE))
             .cookie(new NewCookie(REDIRECT_COOKIE_NAME, null, "/","","",0,true))
-            .cookie(new NewCookie(COOKIE_NAME, null, "/", "", "", 0, true)).build();
+            .cookie(new NewCookie(COOKIE_NAME, null, "/", "", "", 0, true))
+            .build();
     }
 
     @GET
     @Path("auth_error")
-    public CompletionStage<String> auth_error() {
-        return Templates.auth_error().setAttribute("locale", Locale.forLanguageTag("en")).renderAsync();
+    public Uni<String> auth_error() {
+        return JanusTemplateHelper.createStringFrom(Templates.auth_error());
     }
 
     @GET
@@ -119,14 +120,14 @@ public class Start {
                     newUser.roles.add(role);
                     return User.addUser(s, newUser);
                 })
-                .chain(item ->  JanusTemplate.createFrom(Templates.fragment1())));
+                .chain(item ->  JanusTemplateHelper.createStringFrom(Templates.fragment1())));
    }
 
     @GET
     @Path("fragment2")
     @RolesAllowed({"user"})
-    public CompletionStage<String> fragment2() {
-        return Templates.fragment2().renderAsync();
+    public Uni<String> fragment2() {
+        return JanusTemplateHelper.createStringFrom(Templates.fragment2());
     }
 
 }

@@ -1,4 +1,4 @@
-package eu.stenlund.janus;
+package eu.stenlund.janus.security;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -53,6 +53,7 @@ public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<
             AuthenticationRequestContext context) {
 
         return sf.withSession(s -> User.findByUsername(s, request.getUsername())
+            .onFailure().transform(t-> new AuthenticationFailedException(t))
             .onItem().transform(entity -> checkPassword(entity, request))
             .onItem().transform(QuarkusSecurityIdentity.Builder::build));
 

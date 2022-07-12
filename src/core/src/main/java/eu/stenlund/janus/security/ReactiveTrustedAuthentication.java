@@ -1,4 +1,4 @@
-package eu.stenlund.janus;
+package eu.stenlund.janus.security;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +10,7 @@ import org.hibernate.reactive.mutiny.Mutiny;
 import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.model.User;
+import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.identity.AuthenticationRequestContext;
 import io.quarkus.security.identity.IdentityProvider;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -43,12 +44,10 @@ public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAu
     }
 
     @Override
-    public Uni<SecurityIdentity> authenticate(
-            TrustedAuthenticationRequest request,
-            AuthenticationRequestContext context) {
-        log.info (request.getPrincipal());
-
+    public Uni<SecurityIdentity> authenticate(TrustedAuthenticationRequest request,
+        AuthenticationRequestContext context) {
         return sf.withSession(s -> User.findByUsername(s, request.getPrincipal()))
+            .onFailure().transform(t-> new AuthenticationFailedException(t))
             .onItem().transform(entity -> checkPrincipal(entity, request))
             .onItem().transform(QuarkusSecurityIdentity.Builder::build);
     }
