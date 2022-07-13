@@ -9,7 +9,8 @@ An issue and requirements tracker for development and maintenance of products an
 It will contain support for teams, product owners and single individuals tasks to maintain the product or service.
 
 ## Status
-The project is in the design and startup phase. It started 2022-06-06 and is currently working on a first sprint of the system design that will contain early sketches of the solution, information model and user interface to get started.
+The project is in an early design and startup phase. It started 2022-06-06 and is currently working on a first sprint of the system design that will contain early sketches of the solution, information model and user interface to get started.
 
+The first code has been created with a fully working RBAC security solution and form authentication that allows you to login based on users in the database and their roles.
 
 See [wiki](https://github.com/dnulnets/janus/wiki/)
