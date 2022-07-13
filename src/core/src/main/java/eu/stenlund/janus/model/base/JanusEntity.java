@@ -30,6 +30,6 @@ public class JanusEntity {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator", parameters = {
             @Parameter(name = org.hibernate.id.UUIDGenerator.UUID_GEN_STRATEGY_CLASS, value = "org.hibernate.id.uuid.CustomVersionOneStrategy")
     })
-    private UUID id;
+    public UUID id;
 
 }

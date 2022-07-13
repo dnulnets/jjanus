@@ -67,8 +67,15 @@ public class Start {
 
         Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
         
-        return di.chain(item -> JanusTemplateHelper.createResponseFrom(Templates.start()))
-                 .onFailure().invoke(t -> ResponseBuilder.serverError().build());
+        return di.map(si -> {
+                log.info ("username: " + si.getPrincipal());
+                log.info ("name: " + si.getAttribute("name"));
+                log.info ("email: " + si.getAttribute("email"));
+                log.info ("id: " + si.getAttribute("id"));
+                return si;
+            })
+            .chain(item -> JanusTemplateHelper.createResponseFrom(Templates.start()))
+            .onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
     
     /**

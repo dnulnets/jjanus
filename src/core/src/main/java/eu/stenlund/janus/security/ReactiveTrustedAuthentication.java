@@ -40,6 +40,9 @@ public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAu
         Set<String> ss = new HashSet<String>();
         user.roles.forEach(r -> ss.add(r.name));
         builder.addRoles(ss);
+        builder.addAttribute("email", user.email);
+        builder.addAttribute("name", user.name);
+        builder.addAttribute("id", user.id);
         return builder;
     }
 
