@@ -7,7 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.hibernate.reactive.mutiny.Mutiny;
-import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.model.User;
 import io.quarkus.security.AuthenticationFailedException;
@@ -21,8 +20,6 @@ import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
 public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAuthenticationRequest> {
-
-    private static final Logger log = Logger.getLogger(ReactiveTrustedAuthentication.class);
 
     @Inject
     Mutiny.SessionFactory sf;

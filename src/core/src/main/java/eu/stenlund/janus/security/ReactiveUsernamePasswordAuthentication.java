@@ -7,7 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.hibernate.reactive.mutiny.Mutiny;
-import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.model.User;
 import io.quarkus.elytron.security.common.BcryptUtil;
@@ -25,8 +24,6 @@ public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<
 
     @Inject
     Mutiny.SessionFactory sf;
-
-    private static final Logger log = Logger.getLogger(ReactiveUsernamePasswordAuthentication.class);
 
     @Override
     public Class<UsernamePasswordAuthenticationRequest> getRequestType() {

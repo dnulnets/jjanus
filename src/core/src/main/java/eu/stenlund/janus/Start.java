@@ -2,8 +2,6 @@ package eu.stenlund.janus;
 
 import java.net.URI;
 import java.util.HashSet;
-import java.util.Locale;
-import java.util.concurrent.CompletionStage;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -20,6 +18,7 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
+import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.User;
@@ -51,6 +50,9 @@ public class Start {
     @Inject
     Mutiny.SessionFactory sf;
     
+    @Inject
+    JanusSession js;
+    
     @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance start();
@@ -67,6 +69,7 @@ public class Start {
 
         Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
         
+        log.info("Locale = " + js.getLocale());
         return di.map(si -> {
                 log.info ("username: " + si.getPrincipal());
                 log.info ("name: " + si.getAttribute("name"));
@@ -134,6 +137,7 @@ public class Start {
     @Path("fragment2")
     @RolesAllowed({"user"})
     public Uni<String> fragment2() {
+        js.changed();
         return JanusTemplateHelper.createStringFrom(Templates.fragment2());
     }
 
