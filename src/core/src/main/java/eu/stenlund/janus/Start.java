@@ -28,7 +28,7 @@ import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.smallrye.mutiny.Uni;
 
-@Path("janus")
+@Path("")
 @Produces(MediaType.TEXT_HTML)
 @RequestScoped
 public class Start {
@@ -40,9 +40,6 @@ public class Start {
 
     @ConfigProperty(name = "quarkus.http.auth.form.location-cookie")
     String REDIRECT_COOKIE_NAME;
-
-    @ConfigProperty(name = "quarkus.http.auth.form.login-page")
-    String LOGIN_PAGE;
 
     @Inject
     public CurrentIdentityAssociation securityIdentityAssociation;
@@ -100,7 +97,7 @@ public class Start {
     @GET
     @Path("logout")
     public RestResponse<Object> logout() {
-        return ResponseBuilder.seeOther(URI.create(LOGIN_PAGE))
+        return ResponseBuilder.seeOther(URI.create("login"))
             .cookie(new NewCookie(REDIRECT_COOKIE_NAME, null, "/","","",0,true))
             .cookie(new NewCookie(COOKIE_NAME, null, "/", "", "", 0, true))
             .build();

@@ -18,6 +18,14 @@ import io.quarkus.security.runtime.QuarkusPrincipal;
 import io.quarkus.security.runtime.QuarkusSecurityIdentity;
 import io.smallrye.mutiny.Uni;
 
+/**
+ * Based on the trusted authentication (cookie, jwt, etc.) fetch data on the user in the
+ * database and add it to the SecurityIdentity.
+ *
+ * @author Tomas Stenlund
+ * @since 2022-07-14
+ * 
+ */
 @ApplicationScoped
 public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAuthenticationRequest> {
 
@@ -29,9 +37,15 @@ public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAu
         return TrustedAuthenticationRequest.class;
     }
 
-    protected QuarkusSecurityIdentity.Builder checkPrincipal(User user,
+    /**
+     * Populates the SecurityIdentifier with information from the user.
+     *  
+     * @param user The user information from the database
+     * @param request The request for authentication
+     * @return A SecurityIdentity populated with user information relevant to the application 
+     */
+    protected QuarkusSecurityIdentity.Builder populateSecurityIdentifier(User user,
         TrustedAuthenticationRequest request) {
-
         QuarkusSecurityIdentity.Builder builder = QuarkusSecurityIdentity.builder();
         builder.setPrincipal(new QuarkusPrincipal(request.getPrincipal()));
         Set<String> ss = new HashSet<String>();
@@ -48,7 +62,7 @@ public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAu
         AuthenticationRequestContext context) {
         return sf.withSession(s -> User.findByUsername(s, request.getPrincipal()))
             .onFailure().transform(t-> new AuthenticationFailedException(t))
-            .onItem().transform(entity -> checkPrincipal(entity, request))
+            .onItem().transform(entity -> populateSecurityIdentifier(entity, request))
             .onItem().transform(QuarkusSecurityIdentity.Builder::build);
     }
 }

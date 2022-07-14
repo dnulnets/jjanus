@@ -10,7 +10,7 @@ import io.quarkus.runtime.StartupEvent;
 
 /**
  * The flyway migration of the database. It is started "manually" by the
- * application because it cannot use reactive connections as of now.
+ * application (via a StartupEvent) because it cannot use reactive connections as of now.
  *
  * @author Tomas Stenlund
  * @since 2022-07-11

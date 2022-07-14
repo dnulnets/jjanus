@@ -19,6 +19,14 @@ import io.quarkus.security.runtime.QuarkusPrincipal;
 import io.quarkus.security.runtime.QuarkusSecurityIdentity;
 import io.smallrye.mutiny.Uni;
 
+/**
+ * Based on the username/password authentication request fetch data on the user in the
+ * database, compare it to the hashed password and add information to the SecurityIdentity.
+ *
+ * @author Tomas Stenlund
+ * @since 2022-07-14
+ * 
+ */
 @ApplicationScoped
 public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<UsernamePasswordAuthenticationRequest> {
 
@@ -30,6 +38,14 @@ public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<
         return UsernamePasswordAuthenticationRequest.class;
     }
 
+    /**
+     * Check the password from the request with the password stored in the database. If they match
+     * populate the SecurityIdentifier with information.
+     * 
+     * @param user The user as stored in the database
+     * @param request The request from e.g. form authentication, basic authentication etc.
+     * @return A populated SecurityIdentifier
+     */
     protected QuarkusSecurityIdentity.Builder checkPassword(User user,
             UsernamePasswordAuthenticationRequest request) {
         if (!BcryptUtil.matches(String.valueOf(request.getPassword().getPassword()), user.password)) {

@@ -11,9 +11,8 @@ import org.hibernate.annotations.Parameter;
 import javax.persistence.MappedSuperclass;
 
 /**
- * The JanusEntity that is used by all hibernate entities, it supports with
- * unique keys for
- * the identity of the entity using UUID.
+ * The JanusEntity that acts as base class for all entities, it supports with
+ * unique keys for the identity of the entity using UUID.
  *
  * @author Tomas Stenlund
  * @since 2022-07-11

@@ -1,5 +1,16 @@
 package eu.stenlund.janus.base;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -10,27 +21,21 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.NewCookie;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Base64;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class JanusSessionHelper {
 
     private static final Logger log = Logger.getLogger(JanusSessionHelper.class);
+    
+    @ConfigProperty(name = "quarkus.http.root-path")
+    String ROOT_PATH;
 
     private SecretKey secretKey;
     private IvParameterSpec ivpSpec;
-    private static String algorithm = "AES/CBC/PKCS5Padding";
-    public  static String cookieName = "janus";
+    private static String ALGORITHM = "AES/CBC/PKCS5Padding";
+    public  static String COOKIE_NAME = "janus";
 
     public JanusSessionHelper() throws NoSuchAlgorithmException {
         log.info ("JanusSessionHelper is initializing");
@@ -75,7 +80,7 @@ public class JanusSessionHelper {
         return plainText;
     }
 
-    NewCookie createSessionCookie (JanusSessionPOJO js, String path, String domain)
+    NewCookie createSessionCookie (JanusSessionPOJO js, String domain)
         throws IOException, NoSuchPaddingException, NoSuchAlgorithmException,
         InvalidAlgorithmParameterException, InvalidKeyException,
         BadPaddingException, IllegalBlockSizeException
@@ -85,8 +90,8 @@ public class JanusSessionHelper {
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(js);
         oos.close();
-        String e = encrypt (algorithm, baos.toByteArray());
-        NewCookie nc = new NewCookie(cookieName, e, path, domain, "",NewCookie.DEFAULT_MAX_AGE,true);
+        String e = encrypt (ALGORITHM, baos.toByteArray());
+        NewCookie nc = new NewCookie(COOKIE_NAME, e, ROOT_PATH, domain, "",NewCookie.DEFAULT_MAX_AGE, true, true);    
         return nc;
     }
     
@@ -97,7 +102,7 @@ public class JanusSessionHelper {
         IllegalBlockSizeException
     {
         JanusSessionPOJO o = null;
-        byte[] data = decrypt(algorithm, cookie);
+        byte[] data = decrypt(ALGORITHM, cookie);
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
         o = (JanusSessionPOJO)ois.readObject();

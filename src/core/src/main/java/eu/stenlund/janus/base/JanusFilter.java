@@ -22,7 +22,7 @@ class JanusFilter {
 
     @ServerRequestFilter()
     public void inboundSessionFilter(ContainerRequestContext requestContext) {
-        Cookie c = requestContext.getCookies().get(JanusSessionHelper.cookieName);
+        Cookie c = requestContext.getCookies().get(JanusSessionHelper.COOKIE_NAME);
         if (c != null) {
             log.info ("Create JanusSession from Cookie");
             try {
@@ -45,7 +45,7 @@ class JanusFilter {
             log.info ("Create cookie from JanusSession if it has changed");
             try {
                 log.info ("Janussession has changed");
-                NewCookie nc = jsh.createSessionCookie(js.convert(),"/janus", js.host);
+                NewCookie nc = jsh.createSessionCookie(js.convert(), js.host);
                 log.info ("Janussession Created as cookie");
                 responseContext.getHeaders().add("Set-Cookie", nc);                
                 log.info ("Cookie = " + nc.toString());
