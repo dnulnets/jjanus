@@ -23,19 +23,20 @@ class JanusFilter {
     @ServerRequestFilter()
     public void inboundSessionFilter(ContainerRequestContext requestContext) {
         Cookie c = requestContext.getCookies().get(JanusSessionHelper.COOKIE_NAME);
+        js.host = requestContext.getUriInfo().getBaseUri().getHost();
         if (c != null) {
             log.info ("Create JanusSession from Cookie");
             try {
                 JanusSessionPOJO ljs = jsh.createSessionFromCookie(c.getValue());
                 js.createFrom(ljs);
-                js.host = requestContext.getUriInfo().getBaseUri().getHost();
             } catch (Exception e)
             {
-                log.warn("Exception for decryption or parsing the cookie, se up for a rewrite of a new cookie");
-                js.changed(); // Force a rewrite of a new cookie
+                log.warn("Exception for decryption or parsing the cookie, force rewrite of a new cookie");
+                js.changed(true); // Force a rewrite of a new cookie
             }
         } else {
-            log.info ("No cookie to create JanusSession with");
+            log.info ("No cookie to create JanusSession with, force write of new cookie");
+            js.changed(true); // Force rewrite of new cookie
         }
     }
 
@@ -49,6 +50,7 @@ class JanusFilter {
                 log.info ("Janussession Created as cookie");
                 responseContext.getHeaders().add("Set-Cookie", nc);                
                 log.info ("Cookie = " + nc.toString());
+                js.changed (false);
             } catch (Exception e)
             {
                 log.error ("Exception for encryption or writing the cookie");

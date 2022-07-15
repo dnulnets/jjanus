@@ -26,9 +26,9 @@ public class JanusSession {
         return changed;
     }
 
-    public void changed()
+    public void changed(boolean b)
     {
-        changed = true;
+        changed = b;
     }
 
     public void setLocale (String l) {

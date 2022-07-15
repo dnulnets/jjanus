@@ -49,7 +49,7 @@ public class Start {
     
     @Inject
     JanusSession js;
-    
+
     @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance start();
@@ -67,6 +67,7 @@ public class Start {
         Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
         
         log.info("Locale = " + js.getLocale());
+
         return di.map(si -> {
                 log.info ("username: " + si.getPrincipal());
                 log.info ("name: " + si.getAttribute("name"));
@@ -134,7 +135,6 @@ public class Start {
     @Path("fragment2")
     @RolesAllowed({"user"})
     public Uni<String> fragment2() {
-        js.changed();
         return JanusTemplateHelper.createStringFrom(Templates.fragment2());
     }
 
