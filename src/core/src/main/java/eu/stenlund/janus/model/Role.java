@@ -3,8 +3,10 @@ package eu.stenlund.janus.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.criteria.CriteriaQuery;
 
 import org.hibernate.reactive.mutiny.Mutiny.Session;
+import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.model.base.JanusEntity;
 import io.smallrye.mutiny.Uni;
@@ -41,5 +43,11 @@ public class Role extends JanusEntity {
         return s.createQuery("from Role role where role.name = :name", Role.class)
         .setParameter("name", name).getSingleResult();
 
+    }
+
+    public static CriteriaQuery<Role> findByNameC (SessionFactory sf)
+    {
+        CriteriaQuery<Role> cr = sf.getCriteriaBuilder().createQuery(Role.class);
+        return cr;
     }
 }

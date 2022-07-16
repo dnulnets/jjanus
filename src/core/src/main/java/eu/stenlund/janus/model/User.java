@@ -51,9 +51,10 @@ public class User extends JanusEntity {
 
     public static Uni<User> addUser(Session s, User user) {
 
-        return s.persist(user).replaceWith(user)
+        return s.persist(user)
+            .replaceWith(user)
             .onFailure()
-            .transform(t -> new IllegalStateException(t));
+                .transform(t -> new IllegalStateException(t));
     }
 
     public static Uni<User> findByUsername(Session s, String uid) {
