@@ -10,6 +10,14 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.server.ServerRequestFilter;
 import org.jboss.resteasy.reactive.server.ServerResponseFilter;
 
+/**
+ * The filters used for handling the state cookie for each request. Both parsing and unparsing.
+ * I were not able to make it work with the @SessionScoped annotation for some reason. 
+ *
+ * @author Tomas Stenlund
+ * @since 2022-07-16
+ * 
+ */
 class JanusFilter {
 
     @Inject
@@ -20,6 +28,11 @@ class JanusFilter {
 
     private static final Logger log = Logger.getLogger(JanusFilter.class);
 
+    /**
+     * Update the session object with the cookie.
+     * 
+     * @param requestContext The request
+     */
     @ServerRequestFilter()
     public void inboundSessionFilter(ContainerRequestContext requestContext) {
         Cookie c = requestContext.getCookies().get(JanusSessionHelper.COOKIE_NAME);
@@ -40,6 +53,11 @@ class JanusFilter {
         }
     }
 
+    /**
+     * The outbound request that stores the session object as a cookie if it has changed.
+     * 
+     * @param responseContext The response
+     */
     @ServerResponseFilter()
     public void outboundSessionFilter(ContainerResponseContext responseContext) {
         if (js.hasChanged()) {

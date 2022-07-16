@@ -29,4 +29,17 @@ public interface Messages {
 
     @Message("Try again")
     String login_fail_back();
+
+    @Message("Country")
+    String country();
+
+    @Message("Sweden")
+    String country_sweden();
+
+    @Message("USA")
+    String country_usa();
+
+    @Message("United Kingdom")
+    String country_united_kingdom();
+
 }

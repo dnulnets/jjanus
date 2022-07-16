@@ -1,0 +1,50 @@
+<section id="login" class="vh-100">
+    <div class="container-fluid h-custom">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-md-9 col-lg-6 col-xl-5">
+                <img src="logo.png" class="img-fluid" alt="Janus logo">
+            </div>
+            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <div class="row">
+                    <div class="col-10">
+                        <h1><b>Janus</b></h1>
+                    </div>
+                    <div class="col-2">
+                        <div class="dropdown">
+                            <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                {msg:country}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <li><a class="dropdown-item" href="language?country=sv-SE" up-follow up-target="#login">{msg:country_sweden}</a></li>
+                                <li><a class="dropdown-item" href="language?country=en-US" up-follow up-target="#login">{msg:country_usa}</a></li>
+                                <li><a class="dropdown-item"
+                                        href="language?country=en-GB" up-follow up-target="#login">{msg:country_united_kingdom}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <form action="j_security_check" method="post">
+
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="user">{msg:login_username}</label>
+                        <input type="text" name="user" id="user" class="form-control form-control-lg"
+                            placeholder="{msg:login_enter_username}" />
+                    </div>
+
+                    <div class="form-outline mb-3">
+                        <label class="form-label" for="password">{msg:login_password}</label>
+                        <input type="password" name="password" id="password" class="form-control form-control-lg"
+                            placeholder="{msg:login_enter_password}" />
+                    </div>
+
+                    <div class="text-center text-lg-start mt-4 pt-2">
+                        <button type="submit" class="btn btn-primary btn-lg"
+                            style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,36 +1,3 @@
 {#include base-simple.html}
-{#content}
-<section class="vh-100">
-    <div class="container-fluid h-custom">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-md-9 col-lg-6 col-xl-5">
-                <img src="logo.png" class="img-fluid" alt="Janus logo">
-            </div>
-            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                <h1><b>Janus</b></h1>
-                <form action="j_security_check" method="post">
-
-                    <div class="form-outline mb-4">
-                        <label class="form-label" for="user">{msg:login_username}</label>
-                        <input type="text" name="user" id="user" class="form-control form-control-lg"
-                            placeholder="{msg:login_enter_username}" />
-                    </div>
-
-                    <div class="form-outline mb-3">
-                        <label class="form-label" for="password">{msg:login_password}</label>
-                        <input type="password" name="password" id="password" class="form-control form-control-lg"
-                            placeholder="{msg:login_enter_password}" />
-                    </div>
-
-                    <div class="text-center text-lg-start mt-4 pt-2">
-                        <button type="submit" class="btn btn-primary btn-lg"
-                            style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
-{/content}
+{#include Start/fragment_login.html}{/include}
 {/include}

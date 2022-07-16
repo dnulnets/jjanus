@@ -2,6 +2,7 @@ package eu.stenlund.janus;
 
 import java.net.URI;
 import java.util.HashSet;
+import java.util.Locale;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.NewCookie;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.hibernate.reactive.mutiny.Mutiny;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestQuery;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
@@ -55,8 +57,15 @@ public class Start {
         public static native TemplateInstance start();
         public static native TemplateInstance login();
         public static native TemplateInstance auth_error();
-        public static native TemplateInstance fragment1();
-        public static native TemplateInstance fragment2();
+        public static native TemplateInstance fragment_page1();
+        public static native TemplateInstance fragment_page2();
+    }
+
+    @GET
+    @Path("")
+    public RestResponse<Object> redirect()
+    {
+        return ResponseBuilder.seeOther(URI.create("start")).build();
     }
 
     @GET
@@ -75,7 +84,7 @@ public class Start {
                 log.info ("id: " + si.getAttribute("id"));
                 return si;
             })
-            .chain(item -> JanusTemplateHelper.createResponseFrom(Templates.start()))
+            .chain(item -> JanusTemplateHelper.createResponseFrom(Templates.start(), js.getLocale()))
             .onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
     
@@ -85,7 +94,7 @@ public class Start {
     @GET
     @Path("login")
     public Uni<RestResponse<String>> login() {
-        return JanusTemplateHelper.createResponseFrom(Templates.login())
+        return JanusTemplateHelper.createResponseFrom(Templates.login(), js.getLocale())
             .onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
@@ -107,35 +116,47 @@ public class Start {
     @GET
     @Path("auth_error")
     public Uni<String> auth_error() {
-        return JanusTemplateHelper.createStringFrom(Templates.auth_error());
+        return JanusTemplateHelper.createStringFrom(Templates.auth_error(), js.getLocale());
     }
 
     @GET
-    @Path("fragment1")
-    public Uni<String> fragment1() {
+    @Path("language")
+    public RestResponse<Object> language(@RestQuery String country) {
+        if (country != null) 
+            js.setLocale(country);  
+        return ResponseBuilder.seeOther(URI.create("login")).build();
+    }
+
+    @GET
+    @Path("fragment_page1")
+    @RolesAllowed ("user")
+    public Uni<String> fragment_page1() {
 
         // Just testcreate something for hibernate
+        /*
         User newUser = new User();
         newUser.username = "tomas";
         newUser.name = "Tomas Stenlund";
         newUser.email = "tomas.stenlund@telia.com";
         newUser.roles = new HashSet<Role>();
         newUser.setPassword("mandelmassa");
-
-        // Return with the final asynch
         return sf.withTransaction((s,t) -> Role.findByName(s, "user")
                 .chain(role -> {
                     newUser.roles.add(role);
                     return User.addUser(s, newUser);
                 })
-                .chain(item ->  JanusTemplateHelper.createStringFrom(Templates.fragment1())));
+                .chain(item ->  JanusTemplateHelper.createStringFrom(Templates.fragment1(), js.getLocale())));
+                */
+
+        return JanusTemplateHelper.createStringFrom(Templates.fragment_page1(), js.getLocale());
+
    }
 
     @GET
-    @Path("fragment2")
+    @Path("fragment_page2")
     @RolesAllowed({"user"})
-    public Uni<String> fragment2() {
-        return JanusTemplateHelper.createStringFrom(Templates.fragment2());
+    public Uni<String> fragment_page2() {
+        return JanusTemplateHelper.createStringFrom(Templates.fragment_page2(), js.getLocale());
     }
 
 }

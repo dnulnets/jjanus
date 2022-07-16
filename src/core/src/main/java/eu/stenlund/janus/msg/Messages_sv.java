@@ -29,4 +29,17 @@ public interface Messages_sv extends Messages {
 
     @Message("Try again")
     String login_fail_back();
+
+    @Message("Land")
+    String country();
+
+    @Message("Sverige")
+    String country_sweden();
+
+    @Message("USA")
+    String country_usa();
+
+    @Message("Storbritannien")
+    String country_united_kingdom();
+
 }
