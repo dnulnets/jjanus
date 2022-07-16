@@ -59,6 +59,7 @@ public class Start {
         public static native TemplateInstance auth_error();
         public static native TemplateInstance fragment_page1();
         public static native TemplateInstance fragment_page2();
+        public static native TemplateInstance fragment_login();
     }
 
     @GET
@@ -98,6 +99,12 @@ public class Start {
             .onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
+    @GET
+    @Path("fragment_login")
+    public Uni<String> fragment_login() {
+        return JanusTemplateHelper.createStringFrom(Templates.fragment_login(), js.getLocale());
+    }
+
     /**
      * Remove the cookies associated with the auth form authentication and redirect to the
      * login page.
@@ -124,7 +131,7 @@ public class Start {
     public RestResponse<Object> language(@RestQuery String country) {
         if (country != null) 
             js.setLocale(country);  
-        return ResponseBuilder.seeOther(URI.create("login")).build();
+        return ResponseBuilder.seeOther(URI.create("fragment_login")).build();
     }
 
     @GET
