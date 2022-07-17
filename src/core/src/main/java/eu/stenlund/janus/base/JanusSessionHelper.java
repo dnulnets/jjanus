@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -64,7 +65,16 @@ public class JanusSessionHelper {
     public JanusSessionHelper(@ConfigProperty(name = "janus.cookie.key") String COOKIE_KEY) {
         if (COOKIE_KEY != null) {
             log.info ("Using configuration cookie key");
-            secretKey = new SecretKeySpec(COOKIE_KEY.getBytes(),ALGORITHM_BASE);
+            try {
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                md.update(COOKIE_KEY.getBytes());
+                secretKey = new SecretKeySpec(md.digest(),ALGORITHM_BASE);
+            } catch (Exception e) {
+                log.info ("Uanble to create a MD5 of the key, generate a random key");
+                byte key[] = new byte [16];
+                new SecureRandom().nextBytes(key);
+                secretKey = new SecretKeySpec(key, ALGORITHM_BASE);                
+            }
         } else {
             log.info ("No configuration cookie key has been provided, generate a random one");
             byte key[] = new byte [16];
