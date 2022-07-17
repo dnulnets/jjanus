@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.hibernate.reactive.mutiny.Mutiny;
+import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.model.User;
 import io.quarkus.elytron.security.common.BcryptUtil;
@@ -30,6 +31,8 @@ import io.smallrye.mutiny.Uni;
 @ApplicationScoped
 public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<UsernamePasswordAuthenticationRequest> {
 
+    private static final Logger log = Logger.getLogger(ReactiveUsernamePasswordAuthentication.class);
+
     @Inject
     Mutiny.SessionFactory sf;
 
@@ -46,14 +49,13 @@ public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<
      * @param request The request from e.g. form authentication, basic authentication etc.
      * @return A populated SecurityIdentifier
      */
-    protected QuarkusSecurityIdentity.Builder checkPassword(User user,
-            UsernamePasswordAuthenticationRequest request) {
-        if (!BcryptUtil.matches(String.valueOf(request.getPassword().getPassword()), user.password)) {
+    protected QuarkusSecurityIdentity.Builder checkPassword(User user, String password) {
+
+        if (!BcryptUtil.matches(password, user.password)) {
             throw new AuthenticationFailedException();
         }
         QuarkusSecurityIdentity.Builder builder = QuarkusSecurityIdentity.builder();
-        builder.setPrincipal(new QuarkusPrincipal(request.getUsername()));
-        builder.addCredential(request.getPassword());
+        builder.setPrincipal(new QuarkusPrincipal(user.username));
         Set<String> ss = new HashSet<String>();
         user.roles.forEach(r -> ss.add(r.name));
         builder.addRoles(ss);
@@ -67,10 +69,11 @@ public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<
     public Uni<SecurityIdentity> authenticate(
             UsernamePasswordAuthenticationRequest request,
             AuthenticationRequestContext context) {
-
-        return sf.withSession(s -> User.findByUsername(s, request.getUsername())
+        String username = request.getUsername();
+        String password = String.valueOf(request.getPassword().getPassword());
+        return sf.withSession(s -> User.findByUsername(s, username)
             .onFailure().transform(t-> new AuthenticationFailedException(t))
-            .onItem().transform(entity -> checkPassword(entity, request))
+            .onItem().transform(user -> checkPassword(user, password))
             .onItem().transform(QuarkusSecurityIdentity.Builder::build));
 
     }

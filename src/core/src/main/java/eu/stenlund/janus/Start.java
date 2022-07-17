@@ -38,20 +38,23 @@ public class Start {
     private static final Logger log = Logger.getLogger(Start.class);
 
     @ConfigProperty(name = "quarkus.http.auth.form.cookie-name")
-    String COOKIE_NAME;
+    private String COOKIE_NAME;
 
     @ConfigProperty(name = "quarkus.http.auth.form.location-cookie")
-    String REDIRECT_COOKIE_NAME;
+    private String REDIRECT_COOKIE_NAME;
 
     @Inject
-    public CurrentIdentityAssociation securityIdentityAssociation;
+    private CurrentIdentityAssociation securityIdentityAssociation;
 
     @Inject
-    Mutiny.SessionFactory sf;
+    private Mutiny.SessionFactory sf;
     
     @Inject
-    JanusSession js;
+    private JanusSession js;
 
+    /**
+     * All of the checked templates for the Start resource.
+     */
     @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance start();
@@ -62,6 +65,12 @@ public class Start {
         public static native TemplateInstance fragment_login();
     }
 
+    /**
+     * Redirect the browser to the start point of the application if they just use
+     * the root URL.
+     * 
+     * @return A redirect response to root/start
+     */
     @GET
     @Path("")
     public RestResponse<Object> redirect()
@@ -69,6 +78,11 @@ public class Start {
         return ResponseBuilder.seeOther(URI.create("start")).build();
     }
 
+    /**
+     * The start page of the application.
+     * 
+     * @return The start page
+     */
     @GET
     @Path("start")
     @RolesAllowed({"user"})
@@ -85,20 +99,32 @@ public class Start {
                 log.info ("id: " + si.getAttribute("id"));
                 return si;
             })
-            .chain(item -> JanusTemplateHelper.createResponseFrom(Templates.start(), js.getLocale()))
-            .onFailure().invoke(t -> ResponseBuilder.serverError().build());
+            .chain(item -> JanusTemplateHelper
+                .createResponseFrom(Templates.start(), js.getLocale()))
+            .onFailure()
+                .invoke(t -> ResponseBuilder.serverError().build());
     }
     
     /**
-     * @return
+     * The login page of the application
+     * 
+     * @return The login page
      */
     @GET
     @Path("login")
     public Uni<RestResponse<String>> login() {
-        return JanusTemplateHelper.createResponseFrom(Templates.login(), js.getLocale())
-            .onFailure().invoke(t -> ResponseBuilder.serverError().build());
+        return JanusTemplateHelper
+            .createResponseFrom(Templates.login(), js.getLocale())
+            .onFailure()
+                .invoke(t -> ResponseBuilder.serverError().build());
     }
 
+    /**
+     * The login form of the login page, used by unpoly to change the existing
+     * element.
+     * 
+     * @return A fragment of the login page
+     */
     @GET
     @Path("fragment_login")
     public Uni<String> fragment_login() {
@@ -120,18 +146,35 @@ public class Start {
             .build();
     }
 
+    /**
+     * A authentication error page.
+     * 
+     * @return The error page
+     */
     @GET
     @Path("auth_error")
     public Uni<String> auth_error() {
         return JanusTemplateHelper.createStringFrom(Templates.auth_error(), js.getLocale());
     }
 
+    /**
+     * Change the locale of the application, and redirect to return URI.
+     * 
+     * @param code Language code
+     * @param backTo Return URI
+     * @return Returns with the redirect to the return URI
+     */
     @GET
-    @Path("language")
-    public RestResponse<Object> language(@RestQuery String country) {
-        if (country != null) 
-            js.setLocale(country);  
-        return ResponseBuilder.seeOther(URI.create("fragment_login")).build();
+    @Path("locale")
+    public RestResponse<Object> locale(
+        @RestQuery("code") String code,
+        @RestQuery("return") String backTo) {
+        if (code != null) 
+            js.setLocale(code);
+        if (backTo != null)
+            return ResponseBuilder.seeOther(URI.create(backTo)).build();
+        else
+            return ResponseBuilder.seeOther(URI.create("")).build();
     }
 
     @GET

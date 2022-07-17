@@ -16,17 +16,15 @@ public abstract class JanusTemplateHelper {
     private static final Logger log = Logger.getLogger(JanusTemplateHelper.class);
 
     /**
-     * Creates a stream from a TemplateInstance via its completion stage.
+     * Creates a stream from a TemplateInstance
      * 
      * @param ti The template instance to render asynchronous, via a stream
      * @return A string stream for asynchronous rendering
      */
     public static Uni<String> createStringFrom(TemplateInstance ti, String cc)
-    {             
+    {
         Locale tag = Locale.forLanguageTag(cc);
-        log.info ("Locale = " + tag.toString());
-        return Uni.createFrom()
-            .completionStage(() -> ti.setAttribute("locale", tag).renderAsync());
+        return ti.setAttribute("locale", tag).createUni();
     }
 
     /**
@@ -37,7 +35,7 @@ public abstract class JanusTemplateHelper {
      */
     public static Uni<RestResponse<String>> createResponseFrom(TemplateInstance ti, String cc)
     {             
-        return createStringFrom (ti, cc).onItem().transform(item -> ResponseBuilder.ok(item).build());
+        return createStringFrom (ti, cc).map(item -> ResponseBuilder.ok(item).build());
     }
 
 }
