@@ -38,19 +38,19 @@ public class Start {
     private static final Logger log = Logger.getLogger(Start.class);
 
     @ConfigProperty(name = "quarkus.http.auth.form.cookie-name")
-    private String COOKIE_NAME;
+    String COOKIE_NAME;
 
     @ConfigProperty(name = "quarkus.http.auth.form.location-cookie")
-    private String REDIRECT_COOKIE_NAME;
+    String REDIRECT_COOKIE_NAME;
 
     @Inject
-    private CurrentIdentityAssociation securityIdentityAssociation;
+    CurrentIdentityAssociation securityIdentityAssociation;
 
     @Inject
-    private Mutiny.SessionFactory sf;
+    Mutiny.SessionFactory sf;
     
     @Inject
-    private JanusSession js;
+    JanusSession js;
 
     /**
      * All of the checked templates for the Start resource.

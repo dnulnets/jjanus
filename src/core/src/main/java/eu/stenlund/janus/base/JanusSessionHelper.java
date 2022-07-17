@@ -18,6 +18,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.NewCookie;
 
@@ -43,25 +44,33 @@ public class JanusSessionHelper {
     @ConfigProperty(name = "quarkus.http.root-path")
     String ROOT_PATH;
 
-    private SecretKey secretKey;
-    private IvParameterSpec ivpSpec;
-    private static String ALGORITHM = "AES/CBC/PKCS5Padding";
-    private static String BASE = "AES";
-
     /**
      * The name of the cookie where Janus stores its session.
+     * NOTE! We should store the IVP as the first 16 characters in the session instead
+     * but for now it is as two separate cookies.
      */
-    public  static String COOKIE_NAME = "janus";
+    public  static String COOKIE_NAME_SESSION = "janus_session";
+    public  static String COOKIE_NAME_IVP = "janus_ivp";
+
+    private SecretKeySpec secretKey;
+    private static String ALGORITHM = "AES/CBC/PKCS5Padding";
+    private static String ALGORITHM_BASE = "AES";
 
     /**
-     * Creates the helper and sets up the keys.
+     * Creates the helper and sets up the key.
      * 
      * @throws NoSuchAlgorithmException The system do not support the algorithm.
      */
-    public JanusSessionHelper() throws NoSuchAlgorithmException {
-        log.info ("JanusSessionHelper is initializing");
-        secretKey = generateKey (128);
-        ivpSpec = generateIv();
+    public JanusSessionHelper(@ConfigProperty(name = "janus.cookie.key") String COOKIE_KEY) {
+        if (COOKIE_KEY != null) {
+            log.info ("Using configuration cookie key");
+            secretKey = new SecretKeySpec(COOKIE_KEY.getBytes(),ALGORITHM_BASE);
+        } else {
+            log.info ("No configuration cookie key has been provided, generate a random one");
+            byte key[] = new byte [16];
+            new SecureRandom().nextBytes(key);
+            secretKey = new SecretKeySpec(key, ALGORITHM_BASE);
+        }
     }
 
     /**
@@ -72,7 +81,7 @@ public class JanusSessionHelper {
      * @throws NoSuchAlgorithmException The system do not support the algorithm.
      */
     public static SecretKey generateKey(int n) throws NoSuchAlgorithmException {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance(BASE);
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(ALGORITHM_BASE);
         keyGenerator.init(n);
         SecretKey key = keyGenerator.generateKey();
         return key;
@@ -99,16 +108,19 @@ public class JanusSessionHelper {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    public String encrypt(String algorithm, byte input[])
+    public String[] encrypt(String algorithm, byte input[])
         throws NoSuchPaddingException, NoSuchAlgorithmException,
         InvalidAlgorithmParameterException, InvalidKeyException,
         BadPaddingException, IllegalBlockSizeException {
     
         Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivpSpec);
+        IvParameterSpec ivps = generateIv();
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivps);
         byte[] cipherText = cipher.doFinal(input);
-        return Base64.getEncoder()
-            .encodeToString(cipherText);
+        String c = Base64.getEncoder().encodeToString(cipherText);
+        String i = Base64.getEncoder().encodeToString(ivps.getIV());
+        String r[] = { c, i };
+        return r;
     }
 
     /**
@@ -122,12 +134,13 @@ public class JanusSessionHelper {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    public byte[] decrypt(String algorithm, String cipherText) 
+    public byte[] decrypt(String algorithm, String cipherText, String ivp) 
         throws NoSuchPaddingException, NoSuchAlgorithmException,
         InvalidAlgorithmParameterException, InvalidKeyException,
         BadPaddingException, IllegalBlockSizeException {
         
         Cipher cipher = Cipher.getInstance(algorithm);
+        IvParameterSpec ivpSpec = new IvParameterSpec(Base64.getDecoder().decode(ivp));
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivpSpec);
         byte[] plainText = cipher.doFinal(Base64.getDecoder()
             .decode(cipherText));
@@ -146,7 +159,7 @@ public class JanusSessionHelper {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    NewCookie createSessionCookie (JanusSessionPOJO js, String domain)
+    NewCookie[] createSessionCookie (JanusSessionPOJO js, String domain)
         throws IOException, NoSuchPaddingException, NoSuchAlgorithmException,
         InvalidAlgorithmParameterException, InvalidKeyException,
         BadPaddingException, IllegalBlockSizeException
@@ -156,8 +169,10 @@ public class JanusSessionHelper {
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(js);
         oos.close();
-        String e = encrypt (ALGORITHM, baos.toByteArray());
-        NewCookie nc = new NewCookie(COOKIE_NAME, e, ROOT_PATH, domain, "",NewCookie.DEFAULT_MAX_AGE, true, true);    
+        String c[] = encrypt (ALGORITHM, baos.toByteArray());
+        NewCookie nc1 = new NewCookie(COOKIE_NAME_SESSION, c[0], ROOT_PATH, domain, "",NewCookie.DEFAULT_MAX_AGE, true, true);    
+        NewCookie nc2 = new NewCookie(COOKIE_NAME_IVP, c[1], ROOT_PATH, domain, "",NewCookie.DEFAULT_MAX_AGE, true, true);    
+        NewCookie nc[] = { nc1, nc2};
         return nc;
     }
     
@@ -173,14 +188,14 @@ public class JanusSessionHelper {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    JanusSessionPOJO createSessionFromCookie (String cookie)
+    JanusSessionPOJO createSessionFromCookie (String session, String ivp)
         throws IOException, ClassNotFoundException, InvalidKeyException, 
         NoSuchPaddingException, NoSuchAlgorithmException, 
         InvalidAlgorithmParameterException, BadPaddingException, 
         IllegalBlockSizeException
     {
         JanusSessionPOJO o = null;
-        byte[] data = decrypt(ALGORITHM, cookie);
+        byte[] data = decrypt(ALGORITHM, session, ivp);
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
         o = (JanusSessionPOJO)ois.readObject();

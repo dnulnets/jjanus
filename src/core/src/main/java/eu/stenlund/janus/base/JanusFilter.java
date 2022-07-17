@@ -35,12 +35,13 @@ class JanusFilter {
      */
     @ServerRequestFilter()
     public void inboundSessionFilter(ContainerRequestContext requestContext) {
-        Cookie c = requestContext.getCookies().get(JanusSessionHelper.COOKIE_NAME);
+        Cookie c = requestContext.getCookies().get(JanusSessionHelper.COOKIE_NAME_SESSION);
+        Cookie i = requestContext.getCookies().get(JanusSessionHelper.COOKIE_NAME_IVP);
         js.host = requestContext.getUriInfo().getBaseUri().getHost();
-        if (c != null) {
+        if (c != null && i != null) {
             log.info ("Create JanusSession from Cookie");
             try {
-                JanusSessionPOJO ljs = jsh.createSessionFromCookie(c.getValue());
+                JanusSessionPOJO ljs = jsh.createSessionFromCookie(c.getValue(), i.getValue());
                 js.createFrom(ljs);
             } catch (Exception e)
             {
@@ -64,9 +65,10 @@ class JanusFilter {
             log.info ("Create cookie from JanusSession if it has changed");
             try {
                 log.info ("Janussession has changed");
-                NewCookie nc = jsh.createSessionCookie(js.convert(), js.host);
+                NewCookie nc[] = jsh.createSessionCookie(js.convert(), js.host);
                 log.info ("Janussession Created as cookie");
-                responseContext.getHeaders().add("Set-Cookie", nc);                
+                responseContext.getHeaders().add("Set-Cookie", nc[0]);                
+                responseContext.getHeaders().add("Set-Cookie", nc[1]);                
                 log.info ("Cookie = " + nc.toString());
                 js.changed (false);
             } catch (Exception e)
