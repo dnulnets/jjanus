@@ -54,7 +54,7 @@ public class JanusSessionHelper {
     private static String ALGORITHM = "AES/CBC/PKCS5Padding";
     private static String ALGORITHM_BASE = "AES";
     private static int ALGORITHM_IV_LENGTH = 16;
-    private static int ALGORITHM_KEY_LENGTH = 16;
+    private static int ALGORITHM_KEY_LENGTH = 32;
 
     /**
      * Creates the helper and sets up the key. Uses the property janus.cookie.key from
@@ -62,15 +62,15 @@ public class JanusSessionHelper {
      * 
      * @throws NoSuchAlgorithmException The system do not support the algorithm.
      */
-    public JanusSessionHelper(@ConfigProperty(name = "janus.cookie.key") String COOKIE_KEY) {
+    public JanusSessionHelper(@ConfigProperty(name = "janus.security.cookie.key") String COOKIE_KEY) {
         if (COOKIE_KEY != null) {
             log.info ("Using configuration cookie key");
             try {
-                MessageDigest md = MessageDigest.getInstance("MD5");
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
                 md.update(COOKIE_KEY.getBytes());
                 secretKey = new SecretKeySpec(md.digest(),ALGORITHM_BASE);
             } catch (Exception e) {
-                log.info ("Uanble to create a MD5 of the key, generate a random key");
+                log.info ("Uanble to create a SHA-256 of the key, generate a random key");
                 byte key[] = new byte [ALGORITHM_KEY_LENGTH];
                 new SecureRandom().nextBytes(key);
                 secretKey = new SecretKeySpec(key, ALGORITHM_BASE);                

@@ -101,10 +101,11 @@ public class Start {
         log.info("Locale = " + js.getLocale());
 
         return di.map(si -> {
-                log.info ("username: " + si.getPrincipal());
+                log.info ("username: " + si.getPrincipal().getName());
                 log.info ("name: " + si.getAttribute("name"));
                 log.info ("email: " + si.getAttribute("email"));
                 log.info ("id: " + si.getAttribute("id"));
+                log.info ("roles: " + si.getRoles());
                 return si;
             })
             .chain(item -> JanusTemplateHelper

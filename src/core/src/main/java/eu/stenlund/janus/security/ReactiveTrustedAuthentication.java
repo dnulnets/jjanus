@@ -66,9 +66,9 @@ public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAu
     public Uni<SecurityIdentity> authenticate(TrustedAuthenticationRequest request,
         AuthenticationRequestContext context) {
         String username = request.getPrincipal();
-        return sf.withSession(s -> User.findByUsername(s, username))
+        return sf.withSession(session -> User.findByUsername(session, username))
             .onFailure().recoverWithItem(t->null)
-            .map(entity -> populateSecurityIdentifier(entity))
+            .map(user -> populateSecurityIdentifier(user))
             .map(QuarkusSecurityIdentity.Builder::build);
     }
 }
