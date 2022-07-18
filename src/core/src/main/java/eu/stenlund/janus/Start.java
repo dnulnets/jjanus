@@ -93,7 +93,7 @@ public class Start {
      */
     @GET
     @Path("start")
-    @RolesAllowed({"user"})
+    @RolesAllowed({"any"})
     public Uni<RestResponse<String>> start() {
 
         Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
@@ -187,7 +187,7 @@ public class Start {
 
     @GET
     @Path("fragment_page1")
-    @RolesAllowed ("user")
+    @RolesAllowed ("any")
     public Uni<String> fragment_page1() {
 
         // Just testcreate something for hibernate
@@ -212,7 +212,7 @@ public class Start {
 
     @GET
     @Path("fragment_page2")
-    @RolesAllowed({"user"})
+    @RolesAllowed({"any"})
     public Uni<String> fragment_page2() {
         return JanusTemplateHelper.createStringFrom(Templates.fragment_page2(), js.getLocale());
     }

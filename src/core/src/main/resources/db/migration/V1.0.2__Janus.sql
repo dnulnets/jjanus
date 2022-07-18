@@ -4,11 +4,23 @@ insert into "user" (id, email, name, password, username)
       gen_random_uuid(), 
       'tomas.stenlund@telia.com', 
       'Tomas Stenlund', 
-      crypt('blablabla', gen_salt('bf', 10)),
+      crypt('mandelmassa', gen_salt('bf', 10)),
       'tomas');
 insert into user_role ("user", role) values (
    (select id from "user" where username ='tomas'),
    (select id from role where name='admin'));
 insert into user_role ("user", role) values (
    (select id from "user" where username ='tomas'),
-   (select id from role where name='user'));
+   (select id from role where name='member'));
+insert into user_role ("user", role) values (
+   (select id from "user" where username ='tomas'),
+   (select id from role where name='team'));
+insert into user_role ("user", role) values (
+   (select id from "user" where username ='tomas'),
+   (select id from role where name='product'));
+insert into user_role ("user", role) values (
+   (select id from "user" where username ='tomas'),
+   (select id from role where name='service'));
+insert into user_role ("user", role) values (
+   (select id from "user" where username ='tomas'),
+   (select id from role where name='any'));
