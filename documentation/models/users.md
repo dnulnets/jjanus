@@ -1,23 +1,20 @@
 ```mermaid
 classDiagram
     class User {
+        string username;
         string name
         string email
-        string credential
-    }
-    class Identity {
-        string identity
+        string password;
     }
     class ObjectRole {
         string objectType
     }   
     class Role {
-        string id
+        string longName;
         string name
         string description
     }
     User "*" --> "*" Role : has
-    User "1" --> "1..*" Identity : identity
     ObjectRole "*" --> "1" Role : derivesFrom
     ObjectRole "*" <-- "*" User : has
     Any "1" <-- "1" ObjectRole : validFor

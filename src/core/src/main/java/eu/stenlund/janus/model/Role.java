@@ -34,7 +34,13 @@ public class Role extends JanusEntity {
     public static String USER = "user";
 
     /**
-     * Short name of the role
+     * Long name of the role, e.g. "Product Owner"
+     */
+    @Column(unique = true, length = 64, nullable = false, updatable = false)
+    public String longName;
+
+    /**
+     * Short name of the role, e.g. "product"
      */
     @Column(unique = true, length = 64, nullable = false, updatable = false)
     public String name;
