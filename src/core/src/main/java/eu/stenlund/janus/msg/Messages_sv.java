@@ -3,6 +3,13 @@ package eu.stenlund.janus.msg;
 import io.quarkus.qute.i18n.Message;
 import io.quarkus.qute.i18n.Localized;
 
+/**
+ * Message bundle for Svenska.
+ *
+ * @author Tomas Stenlund
+ * @since 2022-07-11
+ * 
+ */
 @Localized("sv")
 public interface Messages_sv extends Messages {
 

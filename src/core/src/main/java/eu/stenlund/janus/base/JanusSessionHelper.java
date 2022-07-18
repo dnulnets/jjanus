@@ -27,8 +27,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 /**
- * The session helper object. It is created during startup and creates keys and also helps encrypting and
- * decrypting the cookie for the session.
+ * The session helper object. It is created during startup and creates the encryption key and IV.
+ * It also helps with encrypting and decryption of the cookie for the session.
  *
  * @author Tomas Stenlund
  * @since 2022-07-16

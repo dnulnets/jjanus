@@ -32,23 +32,45 @@ import io.smallrye.mutiny.Uni;
 @Table(name = "\"user\"")
 public class User extends JanusEntity {
 
+    /**
+     * The name of the user.
+     */
     @Column(length = 64, nullable = false, updatable = true)
     public String name;
 
+    /**
+     * The email to the user.
+     */
     @Column(length = 64, nullable = false, updatable = true)
     public String email;
 
+    /**
+     * The username used when logging in.
+     */
     @Column(length = 64, nullable = false, updatable = true, unique = true)
     public String username;
 
+    /**
+     * The password for the user, bcrypted.
+     */
     @Column(length = 128, nullable = false, updatable = true)
     public String password;
 
+    /**
+     * All of the roles for the user.
+     */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "\"user\"") }, inverseJoinColumns = {
             @JoinColumn(name = "role") })
     public Set<Role> roles;
 
+    /**
+     * Add a user to the database.
+     * 
+     * @param s A mutiny session.
+     * @param user The user to add.
+     * @return An asynchronous result.
+     */
     public static Uni<User> addUser(Session s, User user) {
 
         return s.persist(user)
@@ -57,11 +79,23 @@ public class User extends JanusEntity {
                 .transform(t -> new IllegalStateException(t));
     }
 
+    /**
+     * Finds a user by its username.
+     * 
+     * @param s A mutiny session.
+     * @param uid The username of the user.
+     * @return An syncrhonous result.
+     */
     public static Uni<User> findByUsername(Session s, String uid) {
         return s.createQuery("from User user where user.username = :name", User.class)
         .setParameter("name", uid).getSingleResult();
     }
 
+    /**
+     * Sets the password for the user and bcrypts it.
+     * 
+     * @param pwd The cleartext password.
+     */
     public void setPassword(String pwd) { 
         password = BcryptUtil.bcryptHash(pwd);
     }

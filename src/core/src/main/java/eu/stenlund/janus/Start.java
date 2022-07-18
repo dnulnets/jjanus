@@ -30,6 +30,14 @@ import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.smallrye.mutiny.Uni;
 
+/**
+ * The resource for the Janus start pages, user login handling and language
+ * support.
+ * 
+ * @author Tomas Stenlund
+ * @since 2022-07-11
+ * 
+ */
 @Path("")
 @Produces(MediaType.TEXT_HTML)
 @RequestScoped

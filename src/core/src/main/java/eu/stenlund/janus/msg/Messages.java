@@ -3,6 +3,13 @@ package eu.stenlund.janus.msg;
 import io.quarkus.qute.i18n.Message;
 import io.quarkus.qute.i18n.MessageBundle;
 
+/**
+ * The default Message bundle, uses English.
+ *
+ * @author Tomas Stenlund
+ * @since 2022-07-11
+ * 
+ */
 @MessageBundle
 public interface Messages {
 

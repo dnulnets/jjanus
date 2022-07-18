@@ -27,9 +27,21 @@ import io.smallrye.mutiny.Uni;
 @Table(name = "role")
 public class Role extends JanusEntity {
 
+    /**
+     * Constants for static roles in the system
+     */
+    public static String ADMIN = "admin";
+    public static String USER = "user";
+
+    /**
+     * Short name of the role
+     */
     @Column(unique = true, length = 64, nullable = false, updatable = false)
     public String name;
 
+    /**
+     * Description of the role
+     */
     @Column(unique = false, length = 256, nullable = true, updatable = true)
     public String description;
 
