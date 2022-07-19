@@ -21,7 +21,6 @@ public class JanusSessionPOJO implements Serializable {
      */
     public String locale;
 
-
     /**
      * Creation date of the session object
      */

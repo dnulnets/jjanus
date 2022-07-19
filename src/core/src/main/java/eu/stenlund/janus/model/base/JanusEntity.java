@@ -4,11 +4,10 @@ import java.util.UUID;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
-
-import javax.persistence.MappedSuperclass;
 
 /**
  * The JanusEntity that acts as base class for all entities, it supports with

@@ -22,7 +22,7 @@ public class JanusSession {
      * The UNIX timestamp for when the cookie was created
      */
     private long timeStamp;
-    
+
     /**
      * The current locale for the user.
      */
@@ -89,7 +89,8 @@ public class JanusSession {
     }
 
     /**
-     * Copies all the values from the plain java object to the session object. Used when we
+     * Copies all the values from the plain java object to the session object. Used
+     * when we
      * are deseralizing the cookie.
      * 
      * @param js The deserialized cookie as a plain java object

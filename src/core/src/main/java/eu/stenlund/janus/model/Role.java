@@ -59,12 +59,11 @@ public class Role extends JanusEntity {
      */
     public static Uni<Role> findByName(Session s, String name) {
         return s.createQuery("from Role role where role.name = :name", Role.class)
-        .setParameter("name", name).getSingleResult();
+                .setParameter("name", name).getSingleResult();
 
     }
 
-    public static CriteriaQuery<Role> findByNameC (SessionFactory sf)
-    {
+    public static CriteriaQuery<Role> findByNameC(SessionFactory sf) {
         CriteriaQuery<Role> cr = sf.getCriteriaBuilder().createQuery(Role.class);
         return cr;
     }

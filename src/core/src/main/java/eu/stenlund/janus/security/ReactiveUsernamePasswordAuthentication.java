@@ -7,7 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.hibernate.reactive.mutiny.Mutiny;
-import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.model.User;
 import io.quarkus.elytron.security.common.BcryptUtil;
@@ -21,8 +20,9 @@ import io.quarkus.security.runtime.QuarkusSecurityIdentity;
 import io.smallrye.mutiny.Uni;
 
 /**
- * Based on the username/password authentication request fetch data on the user in the
- * database, compare it to the hashed password and add information to the SecurityIdentity.
+ * Based on the username/password authentication request fetch data on the user
+ * in the database, compare it to the hashed password and add information to the
+ * SecurityIdentity.
  *
  * @author Tomas Stenlund
  * @since 2022-07-14
@@ -30,8 +30,6 @@ import io.smallrye.mutiny.Uni;
  */
 @ApplicationScoped
 public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<UsernamePasswordAuthenticationRequest> {
-
-    private static final Logger log = Logger.getLogger(ReactiveUsernamePasswordAuthentication.class);
 
     @Inject
     Mutiny.SessionFactory sf;
@@ -42,11 +40,13 @@ public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<
     }
 
     /**
-     * Check the password from the request with the password stored in the database. If they match
+     * Check the password from the request with the password stored in the database.
+     * If they match
      * populate the SecurityIdentifier with information.
      * 
-     * @param user The user as stored in the database
-     * @param request The request from e.g. form authentication, basic authentication etc.
+     * @param user    The user as stored in the database
+     * @param request The request from e.g. form authentication, basic
+     *                authentication etc.
      * @return A populated SecurityIdentifier
      */
     protected QuarkusSecurityIdentity.Builder checkPassword(User user, String password) {
@@ -72,10 +72,10 @@ public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<
         String username = request.getUsername();
         String password = String.valueOf(request.getPassword().getPassword());
         return sf.withSession(session -> User.findByUsername(session, username)
-            .onFailure().transform(t-> new AuthenticationFailedException(t))
-            .onItem().transform(user -> checkPassword(user, password))
-            .onItem().transform(QuarkusSecurityIdentity.Builder::build));
+                .onFailure().transform(t -> new AuthenticationFailedException(t))
+                .onItem().transform(user -> checkPassword(user, password))
+                .onItem().transform(QuarkusSecurityIdentity.Builder::build));
 
     }
- 
+
 }

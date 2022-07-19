@@ -67,28 +67,28 @@ public class User extends JanusEntity {
     /**
      * Add a user to the database.
      * 
-     * @param s A mutiny session.
+     * @param s    A mutiny session.
      * @param user The user to add.
      * @return An asynchronous result.
      */
     public static Uni<User> addUser(Session s, User user) {
 
         return s.persist(user)
-            .replaceWith(user)
-            .onFailure()
+                .replaceWith(user)
+                .onFailure()
                 .transform(t -> new IllegalStateException(t));
     }
 
     /**
      * Finds a user by its username.
      * 
-     * @param s A mutiny session.
+     * @param s   A mutiny session.
      * @param uid The username of the user.
      * @return An syncrhonous result.
      */
     public static Uni<User> findByUsername(Session s, String uid) {
         return s.createQuery("from User user where user.username = :name", User.class)
-        .setParameter("name", uid).getSingleResult();
+                .setParameter("name", uid).getSingleResult();
     }
 
     /**
@@ -96,7 +96,7 @@ public class User extends JanusEntity {
      * 
      * @param pwd The cleartext password.
      */
-    public void setPassword(String pwd) { 
+    public void setPassword(String pwd) {
         password = BcryptUtil.bcryptHash(pwd);
     }
 

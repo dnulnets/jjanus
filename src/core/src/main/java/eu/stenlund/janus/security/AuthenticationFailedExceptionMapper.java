@@ -11,8 +11,8 @@ import javax.ws.rs.ext.Provider;
 import io.quarkus.security.AuthenticationFailedException;
 
 /**
- * The authentication failed exception mapper, so we return a 401 and so we redirect to
- * the correct login form whenever it happens.
+ * The authentication failed exception mapper, so we return a 401 and so we
+ * redirect to the correct login form whenever it happens.
  *
  * @author Tomas Stenlund
  * @since 2022-07-11

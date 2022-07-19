@@ -9,8 +9,6 @@ import javax.inject.Inject;
 import org.hibernate.reactive.mutiny.Mutiny;
 
 import eu.stenlund.janus.model.User;
-import io.quarkus.logging.Log;
-import io.quarkus.security.AuthenticationFailedException;
 import io.quarkus.security.identity.AuthenticationRequestContext;
 import io.quarkus.security.identity.IdentityProvider;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -20,8 +18,8 @@ import io.quarkus.security.runtime.QuarkusSecurityIdentity;
 import io.smallrye.mutiny.Uni;
 
 /**
- * Based on the trusted authentication (cookie, jwt, etc.) fetch data on the user in the
- * database and add it to the SecurityIdentity.
+ * Based on the trusted authentication (cookie, jwt, etc.) fetch data on the
+ * user in the database and add it to the SecurityIdentity.
  *
  * @author Tomas Stenlund
  * @since 2022-07-14
@@ -32,7 +30,7 @@ public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAu
 
     @Inject
     Mutiny.SessionFactory sf;
-    
+
     @Override
     public Class<TrustedAuthenticationRequest> getRequestType() {
         return TrustedAuthenticationRequest.class;
@@ -40,10 +38,12 @@ public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAu
 
     /**
      * Populates the SecurityIdentifier with information from the user.
-     *  
-     * @param user The user information from the database, if null the user is anonymous
+     * 
+     * @param user    The user information from the database, if null the user is
+     *                anonymous
      * @param request The request for authentication
-     * @return A SecurityIdentity populated with user information relevant to the application 
+     * @return A SecurityIdentity populated with user information relevant to the
+     *         application
      */
     protected QuarkusSecurityIdentity.Builder populateSecurityIdentifier(User user) {
         QuarkusSecurityIdentity.Builder builder = QuarkusSecurityIdentity.builder();
@@ -64,11 +64,11 @@ public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAu
 
     @Override
     public Uni<SecurityIdentity> authenticate(TrustedAuthenticationRequest request,
-        AuthenticationRequestContext context) {
+            AuthenticationRequestContext context) {
         String username = request.getPrincipal();
         return sf.withSession(session -> User.findByUsername(session, username))
-            .onFailure().recoverWithItem(t->null)
-            .map(user -> populateSecurityIdentifier(user))
-            .map(QuarkusSecurityIdentity.Builder::build);
+                .onFailure().recoverWithItem(t -> null)
+                .map(user -> populateSecurityIdentifier(user))
+                .map(QuarkusSecurityIdentity.Builder::build);
     }
 }
