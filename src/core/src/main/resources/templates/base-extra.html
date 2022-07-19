@@ -31,9 +31,14 @@
   {#insert navbar-top}{/}
 
   <main class="container-fluid" role="main">
-    <div class="bg-light p-2 rounded">
-      {#insert}No content!{/}
-    </div>
+
+        <div class="row h-100">
+            {#insert navbar-left}{/}
+            <div class="bg-light rounded p-2 col-11">
+                {#insert}{/}
+            </div>
+        </div>
+
   </main>
 </body>
 

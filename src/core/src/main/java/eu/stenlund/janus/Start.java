@@ -72,6 +72,8 @@ public class Start {
         public static native TemplateInstance fragment_page2();
 
         public static native TemplateInstance fragment_login();
+
+        public static native TemplateInstance extra();
     }
 
     /**
@@ -113,6 +115,12 @@ public class Start {
                         .createResponseFrom(Templates.start(), js.getLocale()))
                 .onFailure()
                 .invoke(t -> ResponseBuilder.serverError().build());
+    }
+
+    @GET
+    @Path("extra")
+    public Uni<String> extra() {
+        return JanusTemplateHelper.createStringFrom(Templates.extra(), js.getLocale());
     }
 
     /**
