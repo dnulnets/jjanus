@@ -50,7 +50,12 @@ public class JanusSessionHelper {
      */
     public  static String COOKIE_NAME_SESSION = "janus_session";
 
+    /**
+     * The key used for encryption and decryption of the cookie. Generated from
+     * the a SHA-256 of the janus.security.cookie.key passphrase.
+     */
     private SecretKeySpec secretKey;
+
     private static String ALGORITHM = "AES/CBC/PKCS5Padding";
     private static String ALGORITHM_BASE = "AES";
     private static int ALGORITHM_IV_LENGTH = 16;

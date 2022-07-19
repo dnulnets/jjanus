@@ -99,6 +99,7 @@ public class Start {
         Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
         
         log.info("Locale = " + js.getLocale());
+        log.info("Age = " + js.getAge());
 
         return di.map(si -> {
                 log.info ("username: " + si.getPrincipal().getName());
