@@ -70,8 +70,6 @@ public class Start {
 
         public static native TemplateInstance auth_error();
 
-        public static native TemplateInstance fragment_login();
-
         public static native TemplateInstance extra();
     }
 
@@ -145,20 +143,6 @@ public class Start {
                 .onFailure()
                 .invoke(t -> ResponseBuilder.serverError().build());
     }
-
-    /**
-     * The login form of the login page, used by unpoly to change the existing
-     * element.
-     * 
-     * @return A fragment of the login page
-     */
-    /* 
-    @GET
-    @Path("fragment_login")
-    public Uni<String> fragment_login() {
-        return JanusTemplateHelper.createStringFrom(Templates.fragment_login(), js.getLocale());
-    }
-*/
 
     /**
      * Remove the cookies associated with the auth form authentication and redirect
