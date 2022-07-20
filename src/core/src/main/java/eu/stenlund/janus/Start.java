@@ -62,15 +62,13 @@ public class Start {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance start(Navbar navbar);
+        public static native TemplateInstance start1(Navbar navbar);
+
+        public static native TemplateInstance start2(Navbar navbar);
 
         public static native TemplateInstance login();
 
         public static native TemplateInstance auth_error();
-
-        public static native TemplateInstance fragment_page1();
-
-        public static native TemplateInstance fragment_page2();
 
         public static native TemplateInstance fragment_login();
 
@@ -86,7 +84,7 @@ public class Start {
     @GET
     @Path("")
     public RestResponse<Object> redirect() {
-        return ResponseBuilder.seeOther(URI.create("start")).build();
+        return ResponseBuilder.seeOther(URI.create("start1")).build();
     }
 
     /**
@@ -95,17 +93,39 @@ public class Start {
      * @return The start page
      */
     @GET
-    @Path("start")
+    @Path("start1")
     @RolesAllowed({ "any" })
-    public Uni<RestResponse<String>> start() {
+    public Uni<RestResponse<String>> start1() {
 
         Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
 
         log.info("Locale = " + js.getLocale());
         log.info("Age = " + js.getAge());
+        log.info("URL = " + js.url);
+        log.info("Method = " + js.method);
+        log.info("Host = " + js.host);
 
         return di.map(si -> new Navbar(si))
-                .chain(nb -> JanusTemplateHelper.createResponseFrom(Templates.start(nb), js.getLocale()))
+                .chain(nb -> JanusTemplateHelper.createResponseFrom(Templates.start1(nb), js.getLocale()))
+                .onFailure()
+                    .invoke(t -> ResponseBuilder.serverError().build());
+    }
+
+    @GET
+    @Path("start2")
+    @RolesAllowed({ "any" })
+    public Uni<RestResponse<String>> start2() {
+
+        Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
+
+        log.info("Locale = " + js.getLocale());
+        log.info("Age = " + js.getAge());
+        log.info("URL = " + js.url);
+        log.info("Method = " + js.method);
+        log.info("Host = " + js.host);
+        
+        return di.map(si -> new Navbar(si))
+                .chain(nb -> JanusTemplateHelper.createResponseFrom(Templates.start2(nb), js.getLocale()))
                 .onFailure()
                     .invoke(t -> ResponseBuilder.serverError().build());
     }
@@ -189,11 +209,6 @@ public class Start {
             return ResponseBuilder.seeOther(URI.create("")).build();
     }
 
-    @GET
-    @Path("fragment_page1")
-    @RolesAllowed("any")
-    public Uni<String> fragment_page1() {
-
         // Just testcreate something for hibernate
         /*
          * User newUser = new User();
@@ -210,16 +225,5 @@ public class Start {
          * .chain(item -> JanusTemplateHelper.createStringFrom(Templates.fragment1(),
          * js.getLocale())));
          */
-
-        return JanusTemplateHelper.createStringFrom(Templates.fragment_page1(), js.getLocale());
-
-    }
-
-    @GET
-    @Path("fragment_page2")
-    @RolesAllowed({ "any" })
-    public Uni<String> fragment_page2() {
-        return JanusTemplateHelper.createStringFrom(Templates.fragment_page2(), js.getLocale());
-    }
 
 }

@@ -1,5 +1,7 @@
 package eu.stenlund.janus.base;
 
+import java.net.MalformedURLException;
+
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
