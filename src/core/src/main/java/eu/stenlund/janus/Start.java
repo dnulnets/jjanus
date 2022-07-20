@@ -101,8 +101,6 @@ public class Start {
 
         log.info("Locale = " + js.getLocale());
         log.info("Age = " + js.getAge());
-        log.info("URL = " + js.url);
-        log.info("Method = " + js.method);
         log.info("Host = " + js.host);
 
         return di.map(si -> new Navbar(si))
@@ -120,8 +118,6 @@ public class Start {
 
         log.info("Locale = " + js.getLocale());
         log.info("Age = " + js.getAge());
-        log.info("URL = " + js.url);
-        log.info("Method = " + js.method);
         log.info("Host = " + js.host);
         
         return di.map(si -> new Navbar(si))
@@ -156,11 +152,13 @@ public class Start {
      * 
      * @return A fragment of the login page
      */
+    /* 
     @GET
     @Path("fragment_login")
     public Uni<String> fragment_login() {
         return JanusTemplateHelper.createStringFrom(Templates.fragment_login(), js.getLocale());
     }
+*/
 
     /**
      * Remove the cookies associated with the auth form authentication and redirect
@@ -201,6 +199,8 @@ public class Start {
     public RestResponse<Object> locale(
             @RestQuery("code") String code,
             @RestQuery("return") String backTo) {
+        log.info ("Code = " + code);
+        log.info ("Return = " + backTo);
         if (code != null)
             js.setLocale(code);
         if (backTo != null)

@@ -10,12 +10,15 @@
                     {msg:country}
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/locale?code=sv-SE&return=fragment_login" up-follow
-                            up-target="#login">{msg:country_sweden}</a></li>
-                    <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/locale?code=en-US&return=fragment_login" up-follow
-                            up-target="#login">{msg:country_usa}</a></li>
-                    <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/locale?code=en-GB&return=fragment_login" up-follow
-                            up-target="#login">{msg:country_united_kingdom}</a></li>
+                    <li><a class="dropdown-item" 
+                        href="{janus:property('janus.http.root-path')}/locale?code=sv-SE&return=login"
+                        up-follow up-target="#login">{msg:country_sweden}</a></li>
+                    <li><a class="dropdown-item"
+                        href="{janus:property('janus.http.root-path')}/locale?code=en-US&return=login"
+                        up-follow up-target="#login">{msg:country_usa}</a></li>
+                    <li><a class="dropdown-item"
+                        href="{janus:property('janus.http.root-path')}/locale?code=en-GB&return=login"
+                        up-follow up-target="#login">{msg:country_united_kingdom}</a></li>
                 </ul>
             </div>
         </div>
