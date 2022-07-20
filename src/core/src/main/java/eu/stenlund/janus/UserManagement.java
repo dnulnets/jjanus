@@ -1,6 +1,7 @@
 package eu.stenlund.janus;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -20,7 +21,8 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.base.JanusTemplateHelper;
-import eu.stenlund.janus.model.ui.Navbar;
+import eu.stenlund.janus.model.User;
+import eu.stenlund.janus.model.ui.Base;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
@@ -55,7 +57,7 @@ public class UserManagement {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance list(Navbar navbar);
+        public static native TemplateInstance list(Base navbar, List<User> users);
     }
 
     /**
@@ -68,12 +70,14 @@ public class UserManagement {
     @RolesAllowed({"admin"})
     public Uni<RestResponse<String>> list() {
 
-        Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
+        return Uni.
+            combine().all().unis(
+                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                sf.withSession(s -> User.getListOfUsers(s, 0, 5))).asTuple().
+            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(),
+                    t.getItem2()), js.getLocale())).
+            onFailure().invoke(t -> ResponseBuilder.serverError().build());
 
-        return di.map(si -> new Navbar(si))
-                .chain(nb -> JanusTemplateHelper.createResponseFrom(Templates.list(nb), js.getLocale()))
-                .onFailure()
-                    .invoke(t -> ResponseBuilder.serverError().build());
     }
 
 }

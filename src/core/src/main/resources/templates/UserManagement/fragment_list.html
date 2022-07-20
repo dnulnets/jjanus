@@ -1,5 +1,54 @@
-<div id="workarea">
-    <h1>User management</h1>
-    <br/>This is fragment 1 using unpoly as test!
-    <a href="{janus:property('janus.http.root-path')}/start1" up-follow up-history="true" up-target="#workarea">Go to page 2</a>
+<div id="workarea" class="container mt-3">
+    <h1>User administration</h1>
+    <div>
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                Show 10 entries
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-striped style=" width:100%"">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#for user in users}
+                        <tr>
+                            <td>1</td>
+                            <td>{user.name}</td>
+                            <td>{user.username}</td>
+                            <td>{user.email}</td>
+                            <td>
+                                {#for role in user.roles}
+                                {role.longName}<br />
+                                {/for}
+                            </td>
+                        </tr>
+                        {/for}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-5">
+                Showing 1 to 10 of 57 entries
+            </div>
+            <div class="col-sm-12 col-md-7 d-flex justify-content-end">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>

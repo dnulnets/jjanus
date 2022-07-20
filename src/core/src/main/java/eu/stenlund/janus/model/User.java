@@ -1,5 +1,6 @@
 package eu.stenlund.janus.model;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -12,11 +13,16 @@ import javax.persistence.Table;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-import org.hibernate.reactive.mutiny.Mutiny.Session;
+import org.hibernate.criterion.Projections;
 
 import eu.stenlund.janus.model.base.JanusEntity;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.smallrye.mutiny.Uni;
+
+import javax.persistence.criteria.CriteriaQuery;
+
+import org.hibernate.reactive.mutiny.Mutiny.Session;
+import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 /**
  * The information about a person.
@@ -33,7 +39,9 @@ import io.smallrye.mutiny.Uni;
 @Entity
 @Table(name = "\"user\"")
 @NamedQueries({
-    @NamedQuery(name = "User_FindByUsername", query = "from User user where user.username = :name")
+    @NamedQuery(name = "User_FindByUsername", query = "from User u where u.username = :name"),
+    @NamedQuery(name = "User_ListOfUsers", query = "from User u order by u.name"),
+    @NamedQuery(name = "User_NumberOfUsers", query = "Select count (u.id) from User u")
 })
 public class User extends JanusEntity {
 
@@ -87,11 +95,23 @@ public class User extends JanusEntity {
      * 
      * @param s   A mutiny session.
      * @param uid The username of the user.
-     * @return An syncrhonous result.
+     * @return An synchronous result.
      */
     public static Uni<User> findByUsername(Session s, String uid) {
         return s.createNamedQuery("User_FindByUsername", User.class)
             .setParameter("name", uid).getSingleResult();
+    }
+
+    public static Uni<Integer> getNumberOfUsers(Session s)
+    {
+        return s.createNamedQuery("User_NumberOfUsers", Integer.class)
+            .getSingleResult();
+    }
+
+    public static Uni<List<User>> getListOfUsers(Session s, int start, int max)
+    {
+        return s.createNamedQuery("User_ListOfUsers", User.class)
+            .setFirstResult(start).setMaxResults(max).getResultList();
     }
 
     /**

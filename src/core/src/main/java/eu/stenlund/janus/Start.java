@@ -20,7 +20,7 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.base.JanusTemplateHelper;
-import eu.stenlund.janus.model.ui.Navbar;
+import eu.stenlund.janus.model.ui.Base;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
@@ -62,9 +62,9 @@ public class Start {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance start1(Navbar navbar);
+        public static native TemplateInstance start1(Base navbar);
 
-        public static native TemplateInstance start2(Navbar navbar);
+        public static native TemplateInstance start2(Base navbar);
 
         public static native TemplateInstance login();
 
@@ -101,7 +101,7 @@ public class Start {
         log.info("Age = " + js.getAge());
         log.info("Host = " + js.host);
 
-        return di.map(si -> new Navbar(si))
+        return di.map(si -> new Base(si))
                 .chain(nb -> JanusTemplateHelper.createResponseFrom(Templates.start1(nb), js.getLocale()))
                 .onFailure()
                     .invoke(t -> ResponseBuilder.serverError().build());
@@ -118,7 +118,7 @@ public class Start {
         log.info("Age = " + js.getAge());
         log.info("Host = " + js.host);
         
-        return di.map(si -> new Navbar(si))
+        return di.map(si -> new Base(si))
                 .chain(nb -> JanusTemplateHelper.createResponseFrom(Templates.start2(nb), js.getLocale()))
                 .onFailure()
                     .invoke(t -> ResponseBuilder.serverError().build());
