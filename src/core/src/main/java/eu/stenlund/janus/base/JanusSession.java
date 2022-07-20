@@ -4,6 +4,9 @@ import java.time.Instant;
 import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.vertx.core.http.HttpServerRequest;
 
@@ -16,6 +19,7 @@ import io.vertx.core.http.HttpServerRequest;
  * 
  */
 @RequestScoped
+@Named("session")
 public class JanusSession {
 
     /**

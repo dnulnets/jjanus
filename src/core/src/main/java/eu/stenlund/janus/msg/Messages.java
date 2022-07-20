@@ -49,4 +49,10 @@ public interface Messages {
     @Message("United Kingdom")
     String country_united_kingdom();
 
+    @Message("Administration")
+    String menu_administration();
+
+    @Message("Users")
+    String menu_administration_users();
+
 }

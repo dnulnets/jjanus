@@ -49,4 +49,10 @@ public interface Messages_sv extends Messages {
     @Message("Storbritannien")
     String country_united_kingdom();
 
+    @Message("Administration")
+    String menu_administration();
+
+    @Message("Användare")
+    String menu_administration_users();
+
 }

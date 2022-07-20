@@ -10,17 +10,17 @@
                     {msg:country}
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <li><a class="dropdown-item" href="locale?code=sv-SE&return=fragment_login" up-follow
+                    <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/locale?code=sv-SE&return=fragment_login" up-follow
                             up-target="#login">{msg:country_sweden}</a></li>
-                    <li><a class="dropdown-item" href="locale?code=en-US&return=fragment_login" up-follow
+                    <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/locale?code=en-US&return=fragment_login" up-follow
                             up-target="#login">{msg:country_usa}</a></li>
-                    <li><a class="dropdown-item" href="locale?code=en-GB&return=fragment_login" up-follow
+                    <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/locale?code=en-GB&return=fragment_login" up-follow
                             up-target="#login">{msg:country_united_kingdom}</a></li>
                 </ul>
             </div>
         </div>
     </div>
-    <form action="j_security_check" method="post">
+    <form action="{janus:property('janus.http.root-path')}/j_security_check" method="post">
 
         <div class="form-outline mb-4">
             <label class="form-label" for="user">{msg:login_username}</label>

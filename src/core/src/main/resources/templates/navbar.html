@@ -1,7 +1,7 @@
 <nav id="navbar-top" class="navbar navbar-expand-md navbar-light fixed-top bg-light" role="navigation">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">
-      <img src="logo.svg" height="40">
+      <img src="{janus:property('janus.http.root-path')}/logo.svg" height="40">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
       aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -9,11 +9,18 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        {#if navbar.admin}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {msg:menu_administration}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarAdmin">
+              <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/user/list">{msg:menu_administration_users}</a></li>
+            </ul>
+          </li>
+        {/if}
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/janus/logout">Logout</a>
+          <a class="nav-link" href="{janus:property('janus.http.root-path')}/logout">Logout</a>
         </li>
       </ul>
       <form class="d-flex" role="search">

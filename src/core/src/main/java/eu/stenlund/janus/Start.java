@@ -20,6 +20,7 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.base.JanusTemplateHelper;
+import eu.stenlund.janus.model.ui.Navbar;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
@@ -61,7 +62,7 @@ public class Start {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance start();
+        public static native TemplateInstance start(Navbar navbar);
 
         public static native TemplateInstance login();
 
@@ -103,18 +104,10 @@ public class Start {
         log.info("Locale = " + js.getLocale());
         log.info("Age = " + js.getAge());
 
-        return di.map(si -> {
-            log.info("username: " + si.getPrincipal().getName());
-            log.info("name: " + si.getAttribute("name"));
-            log.info("email: " + si.getAttribute("email"));
-            log.info("id: " + si.getAttribute("id"));
-            log.info("roles: " + si.getRoles());
-            return si;
-        })
-                .chain(item -> JanusTemplateHelper
-                        .createResponseFrom(Templates.start(), js.getLocale()))
+        return di.map(si -> new Navbar(si))
+                .chain(nb -> JanusTemplateHelper.createResponseFrom(Templates.start(nb), js.getLocale()))
                 .onFailure()
-                .invoke(t -> ResponseBuilder.serverError().build());
+                    .invoke(t -> ResponseBuilder.serverError().build());
     }
 
     @GET

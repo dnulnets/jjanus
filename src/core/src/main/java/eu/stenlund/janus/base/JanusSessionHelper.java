@@ -43,7 +43,7 @@ public class JanusSessionHelper {
     /**
      * The root path of the server
      */
-    @ConfigProperty(name = "quarkus.http.root-path")
+    @ConfigProperty(name = "janus.http.root-path")
     String ROOT_PATH;
 
     /**
@@ -69,7 +69,7 @@ public class JanusSessionHelper {
      * 
      * @throws NoSuchAlgorithmException The system do not support the algorithm.
      */
-    public JanusSessionHelper(@ConfigProperty(name = "janus.security.cookie.key") String COOKIE_KEY) {
+    public JanusSessionHelper(@ConfigProperty(name = "janus.security.session.cookie.key") String COOKIE_KEY) {
         if (COOKIE_KEY != null) {
             log.info("Using configuration cookie key");
             try {
