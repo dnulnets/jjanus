@@ -1,9 +1,9 @@
 <div id="workarea" class="container mt-3">
-    <h1>User administration</h1>
+    <h1>{msg:user_list_administration}</h1>
     <div>
         <div class="row">
             <div class="col-sm-12 col-md-12">
-                Showing {workarea.max} entries per page
+                {msg:user_list_showing_max(workarea.max)}
             </div>
         </div>
         <div class="row">
@@ -12,10 +12,10 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Roles</th>
+                            <th>{msg:user_list_name}</th>
+                            <th>{msg:user_list_username}</th>
+                            <th>{msg:user_list_email}</th>
+                            <th>{msg:user_list_roles}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,29 +38,34 @@
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-5">
-                Showing users {workarea.calculateListStart()} to {workarea.calculateListEnd()} of {workarea.total}<br/>
-                Showing page {workarea.calculateCurrentPage()} of {workarea.calculatePages()} pages
+                {msg:user_list_showing_users(workarea.calculateListStart(), workarea.calculateListEnd(), workarea.total)}
+                <br/>
+                {msg:user_list_showing_pages(workarea.calculateCurrentPage(), workarea.calculatePages())}
             </div>
             <div class="col-sm-12 col-md-7 d-flex justify-content-end">
                 <ul class="pagination">
                     {#if workarea.isFirstPage()}
-                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item disabled"><a class="page-link"
+                            href="#">{msg:user_list_previous}</a></li>
                     {#else}
-                        <li class="page-item"><a class="page-link" href="{workarea.previousPageURL()}">Previous</a></li>
+                        <li class="page-item"><a class="page-link"
+                            href="{workarea.previousPageURL()}" up-follow up-target="#workarea">{msg:user_list_previous}</a></li>
                     {/if}
                     {#for i in workarea.calculatePages()}
                         {#if i != workarea.calculateCurrentPage()}                 
                             <li class="page-item"><a class="page-link"
-                                href="{workarea.pageURL(i)}">{i}</a></li>
+                                href="{workarea.pageURL(i)}" up-follow up-target="#workarea">{i}</a></li>
                         {#else}
                             <li class="page-item disabled"><a class="page-link" 
-                                href="{workarea.pageURL(i)}">{i}</a></li>
+                                href="{workarea.pageURL(i)}" up-follow up-target="#workarea">{i}</a></li>
                         {/if}
                     {/for}
                     {#if workarea.isLastPage()}
-                    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                        <li class="page-item disabled"><a class="page-link"
+                            href="#">{msg:user_list_next}</a></li>
                     {#else}
-                        <li class="page-item"><a class="page-link" href="{workarea.nextPageURL()}">Next</a></li>
+                        <li class="page-item"><a class="page-link"
+                            href="{workarea.nextPageURL()}" up-follow up-target="#workarea">{msg:user_list_next}</a></li>
                     {/if}
                 </ul>
             </div>

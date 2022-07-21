@@ -55,4 +55,35 @@ public interface Messages {
     @Message("Users")
     String menu_administration_users();
 
+    // User administration
+    @Message("User administration")
+    String user_list_administration();
+
+    @Message("Showing {pages} users per page")
+    String user_list_showing_max(int pages);
+
+    @Message("Name")
+    String user_list_name();
+
+    @Message("Username")
+    String user_list_username();
+
+    @Message("Email")
+    String user_list_email();
+
+    @Message("Roles")
+    String user_list_roles();
+
+    @Message("Showing users {start} to {end} of {max}")
+    String user_list_showing_users(int start, int end, int max);
+
+    @Message("Showing page {current} of {max}")
+    String user_list_showing_pages(int current, int max);
+
+    @Message("Previous")
+    String user_list_previous();
+
+    @Message("Next")
+    String user_list_next();
+
 }
