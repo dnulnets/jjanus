@@ -59,7 +59,7 @@ public class UserManagement {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance list(Base navbar, UserManagementList workarea);
+        public static native TemplateInstance list(Base base, UserManagementList workarea);
     }
 
     /**

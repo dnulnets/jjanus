@@ -62,9 +62,9 @@ public class Start {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance start1(Base navbar);
+        public static native TemplateInstance start1(Base base);
 
-        public static native TemplateInstance start2(Base navbar);
+        public static native TemplateInstance start2(Base base);
 
         public static native TemplateInstance login();
 

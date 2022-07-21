@@ -4,7 +4,7 @@ import io.quarkus.security.identity.SecurityIdentity;
 
 /**
  * The Base object for the user interface, holds information for the
- * navbar and other generic items.
+ * navbar and other generic items. Used by all pages.
  *
  * @author Tomas Stenlund
  * @since 2022-07-20

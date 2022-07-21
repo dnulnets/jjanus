@@ -7,7 +7,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import eu.stenlund.janus.model.User;
 
 /**
- * The Workarea for UserManagement list route.
+ * The Workarea for UserManagement list route /user/list
  *
  * @author Tomas Stenlund
  * @since 2022-07-21
@@ -19,11 +19,26 @@ public class UserManagementList {
      * The root path, comes from configuration.
      */
     private String ROOT_PATH;
-    
+
     /**
      * The list of users
      */
     public List<User> users;
+
+    /**
+     * The start index of the first user, zero based.
+     */
+    public int start;
+
+        /**
+     * Max number of users per page
+     */ 
+    public int max;
+
+    /**
+     * Number of items
+     */
+    public int total;
 
     /**
      * Calculate the number of users in the current table.
@@ -55,11 +70,6 @@ public class UserManagementList {
         return start + users.size();
     }
 
-    /**
-     * The start index of the first user, zero based.
-     */
-    public int start;
-
     public int calculateCurrentPage()
     {
         return start/max + 1;
@@ -84,17 +94,6 @@ public class UserManagementList {
     {
         return calculateCurrentPage() == calculatePages();
     }
-
-    /**
-     * Max number of users per page
-     */ 
-    public int max;
-
-
-    /**
-     * Number of items
-     */
-    public int total;
 
     /**
      * Calculates number of pages, one based.
@@ -146,17 +145,17 @@ public class UserManagementList {
      * Create a new WAUMList from data.
      * 
      * @param lu List of users.
-     * @param n Number of items in total
-     * @param s Start index of first user in list, zero based.
+     * @param n Number of items in total, not just this page
+     * @param six Start index of first user in list, zero based.
      * @param m Max number of users per page
      */
-    public UserManagementList(List<User> lu, int n, int s, int m) {
+    public UserManagementList(List<User> lu, int n, int six, int m) {
         users = lu;
-        start = s;
+        start = six;
         max = m;
         total = n;
-
-        ROOT_PATH = ConfigProvider.getConfig().getValue("janus.http.root-path", String.class);
+        ROOT_PATH = ConfigProvider.getConfig().
+            getValue("janus.http.root-path", String.class);
     }
 
 }
