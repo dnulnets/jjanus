@@ -23,6 +23,7 @@ import javax.persistence.criteria.CriteriaQuery;
 
 import org.hibernate.reactive.mutiny.Mutiny.Session;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
+import org.jboss.logging.Logger;
 
 /**
  * The information about a person.
@@ -44,6 +45,8 @@ import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
     @NamedQuery(name = "User_NumberOfUsers", query = "Select count (u.id) from User u")
 })
 public class User extends JanusEntity {
+
+    private static final Logger log = Logger.getLogger(JanusEntity.class);
 
     /**
      * The name of the user.
@@ -86,7 +89,6 @@ public class User extends JanusEntity {
      * @return An asynchronous result.
      */
     public static Uni<User> addUser(Session s, User user) {
-
         return s.persist(user).replaceWith(user);   
     }
 
@@ -102,14 +104,16 @@ public class User extends JanusEntity {
             .setParameter("name", uid).getSingleResult();
     }
 
-    public static Uni<Integer> getNumberOfUsers(Session s)
+    public static Uni<Long> getNumberOfUsers(Session s)
     {
-        return s.createNamedQuery("User_NumberOfUsers", Integer.class)
+        return s.createNamedQuery("User_NumberOfUsers", Long.class)
             .getSingleResult();
     }
 
     public static Uni<List<User>> getListOfUsers(Session s, int start, int max)
     {
+        log.info("Start = " + start);
+        log.info("Max = " + max);
         return s.createNamedQuery("User_ListOfUsers", User.class)
             .setFirstResult(start).setMaxResults(max).getResultList();
     }

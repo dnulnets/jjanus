@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -23,6 +24,7 @@ import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.model.ui.Base;
+import eu.stenlund.janus.model.ui.UserManagementList;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
@@ -57,7 +59,7 @@ public class UserManagement {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance list(Base navbar, List<User> users);
+        public static native TemplateInstance list(Base navbar, UserManagementList workarea);
     }
 
     /**
@@ -68,12 +70,22 @@ public class UserManagement {
     @GET
     @Path("list")
     @RolesAllowed({"admin"})
-    public Uni<RestResponse<String>> list() {
-
+    public Uni<RestResponse<String>> list(
+        @DefaultValue ("0") @RestQuery("start") int start,
+        @DefaultValue ("5") @RestQuery("max") int max
+    ) {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                sf.withSession(s -> User.getListOfUsers(s, 0, 5))).asTuple().
+                Uni.combine().all().unis(
+                        sf.withSession(s -> User.getListOfUsers(s, start, max)),
+                        sf.withSession(s -> User.getNumberOfUsers(s))).asTuple()
+                    .map(lu -> new UserManagementList(
+                            lu.getItem1(),
+                            lu.getItem2().intValue(),
+                            start,
+                            max))).
+                asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(),
                     t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
