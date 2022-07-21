@@ -21,7 +21,7 @@
                     <tbody>
                         {#for user in workarea.users}
                         <tr>
-                            <td>{workarea.trueIndex(user_count)}</td>
+                            <td>{workarea.calculateTrueIndex(user_count)}</td>
                             <td>{user.name}</td>
                             <td>{user.username}</td>
                             <td>{user.email}</td>
@@ -38,18 +38,18 @@
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-5">
-                Showing {workarea.listStart} to {workarea.listEnd} entries of {workarea.total}<br/>
-                Showing page {workarea.page} of {workarea.pages} pages
+                Showing users {workarea.calculateListStart()} to {workarea.calculateListEnd()} of {workarea.total}<br/>
+                Showing page {workarea.calculateCurrentPage()} of {workarea.calculatePages()} pages
             </div>
             <div class="col-sm-12 col-md-7 d-flex justify-content-end">
                 <ul class="pagination">
-                    {#if workarea.page > 1}
-                        <li class="page-item"><a class="page-link" href="{workarea.previousPageURL()}">Previous</a></li>
-                    {#else}
+                    {#if workarea.isFirstPage()}
                         <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    {#else}
+                        <li class="page-item"><a class="page-link" href="{workarea.previousPageURL()}">Previous</a></li>
                     {/if}
-                    {#for i in workarea.pages}
-                        {#if i != workarea.page}                 
+                    {#for i in workarea.calculatePages()}
+                        {#if i != workarea.calculateCurrentPage()}                 
                             <li class="page-item"><a class="page-link"
                                 href="{workarea.pageURL(i)}">{i}</a></li>
                         {#else}
@@ -57,10 +57,10 @@
                                 href="{workarea.pageURL(i)}">{i}</a></li>
                         {/if}
                     {/for}
-                    {#if workarea.page < workarea.pages}
-                        <li class="page-item"><a class="page-link" href="{workarea.nextPageURL()}">Next</a></li>
+                    {#if workarea.isLastPage()}
+                    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
                     {#else}
-                        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="{workarea.nextPageURL()}">Next</a></li>
                     {/if}
                 </ul>
             </div>

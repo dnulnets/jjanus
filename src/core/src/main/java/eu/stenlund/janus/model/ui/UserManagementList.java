@@ -16,7 +16,7 @@ import eu.stenlund.janus.model.User;
 public class UserManagementList {
     
     /**
-     * The root path
+     * The root path, comes from configuration.
      */
     private String ROOT_PATH;
     
@@ -26,29 +26,64 @@ public class UserManagementList {
     public List<User> users;
 
     /**
-     * The number of users in the list
+     * Calculate the number of users in the current table.
+     * 
+     * @return The number of users.
      */
-    public int count;
+    public int calculateCount()
+    {
+        return users.size();
+    }
 
     /**
-     * Start index of the list
+     * Calculates the one based index of the user that is the first element in the table.
+     * 
+     * @return The index, one-based.
      */
-    public int listStart;
+    public int calculateListStart()
+    {
+        return start + 1;
+    }
 
     /**
-     * End index of the list
+     * Calculates the one based index of the user that is the last element in the table.
+     * 
+     * @return The index, one-based.
      */
-    public int listEnd;
+    public int calculateListEnd()
+    {
+        return start + users.size();
+    }
 
     /**
-     * The start number of the first user
+     * The start index of the first user, zero based.
      */
     public int start;
 
+    public int calculateCurrentPage()
+    {
+        return start/max + 1;
+    }
+
     /**
-     * Current page
+     * True if the table are at the first page.
+     * 
+     * @return True if first page.
      */
-    public int page;
+    public boolean isFirstPage()
+    {
+        return calculateCurrentPage() == 1;
+    }
+
+    /**
+     * True if the table are at the last page.
+     * 
+     * @return True if last page.
+     */
+    public boolean isLastPage()
+    {
+        return calculateCurrentPage() == calculatePages();
+    }
 
     /**
      * Max number of users per page
@@ -62,26 +97,47 @@ public class UserManagementList {
     public int total;
 
     /**
-     * Number of pages
+     * Calculates number of pages, one based.
+     * 
+     * @return The number of pages in total.
      */
-    public int pages;
+    public int calculatePages()
+    {
+        return total/max + 1;
+    }
 
     public String pageURL(int n)
     {
         return ROOT_PATH + "/user/list?start=" + String.valueOf((n-1) * max) + "&max="+String.valueOf(max);
     }
 
+    /**
+     * Calculates the next page URL.
+     * 
+     * @return The next page URL.
+     */
     public String nextPageURL()
     {
-        return pageURL(page+1);
+        return pageURL(calculateCurrentPage()+1);
     }
 
+    /**
+     * Calculates the URL for the previous page.
+     * 
+     * @return The previous URL.
+     */
     public String previousPageURL()
     {
-        return pageURL(page-1);
+        return pageURL(calculateCurrentPage()-1);
     }
 
-    public int trueIndex (int n)
+    /**
+     * Calculates the absolute index of the user at row n in the table. The index is
+     * one based.
+     * @param n Row number in the table, one based.
+     * @return Absolute index of the user.
+     */
+    public int calculateTrueIndex (int n)
     {
         return n + start;
     }
@@ -91,19 +147,15 @@ public class UserManagementList {
      * 
      * @param lu List of users.
      * @param n Number of items in total
-     * @param s Start index of first user in list
+     * @param s Start index of first user in list, zero based.
      * @param m Max number of users per page
      */
     public UserManagementList(List<User> lu, int n, int s, int m) {
         users = lu;
         start = s;
         max = m;
-        page = start/max + 1;
         total = n;
-        pages = total/max + 1;
-        count = lu.size();
-        listStart = start + 1;
-        listEnd = start + count;
+
         ROOT_PATH = ConfigProvider.getConfig().getValue("janus.http.root-path", String.class);
     }
 
