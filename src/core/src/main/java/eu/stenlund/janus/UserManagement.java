@@ -74,7 +74,6 @@ public class UserManagement {
     public static class Templates {
         public static native TemplateInstance list(Base base, UserManagementList workarea);
         public static native TemplateInstance user(Base base, UserManagementUser workarea);
-        public static native TemplateInstance error(Base base);
     }
 
     /**
