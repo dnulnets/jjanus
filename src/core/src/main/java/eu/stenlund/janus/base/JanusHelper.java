@@ -7,7 +7,7 @@ package eu.stenlund.janus.base;
  * @since 2022-07-29
  * 
  */
-public class JanusHelper {
+public abstract class JanusHelper {
     
     /**
      * Check if the string exists and contains a non emtpy string.

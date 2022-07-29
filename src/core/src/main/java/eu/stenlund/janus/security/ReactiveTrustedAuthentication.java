@@ -69,7 +69,6 @@ public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAu
     public Uni<SecurityIdentity> authenticate(TrustedAuthenticationRequest request,
             AuthenticationRequestContext context) {
         String username = request.getPrincipal();
-        log.info("Username:"+username);
         return sf.withSession(session -> User.findByUsername(session, username))
                 .onFailure().recoverWithItem(t -> null)
                 .map(user -> populateSecurityIdentifier(user))

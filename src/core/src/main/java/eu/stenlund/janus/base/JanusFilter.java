@@ -1,7 +1,5 @@
 package eu.stenlund.janus.base;
 
-import java.net.MalformedURLException;
-
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -27,23 +25,28 @@ class JanusFilter {
 
     private static final Logger log = Logger.getLogger(JanusFilter.class);
 
+    /**
+     * The session helper object that holds keys, encrypt and decrypt cookies.
+     */
     @Inject
     JanusSessionHelper jsh;
 
+    /**
+     * The session object for the application, it comes with every request as a cookie.
+     */
     @Inject
     JanusSession js;
 
     /**
      * Reuse the samesite way of setting the cookie, we add the cookie by ourselves
      * and therefore it is not done by quarkus. This is because we cannot add a
-     * cookie
-     * in a ContainerResponseContext.
+     * cookie in a ContainerResponseContext.
      */
     @ConfigProperty(name = "quarkus.http.same-site-cookie.janus_session.value")
     String SAMESITE;
 
     /**
-     * Update the session object from the cookie in the request
+     * Extract the cookie from the request, decrypt and update the session object.
      * 
      * @param requestContext The request with the cookie
      */
@@ -72,10 +75,9 @@ class JanusFilter {
     }
 
     /**
-     * The outbound request that stores the session object as a cookie if it has
-     * changed.
+     * Convert the session object to a cookie, encrypt it and send it with the outbound request.
      * 
-     * @param responseContext The response with added cookie
+     * @param responseContext The response with added cookie.
      */
     @ServerResponseFilter()
     public void outboundSessionFilter(ContainerResponseContext responseContext) {

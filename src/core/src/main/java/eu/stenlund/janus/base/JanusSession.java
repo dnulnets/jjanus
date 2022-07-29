@@ -6,13 +6,10 @@ import java.util.Locale;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import io.vertx.core.http.HttpServerRequest;
 
 /**
- * The session object, created for each request. Usually from a cookie sent to
- * the server.
+ * The session object, created for each request. Usually from a cookie sent to the server.
  *
  * @author Tomas Stenlund
  * @since 2022-07-16
@@ -28,20 +25,19 @@ public class JanusSession {
     private long timeStamp;
 
     /**
-     * The current locale for the user.
+     * The current locale for the session.
      */
     private String locale;
 
     /**
-     * The host for the request, i.e. the host of the URL the user used for browsing
-     * here. It gets set by the JanusFilter when the requests comes in.
+     * The host for the request, i.e. the host of the URL the user used for browsing to the application.
+     * It gets set by the JanusFilter when the requests comes in.
      */
     public String host = "";
 
     /**
-     * Telss if the state of the request has changed. It is used to determine if we
-     * need to
-     * update the cookie.
+     * Tells if the state of the session object has changed. It is used to determine if we need to
+     * update the cookie with the outbound request.
      */
     private boolean changed = false;
 
@@ -93,8 +89,7 @@ public class JanusSession {
     }
 
     /**
-     * Copies all the values from the plain java object to the session object. Used
-     * when we
+     * Copies all the values from the plain java object to the session object. Used when we
      * are deseralizing the cookie.
      * 
      * @param js The deserialized cookie as a plain java object

@@ -113,8 +113,6 @@ public class UserManagement {
         if (id==null || uri==null)
             throw new BadRequestException();
 
-        log.info ("URL = " + uri.toString());
-
         // Return with a user interface
         return Uni.
             combine().all().unis(
@@ -165,8 +163,6 @@ public class UserManagement {
     @RolesAllowed({"admin"})
     public Uni<RestResponse<String>> create(@RestQuery("return") URI uri)
     {
-        log.info ("URL = " + uri.toString());
-
         // Return with a user interface
         return Uni.
             combine().all().unis(

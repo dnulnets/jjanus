@@ -5,7 +5,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import io.quarkus.qute.TemplateExtension;
 
 @TemplateExtension(namespace = "janus")
-public class JanusTemplateExtension {
+public abstract class JanusTemplateExtension {
     
     /**
      * Return with the value of a property in the configuration file.

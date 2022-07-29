@@ -141,8 +141,6 @@ public class User extends JanusEntity {
 
     public static Uni<List<User>> getListOfUsers(Session s, int start, int max)
     {
-        log.info("Start = " + start);
-        log.info("Max = " + max);
         return s.createNamedQuery("User_ListOfUsers", User.class)
             .setFirstResult(start).setMaxResults(max).getResultList();
     }
