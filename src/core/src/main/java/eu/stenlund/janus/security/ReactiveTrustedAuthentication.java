@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.hibernate.reactive.mutiny.Mutiny;
+import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.model.User;
 import io.quarkus.security.identity.AuthenticationRequestContext;
@@ -27,6 +28,8 @@ import io.smallrye.mutiny.Uni;
  */
 @ApplicationScoped
 public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAuthenticationRequest> {
+
+    private static final Logger log = Logger.getLogger(ReactiveTrustedAuthentication.class);
 
     @Inject
     Mutiny.SessionFactory sf;
@@ -66,6 +69,7 @@ public class ReactiveTrustedAuthentication implements IdentityProvider<TrustedAu
     public Uni<SecurityIdentity> authenticate(TrustedAuthenticationRequest request,
             AuthenticationRequestContext context) {
         String username = request.getPrincipal();
+        log.info("Username:"+username);
         return sf.withSession(session -> User.findByUsername(session, username))
                 .onFailure().recoverWithItem(t -> null)
                 .map(user -> populateSecurityIdentifier(user))

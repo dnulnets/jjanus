@@ -1,21 +1,31 @@
 <div id="workarea" class="container mt-3">
-    <h1>{msg:user_list_administration}</h1>
     <div>
         <div class="row">
             <div class="col-sm-12 col-md-12">
-                {msg:user_list_showing_max(workarea.max)}
-            </div>
+                <h1>{usermsg:list_administration}</h1>
+            </div>           
         </div>
+
+        <div class="row">
+            <div class="col-sm-6 col-md-6">
+                {usermsg:list_showing_max(workarea.max)}
+            </div>
+            <div class="col-sm-6 col-md-6 d-flex align-items-center justify-content-end">
+                <a class="btn btn-primary" href="{workarea.createPageURL()}" up-follow up-history="true" up-target="#workarea" role="button">{usermsg:list_add}</a>
+            </div> 
+        </div>
+
         <div class="row">
             <div class="col-sm-12">
                 <table class="table table-striped style=" width:100%"">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>{msg:user_list_name}</th>
-                            <th>{msg:user_list_username}</th>
-                            <th>{msg:user_list_email}</th>
-                            <th>{msg:user_list_roles}</th>
+                            <th>{usermsg:list_name}</th>
+                            <th>{usermsg:list_username}</th>
+                            <th>{usermsg:list_email}</th>
+                            <th>{usermsg:list_roles}</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -27,8 +37,13 @@
                             <td>{user.email}</td>
                             <td>
                                 {#for role in user.roles}
-                                {role.longName}<br />
+                                    {role.longName}<br />
                                 {/for}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <a class="btn btn-primary" href="{workarea.userPageURL(user.id)}" up-follow up-history="true" up-target="#workarea">{usermsg:list_edit}</a>
+                                </div>
                             </td>
                         </tr>
                         {/for}
@@ -38,34 +53,33 @@
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-5">
-                {msg:user_list_showing_users(workarea.calculateListStart(), workarea.calculateListEnd(), workarea.total)}
-                <br/>
-                {msg:user_list_showing_pages(workarea.calculateCurrentPage(), workarea.calculatePages())}
+                {usermsg:list_showing_users(workarea.calculateListStart(), workarea.calculateListEnd(),
+                workarea.total)}
+                <br />
+                {usermsg:list_showing_pages(workarea.calculateCurrentPage(), workarea.calculatePages())}
             </div>
             <div class="col-sm-12 col-md-7 d-flex justify-content-end">
                 <ul class="pagination">
                     {#if workarea.isFirstPage()}
-                        <li class="page-item disabled"><a class="page-link"
-                            href="#">{msg:user_list_previous}</a></li>
+                        <li class="page-item disabled"><a class="page-link" href="#">{usermsg:list_previous}</a></li>
                     {#else}
-                        <li class="page-item"><a class="page-link"
-                            href="{workarea.previousPageURL()}" up-follow up-target="#workarea">{msg:user_list_previous}</a></li>
+                        <li class="page-item"><a class="page-link" href="{workarea.previousPageURL()}" up-history="true" up-follow
+                                up-target="#workarea">{usermsg:list_previous}</a></li>
                     {/if}
                     {#for i in workarea.calculatePages()}
-                        {#if i != workarea.calculateCurrentPage()}                 
-                            <li class="page-item"><a class="page-link"
-                                href="{workarea.pageURL(i)}" up-follow up-target="#workarea">{i}</a></li>
+                        {#if i != workarea.calculateCurrentPage()}
+                        <li class="page-item"><a class="page-link" href="{workarea.pageURL(i)}" up-follow
+                            up-target="#workarea">{i}</a></li>
                         {#else}
-                            <li class="page-item disabled"><a class="page-link" 
-                                href="{workarea.pageURL(i)}" up-follow up-target="#workarea">{i}</a></li>
+                        <li class="page-item disabled"><a class="page-link" href="{workarea.pageURL(i)}" up-history="true" up-follow
+                            up-target="#workarea">{i}</a></li>
                         {/if}
                     {/for}
                     {#if workarea.isLastPage()}
-                        <li class="page-item disabled"><a class="page-link"
-                            href="#">{msg:user_list_next}</a></li>
+                        <li class="page-item disabled"><a class="page-link" href="#">{usermsg:list_next}</a></li>
                     {#else}
-                        <li class="page-item"><a class="page-link"
-                            href="{workarea.nextPageURL()}" up-follow up-target="#workarea">{msg:user_list_next}</a></li>
+                        <li class="page-item"><a class="page-link" href="{workarea.nextPageURL()}" up-history="true" up-follow
+                                up-target="#workarea">{usermsg:list_next}</a></li>
                     {/if}
                 </ul>
             </div>

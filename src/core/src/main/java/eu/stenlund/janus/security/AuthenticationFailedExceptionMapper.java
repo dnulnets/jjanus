@@ -8,6 +8,8 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.jboss.logging.Logger;
+
 import io.quarkus.security.AuthenticationFailedException;
 
 /**
@@ -25,6 +27,8 @@ public class AuthenticationFailedExceptionMapper implements ExceptionMapper<Auth
     @Context
     UriInfo uriInfo;
 
+    private static final Logger log = Logger.getLogger(AuthenticationFailedExceptionMapper.class);
+
     /*
      * Make sure we notify the client that we were not authenticated.
      * 
@@ -32,6 +36,17 @@ public class AuthenticationFailedExceptionMapper implements ExceptionMapper<Auth
      */
     @Override
     public Response toResponse(AuthenticationFailedException exception) {
-        return Response.status(401).header("WWW-Authenticate", "Basic realm=\"janus\"").build();
+        /*
+        return Response.status(401).
+            header("WWW-Authenticate", "Basic realm=\"janus\"").
+            header("X-Up-Dismiss-Layer", "null").
+            build();
+            */
+        log.info ("Got an authorization exception");
+        return Response.status(401).
+            header("WWW-Authenticate", "Basic realm=\"janus\"").
+            header("X-Up-Dismiss-Layer", "null").
+            build();
+
     }
 }

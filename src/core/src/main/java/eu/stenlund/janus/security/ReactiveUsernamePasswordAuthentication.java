@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.hibernate.reactive.mutiny.Mutiny;
+import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.model.User;
 import io.quarkus.elytron.security.common.BcryptUtil;
@@ -30,6 +31,8 @@ import io.smallrye.mutiny.Uni;
  */
 @ApplicationScoped
 public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<UsernamePasswordAuthenticationRequest> {
+
+    private static final Logger log = Logger.getLogger(ReactiveUsernamePasswordAuthentication.class);
 
     @Inject
     Mutiny.SessionFactory sf;
@@ -70,6 +73,7 @@ public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<
             UsernamePasswordAuthenticationRequest request,
             AuthenticationRequestContext context) {
         String username = request.getUsername();
+        log.info("Username: + username");
         String password = String.valueOf(request.getPassword().getPassword());
         return sf.withSession(session -> User.findByUsername(session, username)
                 .onFailure().transform(t -> new AuthenticationFailedException(t))

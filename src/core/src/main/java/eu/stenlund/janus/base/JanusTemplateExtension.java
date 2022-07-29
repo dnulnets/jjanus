@@ -1,8 +1,5 @@
 package eu.stenlund.janus.base;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import org.eclipse.microprofile.config.ConfigProvider;
 
 import io.quarkus.qute.TemplateExtension;

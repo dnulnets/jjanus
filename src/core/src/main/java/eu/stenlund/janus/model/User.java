@@ -1,7 +1,10 @@
 package eu.stenlund.janus.model;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -79,7 +82,22 @@ public class User extends JanusEntity {
     @JoinTable(name = "user_role"
         , joinColumns = { @JoinColumn(name = "\"user\"") }
         , inverseJoinColumns = {@JoinColumn(name = "role") })
-    public Set<Role> roles;
+    public Set<Role> roles = new HashSet<Role>();
+
+    /**
+     * Returns true if the user has a specific role.
+     * 
+     * @param role The role that you want to check.
+     * @return True if the user has the role.
+     */
+    public boolean hasRole(String role)
+    {
+        Iterator<Role> i = roles.iterator();
+        boolean has = false;
+        while (i.hasNext())
+            has |= (i.next().name.compareTo(role)==0);
+        return has;
+    }
 
     /**
      * Add a user to the database.
@@ -90,6 +108,17 @@ public class User extends JanusEntity {
      */
     public static Uni<User> addUser(Session s, User user) {
         return s.persist(user).replaceWith(user);   
+    }
+
+    /**
+     * Retrieves a specific user based on its key identity.
+     * 
+     * @param s The session.
+     * @param id The users UUID as a string.
+     * @return The user or null.
+     */
+    public static Uni<User> getUser(Session s, UUID uuid) {
+        return s.find(User.class, uuid);
     }
 
     /**
@@ -118,6 +147,11 @@ public class User extends JanusEntity {
             .setFirstResult(start).setMaxResults(max).getResultList();
     }
 
+    public static Uni<Void> deleteUser(Session s, UUID uuid)
+    {
+        return getUser(s, uuid).chain(u -> s.remove(u));
+    }
+
     /**
      * Sets the password for the user and bcrypts it.
      * 
@@ -126,5 +160,4 @@ public class User extends JanusEntity {
     public void setPassword(String pwd) {
         password = BcryptUtil.bcryptHash(pwd);
     }
-
 }

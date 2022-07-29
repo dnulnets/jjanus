@@ -1,0 +1,118 @@
+<div id="workarea" class="container mt-3">   
+    <h1>{usermsg:user_administration}</h1>
+    <div>
+        <div class="row">
+            {#if workarea.newUser}
+                <form class="needs-validation" novalidate action="{janus:property('janus.http.root-path')}/user/create" method="post">
+            {#else} 
+                <form class="needs-validation" novalidate action="{janus:property('janus.http.root-path')}/user" method="post">
+            {/if}
+                <div class="form-outline mb-3">
+                    <label class="form-label" for="name">{usermsg:user_name}</label>
+                    <input type="text" name="name" id="name" required value="{workarea.user.name}" class="form-control form-control-lg"/>
+                    <div class="invalid-feedback">
+                        {usermsg:user_must_have_name}
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col">
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="username">{usermsg:user_username}</label>
+                            <input type="text" name="username" id="username" required value="{workarea.user.username}" class="form-control form-control-lg"/>
+                            <div class="invalid-feedback">
+                                {usermsg:user_must_have_username}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="uuid">UUID</label>
+                            <input type="text" name="uuid" id="uuid" required value="{workarea.user.id}" readonly class="form-control form-control-lg"/>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col">
+
+                        <div class="form-outline mb-3">
+                            <label class="form-label" for="email">{usermsg:user_email}</label>
+                            <input type="text" name="email" id="email" required value="{workarea.user.email}" class="form-control form-control-lg"/>
+                            <div class="invalid-feedback">
+                                {usermsg:user_must_have_email}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col">
+
+                        <div class="form-outline mb-3">
+                            <label class="form-label" for="password">{usermsg:user_password}</label>
+                            {#if workarea.newUser}
+                                <input type="password" name="password" required id="password" class="form-control form-control-lg"/>
+                                <div class="invalid-feedback">
+                                    {usermsg:user_must_have_password}
+                                </div>
+                            {#else}
+                                <input type="password" name="password" id="password" class="form-control form-control-lg"/>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-outline mb-3">
+                    {usermsg:user_roles}
+                </div>
+
+                <div class="form-outline mb-3">
+                    {#for role in workarea.roles}
+                    <div class="form-check-inline">
+                        {#if workarea.user.hasRole(role.name)}
+                        <input class="form-check-input" type="checkbox" name="roles" id="{role.id}" value="{role.id}" checked/>
+                        {#else}
+                        <input class="form-check-input" type="checkbox" name="roles" id="{role.id}" value="{role.id}"/>
+                        {/if}
+                        <label class="form-check-label" for="{role.name}">
+                            {role.longName}
+                        </label>
+                    </div>
+                    {/for}
+                </div>
+
+                <div class="text-center text-lg-start mt-4 pt-2">
+                    <button type="submit" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">{usermsg:user_save}</button>
+                    {#if !workarea.newUser}
+                        <button type="submit" class="btn btn-primary btn-lg" formaction="{janus:property('janus.http.root-path')}/user/delete"  style="padding-left: 2.5rem; padding-right: 2.5rem;">{usermsg:user_delete}</button>
+                    {/if}
+                    <a class="btn btn-primary btn-lg" href="{workarea.uri}" up-follow up-history="true" up-target="#workarea" style="padding-left: 2.5rem; padding-right: 2.5rem;">{usermsg:user_cancel}</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+      'use strict'
+    
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.querySelectorAll('.needs-validation')
+    
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+    
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()
+</script>

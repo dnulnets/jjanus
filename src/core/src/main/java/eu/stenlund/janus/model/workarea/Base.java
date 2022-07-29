@@ -1,4 +1,4 @@
-package eu.stenlund.janus.model.ui;
+package eu.stenlund.janus.model.workarea;
 
 import io.quarkus.security.identity.SecurityIdentity;
 
