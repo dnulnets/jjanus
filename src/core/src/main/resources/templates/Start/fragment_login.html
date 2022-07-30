@@ -1,9 +1,10 @@
 <div id="login" class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+
     <div class="row">
-        <div class="col-10">
+        <div class="col">
             <h1><b>Janus</b></h1>
         </div>
-        <div class="col-2">
+        <div class="col d-flex align-items-center justify-content-end">
             <div class="dropdown">
                 <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -23,22 +24,23 @@
             </div>
         </div>
     </div>
+
     <form action="{janus:property('janus.http.root-path')}/j_security_check" method="post">
 
-        <div class="form-outline mb-4">
+        <div class="mb-3">
             <label class="form-label" for="user">{msg:login_username}</label>
             <input type="text" name="user" id="user" class="form-control form-control-lg"
                 placeholder="{msg:login_enter_username}" />
         </div>
 
-        <div class="form-outline mb-3">
+        <div class="mb-3">
             <label class="form-label" for="password">{msg:login_password}</label>
             <input type="password" name="password" id="password" class="form-control form-control-lg"
                 placeholder="{msg:login_enter_password}" />
         </div>
 
-        <div class="text-center text-lg-start mt-4 pt-2">
-            <button type="submit" class="btn btn-primary btn-lg"
+        <div class="text-start pt-4">
+            <button type="submit" class="btn btn-primary"
                 style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
         </div>
 

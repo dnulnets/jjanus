@@ -7,9 +7,9 @@
             {#else} 
                 <form class="needs-validation" novalidate action="{janus:property('janus.http.root-path')}/user" method="post">
             {/if}
-                <div class="form-outline mb-3">
+                <div class=" mb-3">
                     <label class="form-label" for="name">{usermsg:user_name}</label>
-                    <input type="text" name="name" id="name" required value="{workarea.user.name}" class="form-control form-control-lg"/>
+                    <input type="text" name="name" id="name" required value="{workarea.user.name}" class="form-control "/>
                     <div class="invalid-feedback">
                         {usermsg:user_must_have_name}
                     </div>
@@ -18,18 +18,18 @@
                 <div class="row">
 
                     <div class="col">
-                        <div class="form-outline mb-4">
+                        <div class=" mb-3">
                             <label class="form-label" for="username">{usermsg:user_username}</label>
-                            <input type="text" name="username" id="username" required value="{workarea.user.username}" class="form-control form-control-lg"/>
+                            <input type="text" name="username" id="username" required value="{workarea.user.username}" class="form-control "/>
                             <div class="invalid-feedback">
                                 {usermsg:user_must_have_username}
                             </div>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="form-outline mb-4">
+                        <div class=" mb-3">
                             <label class="form-label" for="uuid">UUID</label>
-                            <input type="text" name="uuid" id="uuid" required value="{workarea.user.id}" readonly class="form-control form-control-lg"/>
+                            <input type="text" name="uuid" id="uuid" required value="{workarea.user.id}" readonly class="form-control "/>
                         </div>
                     </div>
                 </div>
@@ -39,9 +39,9 @@
 
                     <div class="col">
 
-                        <div class="form-outline mb-3">
+                        <div class=" mb-3">
                             <label class="form-label" for="email">{usermsg:user_email}</label>
-                            <input type="text" name="email" id="email" required value="{workarea.user.email}" class="form-control form-control-lg"/>
+                            <input type="text" name="email" id="email" required value="{workarea.user.email}" class="form-control "/>
                             <div class="invalid-feedback">
                                 {usermsg:user_must_have_email}
                             </div>
@@ -50,45 +50,48 @@
                     </div>
                     <div class="col">
 
-                        <div class="form-outline mb-3">
+                        <div class=" mb-3">
                             <label class="form-label" for="password">{usermsg:user_password}</label>
                             {#if workarea.newUser}
-                                <input type="password" name="password" required id="password" class="form-control form-control-lg"/>
+                                <input type="password" name="password" required id="password" class="form-control "/>
                                 <div class="invalid-feedback">
                                     {usermsg:user_must_have_password}
                                 </div>
                             {#else}
-                                <input type="password" name="password" id="password" class="form-control form-control-lg"/>
+                                <input type="password" name="password" id="password" class="form-control "/>
                             {/if}
                         </div>
+            
                     </div>
                 </div>
 
-                <div class="form-outline mb-3">
-                    {usermsg:user_roles}
-                </div>
-
-                <div class="form-outline mb-3">
-                    {#for role in workarea.roles}
-                    <div class="form-check-inline">
-                        {#if workarea.user.hasRole(role.name)}
-                        <input class="form-check-input" type="checkbox" name="roles" id="{role.id}" value="{role.id}" checked/>
-                        {#else}
-                        <input class="form-check-input" type="checkbox" name="roles" id="{role.id}" value="{role.id}"/>
-                        {/if}
-                        <label class="form-check-label" for="{role.name}">
-                            {role.longName}
-                        </label>
+                <div class="row">
+                    <div class="col mb-1">
+                        {usermsg:user_roles}
                     </div>
-                    {/for}
                 </div>
 
-                <div class="text-center text-lg-start mt-4 pt-2">
-                    <button type="submit" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">{usermsg:user_save}</button>
+                <div class=" mb-3">
+                        {#for role in workarea.roles}
+                        <div class="form-check form-check-inline">
+                            {#if workarea.user.hasRole(role.name)}
+                            <input class="form-check-input" type="checkbox" name="roles" id="{role.id}" value="{role.id}" checked/>
+                            {#else}
+                            <input class="form-check-input" type="checkbox" name="roles" id="{role.id}" value="{role.id}"/>
+                            {/if}
+                            <label class="form-check-label" for="{role.name}">
+                                {role.longName}
+                            </label>
+                        </div>
+                        {/for}
+                </div>
+
+                <div class="text-start pt-4">
+                    <button type="submit" class="btn btn-primary">{usermsg:user_save}</button>
                     {#if !workarea.newUser}
-                        <button type="submit" class="btn btn-primary btn-lg" formaction="{janus:property('janus.http.root-path')}/user/delete"  style="padding-left: 2.5rem; padding-right: 2.5rem;">{usermsg:user_delete}</button>
+                        <button type="submit" class="btn btn-primary" formaction="{janus:property('janus.http.root-path')}/user/delete">{usermsg:user_delete}</button>
                     {/if}
-                    <a class="btn btn-primary btn-lg" href="{workarea.uri}" up-follow up-history="true" up-target="#workarea" style="padding-left: 2.5rem; padding-right: 2.5rem;">{usermsg:user_cancel}</a>
+                    <a class="btn btn-primary" href="{workarea.uri}" up-follow up-history="true" up-target="#workarea">{usermsg:user_cancel}</a>
                 </div>
 
             </form>
