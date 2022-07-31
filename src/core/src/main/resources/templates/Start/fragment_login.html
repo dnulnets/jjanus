@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <form class="needs-validation" novalidate action="{janus:property('janus.http.root-path')}/j_security_check" method="post">
+    {#form_start action=janus:concat(janus:property('janus.http.root-path'), "/j_security_check")/}
 
         {#text_input "" label=msg:login_enter_username name="user" value="" id="user" extra="required" validate=true}
             {msg:login_username_required}
@@ -37,6 +37,7 @@
 
         {#button_submit label=msg:login_login extra=""/}
 
-    </form>
+    {#form_end/}
+
 </div>
 {#form_validate/}

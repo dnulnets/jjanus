@@ -33,4 +33,16 @@ public abstract class JanusTemplateExtension {
         return value;
     }
 
+    /**
+     * Concatenates two strings. The reason is that qute do not have any advanced expressions and one of the
+     * most common needs are to concatenate two strings in Janus.
+     * 
+     * @param s1 The left string.
+     * @param s2 The right string.
+     * @return The concatenade strings.
+     */
+    public static String concat (String s1, String s2)
+    {
+        return s1+s2;
+    }
 }
