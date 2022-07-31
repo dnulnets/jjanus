@@ -45,7 +45,7 @@ public class Team extends JanusEntity {
     @JoinTable(name = "team_user"
         , joinColumns = { @JoinColumn(name = "team") }
         , inverseJoinColumns = {@JoinColumn(name = "\"user\"") })
-    public Set<User> members = new HashSet<User>();
+    public Set<User> members;
 
     /**
      * The teams backlog.

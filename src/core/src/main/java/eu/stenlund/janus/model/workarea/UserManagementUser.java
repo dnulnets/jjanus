@@ -1,6 +1,7 @@
 package eu.stenlund.janus.model.workarea;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -211,7 +212,7 @@ public class UserManagementUser {
                     }
 
                     // Add roles
-                    user.roles.clear();
+                    user.roles = new HashSet<Role>();
                     for (UUID ruid : roles) {
                         Role r = Role.findRoleById(lr, ruid);
                         if (r!=null)

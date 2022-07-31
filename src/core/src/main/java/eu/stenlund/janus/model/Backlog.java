@@ -34,6 +34,6 @@ public class Backlog extends JanusEntity {
     @JoinTable(name = "backlog_backlogitem"
         , joinColumns = { @JoinColumn(name = "\"backlog\"") }
         , inverseJoinColumns = {@JoinColumn(name = "backlogitem") })
-    public Set<BacklogItem> items = new HashSet<BacklogItem>();
+    public Set<BacklogItem> items;
 
 }

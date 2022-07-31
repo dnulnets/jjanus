@@ -34,7 +34,7 @@ import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.smallrye.mutiny.Uni;
 
 /**
- * The resource for the User management.
+ * The resource for the User management. It handles users and roles.
  * 
  * @author Tomas Stenlund
  * @since 2022-07-19

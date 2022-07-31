@@ -65,4 +65,6 @@ public interface Messages_sv extends Messages {
     @Message("Lösenord krävs")
     String login_password_required();
 
+    @Message("Team")
+    String menu_administration_teams();
 }

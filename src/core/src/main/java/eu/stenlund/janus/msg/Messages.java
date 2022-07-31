@@ -64,4 +64,7 @@ public interface Messages {
     @Message("Password is required")
     String login_password_required();
 
+    @Message("Teams")
+    String menu_administration_teams();
+
 }

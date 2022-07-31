@@ -77,7 +77,14 @@ public class User extends JanusEntity {
     @JoinTable(name = "user_role"
         , joinColumns = { @JoinColumn(name = "\"user\"") }
         , inverseJoinColumns = {@JoinColumn(name = "role") })
-    public Set<Role> roles = new HashSet<Role>();
+    public Set<Role> roles;
+
+    
+    /**
+     * All the teams the user belongs to.
+     */
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "members")
+    public Set<Team> teams;
 
     /**
      * Returns true if the user has a specific role.
@@ -87,11 +94,15 @@ public class User extends JanusEntity {
      */
     public boolean hasRole(String role)
     {
-        Iterator<Role> i = roles.iterator();
-        boolean has = false;
-        while (i.hasNext())
-            has |= (i.next().name.compareTo(role)==0);
-        return has;
+        if (roles != null) {
+            Iterator<Role> i = roles.iterator();
+            boolean has = false;
+            while (i.hasNext())
+                has |= (i.next().name.compareTo(role)==0);
+            return has;
+        } else
+            return false;
+
     }
 
     /**
