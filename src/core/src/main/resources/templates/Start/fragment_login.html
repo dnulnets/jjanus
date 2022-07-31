@@ -25,24 +25,18 @@
         </div>
     </div>
 
-    <form action="{janus:property('janus.http.root-path')}/j_security_check" method="post">
+    <form class="needs-validation" novalidate action="{janus:property('janus.http.root-path')}/j_security_check" method="post">
 
-        <div class="mb-3">
-            <label class="form-label" for="user">{msg:login_username}</label>
-            <input type="text" name="user" id="user" class="form-control form-control-lg"
-                placeholder="{msg:login_enter_username}" />
-        </div>
+        {#text_input "" label=msg:login_enter_username name="user" value="" id="user" extra="required" validate=true}
+            {msg:login_username_required}
+        {/text_input}
 
-        <div class="mb-3">
-            <label class="form-label" for="password">{msg:login_password}</label>
-            <input type="password" name="password" id="password" class="form-control form-control-lg"
-                placeholder="{msg:login_enter_password}" />
-        </div>
+        {#password_input "" label=msg:login_enter_password name="password" value="" id="password" extra="required" validate=true}
+            {msg:login_password_required}
+        {/password_input}
 
-        <div class="text-start pt-4">
-            <button type="submit" class="btn btn-primary"
-                style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
-        </div>
+        {#button_submit label=msg:login_login extra=""/}
 
     </form>
 </div>
+{#form_validate/}

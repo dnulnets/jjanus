@@ -55,4 +55,13 @@ public interface Messages {
     @Message("Users")
     String menu_administration_users();
 
+    @Message("Login")
+    String login_login();
+    
+    @Message("Username is required")
+    String login_username_required();
+
+    @Message("Password is required")
+    String login_password_required();
+
 }

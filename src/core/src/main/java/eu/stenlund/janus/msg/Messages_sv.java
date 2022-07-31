@@ -55,4 +55,14 @@ public interface Messages_sv extends Messages {
     @Message("Användare")
     String menu_administration_users();  
 
+    @Message("Logga in")
+    String login_login();    
+
+
+    @Message("Användarnamn krävs")
+    String login_username_required();
+
+    @Message("Lösenord krävs")
+    String login_password_required();
+
 }

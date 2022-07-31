@@ -1,18 +1,13 @@
-{#workarea}
+{#workarea title=usermsg:list_administration}
     <div>
-        <div class="row">
-            <div class="col">
-                <h1>{usermsg:list_administration}</h1>
-            </div>
-            <div class="col d-flex align-items-center justify-content-end">
-                <a class="btn btn-primary" href="{workarea.createPageURL()}" up-follow up-history="true" up-target="#workarea" role="button">{usermsg:list_add}</a>
-            </div>            
-        </div>
 
         <div class="row">
             <div class="col">
                 {usermsg:list_showing_max(workarea.max)}
             </div>
+            <div class="col d-flex align-items-center justify-content-end">
+                {#button_link action=workarea.createPageURL() label=usermsg:list_add extra="up-follow up-history=\"true\" up-target=\"#workarea\""/}
+            </div>  
         </div>
 
         <div class="row">
@@ -42,7 +37,7 @@
                             </td>
                             <td>
                                 <div class="col d-flex align-items-center justify-content-start">
-                                    <a class="btn btn-primary" href="{workarea.userPageURL(user.id)}" up-follow up-history="true" up-target="#workarea">{usermsg:list_edit}</a>
+                                    {#button_link action=workarea.userPageURL(user.id) label=usermsg:list_edit extra="up-follow up-history=\"true\" up-target=\"#workarea\""/}
                                 </div>
                             </td>
                         </tr>
@@ -53,8 +48,7 @@
         </div>
         <div class="row">
             <div class="col">
-                {usermsg:list_showing_users(workarea.calculateListStart(), workarea.calculateListEnd(),
-                workarea.total)}
+                {usermsg:list_showing_users(workarea.calculateListStart(), workarea.calculateListEnd(),workarea.total)}
                 <br />
                 {usermsg:list_showing_pages(workarea.calculateCurrentPage(), workarea.calculatePages())}
             </div>

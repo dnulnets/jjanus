@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.model.Role;
@@ -18,6 +19,11 @@ import io.smallrye.mutiny.Uni;
  * 
  */
 public class UserManagementUser {
+
+    /**
+     * The root path, comes from configuration.
+     */
+    private String ROOT_PATH;
 
     /**
      * Flag so we know if it is a new user that we want to create.
@@ -50,6 +56,36 @@ public class UserManagementUser {
     }
 
     /**
+     * Creates the URL used to delete users.
+     * 
+     * @return The URL.
+     */
+    public String deleteURL()
+    {
+        return ROOT_PATH + "/user/delete";
+    }
+
+    /**
+     * Create the URL for creating a user.
+     * 
+     * @return The URL.
+     */
+    public String createURL()
+    {
+        return ROOT_PATH + "/user/create";
+    }
+
+    /**
+     * Create the URL for updating a user.
+     * 
+     * @return The URL.
+     */
+    public String updateURL()
+    {
+        return ROOT_PATH + "/user";
+    }
+
+    /**
      * Creates the workarea for the user interface based on existing user and roles.
      * 
      * @param u    The current user.
@@ -61,6 +97,7 @@ public class UserManagementUser {
         roles = r;
         uri = back;
         newUser = nu;
+        ROOT_PATH = ConfigProvider.getConfig().getValue("janus.http.root-path", String.class);
     }
 
     /**
