@@ -12,21 +12,16 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
-import org.hibernate.criterion.Projections;
+import org.hibernate.reactive.mutiny.Mutiny.Session;
+import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.model.base.JanusEntity;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.smallrye.mutiny.Uni;
-
-import javax.persistence.criteria.CriteriaQuery;
-
-import org.hibernate.reactive.mutiny.Mutiny.Session;
-import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
-import org.jboss.logging.Logger;
 
 /**
  * The information about a person.

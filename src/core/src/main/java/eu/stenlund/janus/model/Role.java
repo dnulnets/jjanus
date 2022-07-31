@@ -6,13 +6,11 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 import org.hibernate.reactive.mutiny.Mutiny.Session;
-import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.model.base.JanusEntity;
 import io.smallrye.mutiny.Uni;
@@ -30,7 +28,7 @@ import io.smallrye.mutiny.Uni;
  * 
  */
 @Entity
-@Table(name = "role")
+@Table(name = "\"role\"")
 @NamedQueries({
     @NamedQuery(name = "Role_ListOfRoles", query = "from Role r order by r.longName"),
     @NamedQuery(name = "Role_FindByName", query = "from Role r where r.name = :name")
@@ -42,23 +40,24 @@ public class Role extends JanusEntity {
      */
     public static String ADMIN = "admin";
     public static String USER = "user";
+    public static String PRODUCT = "product";
 
     /**
      * Long name of the role, e.g. "Product Owner"
      */
-    @Column(unique = true, length = 64, nullable = false, updatable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     public String longName;
 
     /**
      * Short name of the role, e.g. "product"
      */
-    @Column(unique = true, length = 64, nullable = false, updatable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     public String name;
 
     /**
      * Description of the role
      */
-    @Column(unique = false, length = 256, nullable = true, updatable = true)
+    @Column(unique = false, nullable = true, updatable = true)
     public String description;
 
     /**
@@ -86,7 +85,7 @@ public class Role extends JanusEntity {
     }
 
     /**
-     * Utility function to find a Role n a list of roles based on the uuid.
+     * Utility function to find a Role in a list of roles based on the uuid.
      * 
      * @param roles The list of roles.
      * @param uuid The UUID.

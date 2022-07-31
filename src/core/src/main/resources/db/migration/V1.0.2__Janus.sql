@@ -11,16 +11,7 @@ insert into user_role ("user", role) values (
    (select id from role where name='admin'));
 insert into user_role ("user", role) values (
    (select id from "user" where username ='tomas'),
-   (select id from role where name='member'));
-insert into user_role ("user", role) values (
-   (select id from "user" where username ='tomas'),
-   (select id from role where name='team'));
-insert into user_role ("user", role) values (
-   (select id from "user" where username ='tomas'),
-   (select id from role where name='product'));
-insert into user_role ("user", role) values (
-   (select id from "user" where username ='tomas'),
-   (select id from role where name='service'));
+   (select id from role where name='user'));
 insert into user_role ("user", role) values (
    (select id from "user" where username ='tomas'),
    (select id from role where name='any'));
