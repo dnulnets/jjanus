@@ -1,25 +1,26 @@
 package eu.stenlund.janus.model.workarea;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import javax.security.auth.callback.TextInputCallback;
-
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
+import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.model.ui.Button;
+import eu.stenlund.janus.model.ui.Checkbox;
 import eu.stenlund.janus.model.ui.TextInput;
 import eu.stenlund.janus.msg.UserManagement;
 import io.smallrye.mutiny.Uni;
 
 /**
- * The Workarea for UserManagement user, create, delete route
+ * The data model for the pages for user edit, create and delete routes.
  *
  * @author Tomas Stenlund
  * @since 2022-07-29
@@ -27,126 +28,91 @@ import io.smallrye.mutiny.Uni;
  */
 public class UserManagementUser {
 
+    /*
+     * All the buttons for the page.
+     */
     public Button deleteButton;
     public Button saveButton;
     public Button cancelButton;
 
+    /*
+     * All the text inputs for the page.
+     */
     public TextInput name;
     public TextInput username;
     public TextInput email;
     public TextInput password;
     public TextInput uuid;
 
-    /**
-     * The root path, comes from configuration.
+    /*
+     * The URL:s for create and delete of the user.
      */
-    private String ROOT_PATH;
+    public String createURL;
+    public String updateURL;
+
+    /**
+     * The checkboxes for the available roles to choose from in the application.
+     */
+    public List<Checkbox> roles;
 
     /**
      * Flag so we know if it is a new user that we want to create.
      */
     public boolean newUser;
 
-    /**
-     * The current user for the user interface.
-     */
-    public User user;
-
-    /**
-     * The available roles to choose from in the application.
-     */
-    public List<Role> roles;
-
-    /**
-     * Return url when the user presses cancel/back.
-     */
-    public URI uri;
-
-    /**
-     * Returns true if the user has a specific role.
-     * 
-     * @param role The role that you want to check.
-     * @return True if the user has the role.
-     */
-    public boolean hasRole(String role) {
-        return user.hasRole(role);
-    }
-
-    /**
-     * Creates the URL used to delete users.
-     * 
-     * @return The URL.
-     */
-    public String deleteURL()
-    {
-        return ROOT_PATH + "/user/delete";
-    }
-
-    /**
-     * Create the URL for creating a user.
-     * 
-     * @return The URL.
-     */
-    public String createURL()
-    {
-        return ROOT_PATH + "/user/create";
-    }
-
-    /**
-     * Create the URL for updating a user.
-     * 
-     * @return The URL.
-     */
-    public String updateURL()
-    {
-        return ROOT_PATH + "/user";
-    }
 
     /**
      * Creates the workarea for the user interface based on existing user and roles.
      * 
-     * @param u    The current user.
-     * @param r    The list of available roles in the application.
-     * @param back The return URI if the user presses cancel.
+     * @param user The user for this page.
+     * @param roles The available roles in the application.
+     * @param back The URL for sending the user back to the page before, e.g. when pressing cancel, save and delete.
+     * @param newUser Flag telling if it is a new user page or an update/edit page.
+     * @param locale The locale of the page.
      */
     public UserManagementUser(User user, List<Role> roles, URI back, boolean newUser, String locale) {
 
-        this.user = user;
-        this.roles = roles;
-        this.uri = back;
-        this.newUser = newUser;
-        ROOT_PATH = ConfigProvider.getConfig().getValue("janus.http.root-path", String.class);
-    
+        // Create the URL:s
+        String ROOT_PATH = ConfigProvider.getConfig().getValue("janus.http.root-path", String.class);
+        String deleteURL = ROOT_PATH + "/user/delete";
+        createURL = ROOT_PATH + "/user/create";
+        updateURL = ROOT_PATH + "/user";
+
         // Get hold of the message bundle
         UserManagement msg = JanusTemplateHelper.getMessageBundle(UserManagement.class, locale);
 
-        // Create the buttons
-        String deleteURL = ROOT_PATH + "/user/delete";
+        // Set the new user flag if we are creating a new user
+        this.newUser = newUser;
+
+        // Create the buttons for delete, save and cancel
         if (newUser)
             deleteButton = null;
         else
             deleteButton = new Button (msg.user_delete(), deleteURL, null);
-
         saveButton = new Button (msg.user_save(), null);
         cancelButton = new Button(msg.user_cancel(), back.toString(), "up-follow up-history=\"true\" up-target=\"#workarea\"");
 
-        // Create the form inputs
+        // Create the form's text inputs
         name = new TextInput(msg.user_name(), "name", "id-name", user.name, msg.user_must_have_name(), "required");
         username = new TextInput(msg.user_username(), "username", "id-username", user.username, msg.user_must_have_username(), "required");
         uuid = new TextInput("UUID", "uuid", "id-uuid", user.id!=null?user.id.toString():null, null, "readonly");
         email = new TextInput(msg.user_email(), "email", "id-email", user.email, msg.user_must_have_email(), "required");
         password = new TextInput(msg.user_password(), "password", "id-password", null, newUser?msg.user_must_have_password():null, newUser?"required":null);
+
+        // Create the form's role checkboxes
+        this.roles = new ArrayList<Checkbox>(roles.size());
+        roles.forEach(role -> this.roles.add(new Checkbox(role.longName, "roles", "id-" + role.name, role.id.toString(), user.hasRole(role.name), null)));
     }
 
     /**
-     * Creates a UserManagementUser from data in the database.
+     * Creates the model from data in the database that can be used for the page.
      * 
      * @param sf The session factory.
      * @param uuid The UUID of the user.
      * @param uri The URI of the cancel or return URL.
      * @return A populated UserManagementUser.
      */
-    public static Uni<UserManagementUser> createUserManagementUser (SessionFactory sf, UUID uuid, URI uri, String locale)
+    public static Uni<UserManagementUser> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
     {
         if (uuid == null)
             return sf.withSession(s -> Role.getListOfRoles(s))
@@ -191,21 +157,19 @@ public class UserManagementUser {
         ).asTuple().
         map(lu-> {
                 User user = lu.getItem1();
-                List<Role> lr = lu.getItem2();
+                List<Role> listOfRoles = lu.getItem2();
 
                 // Update the user
                 user.name = name;
                 user.username = username;
                 user.email = email;
-                if (password != null) {
-                    if (password.length() > 0)
-                        user.setPassword(password);
-                }
+                if (JanusHelper.isValid(password))
+                    user.setPassword(password);
 
                 // Add roles
                 user.roles.clear();
                 for (UUID ruid : roles) {
-                    Role r = Role.findRoleById(lr, ruid);
+                    Role r = Role.findRoleById(listOfRoles, ruid);
                     if (r!=null)
                         user.roles.add(r);
                 }

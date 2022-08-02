@@ -116,7 +116,7 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementUser.createUserManagementUser(sf, id, uri, js.getLocale())
+                UserManagementUser.createModel(sf, id, uri, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.user(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -166,7 +166,7 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementUser.createUserManagementUser(sf, null, uri, js.getLocale())
+                UserManagementUser.createModel(sf, null, uri, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.user(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());

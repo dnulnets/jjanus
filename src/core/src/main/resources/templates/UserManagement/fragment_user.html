@@ -2,9 +2,9 @@
     <div>
         <div class="row">
             {#if workarea.newUser}
-                {#form_start action=workarea.createURL()/}
+                {#form_start action=workarea.createURL/}
             {#else} 
-                {#form_start action=workarea.updateURL()/}
+                {#form_start action=workarea.updateURL/}
             {/if}
 
             <div class="row">
@@ -40,11 +40,7 @@
 
             <div class="mb-3">
                     {#for role in workarea.roles}
-                        {#if workarea.user.hasRole(role.name)}
-                            {#checkbox_inline_input role.id label=role.longName name="roles" id=role.id extra="checked"/}
-                        {#else}
-                            {#checkbox_inline_input role.id label=role.longName name="roles" id=role.id extra=""/}
-                        {/if}
+                        {#checkbox_inline role/}
                     {/for}
             </div>
 

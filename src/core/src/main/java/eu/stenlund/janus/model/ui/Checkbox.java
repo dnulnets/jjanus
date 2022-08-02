@@ -15,12 +15,15 @@ import io.quarkus.qute.RawString;
  * @since 2022-08-01
  * 
  */
-public class Button {
+public class Checkbox {
 
-    private static final Logger log = Logger.getLogger(Button.class);
+    private static final Logger log = Logger.getLogger(Checkbox.class);
 
     public String label;
-    public String action;
+    public String name;
+    public String id;
+    public boolean checked;
+    public String value;
     public String extra;
 
     /**
@@ -30,22 +33,12 @@ public class Button {
      * @param action The action when the button is pressed, if null the forms default action is used.
      * @param extra Any extra attributes to add for the input tag.
      */
-    public Button(String label, String action, String extra) {
+    public Checkbox(String label, String name, String id, String value, boolean checked, String extra) {
         this.label = label;
-        this.action = action;
-        this.extra = extra;
-    }
-
-    /**
-     * Creates a button for submit in a form with a label.
-     * 
-     * @param label The label for the button.
-     * @param action The action URL for the button.
-     * @param extra Any extra attributes to add for the input tag.
-     */
-    public Button(String label, String extra) {
-        this.label = label;
-        this.action = null;
+        this.name = name;
+        this.id = id;
+        this.value = value;
+        this.checked = checked;
         this.extra = extra;
     }
 
