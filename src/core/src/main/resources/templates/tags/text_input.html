@@ -1,9 +1,13 @@
 <div class="mb-3">
-    <label class="form-label" for="{id}">{label}</label>
-    <input type="text" name="{name}" id="{id}" {extra} value="{it}" class="form-control "/>
-    {#if validate}
+    <label class="form-label" for="{it.id}">{it.label}</label>
+    <input type="text" name="{it.name}" id="{it.id}" {it.extra ?: ''} 
+        {#if it.value??}
+            value="{it.value}"
+        {/if}
+        class="form-control"/>
+    {#if it.feedback??}
         <div class="invalid-feedback">
-            {nested-content}
+            {it.feedback}
         </div>
     {/if}
 </div>

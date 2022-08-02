@@ -45,7 +45,7 @@ import io.smallrye.mutiny.Uni;
 @RequestScoped
 public class UserManagement {
 
-    private static final Logger log = Logger.getLogger(Start.class);
+    private static final Logger log = Logger.getLogger(UserManagement.class);
 
     @Inject
     CurrentIdentityAssociation securityIdentityAssociation;
@@ -90,7 +90,7 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementList.createUserManagementList(sf, start, max)
+                UserManagementList.createUserManagementList(sf, start, max, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -116,7 +116,7 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementUser.createUserManagementUser(sf, id, uri)
+                UserManagementUser.createUserManagementUser(sf, id, uri, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.user(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -146,7 +146,7 @@ public class UserManagement {
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
             UserManagementUser.updateUser(sf, uuid, username, name, email, roles, password).
-                chain(user -> UserManagementList.createUserManagementList(sf, 0, MAX_LIST_SIZE))
+                chain(user -> UserManagementList.createUserManagementList(sf, 0, MAX_LIST_SIZE, js.getLocale()))
         ).asTuple().
         chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
         onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -166,7 +166,7 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementUser.createUserManagementUser(sf, null, uri)
+                UserManagementUser.createUserManagementUser(sf, null, uri, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.user(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -195,7 +195,7 @@ public class UserManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 UserManagementUser.createUser(sf, username, name, email, roles, password).
-                    chain(user->UserManagementList.createUserManagementList(sf, 0, MAX_LIST_SIZE))).asTuple().
+                    chain(user->UserManagementList.createUserManagementList(sf, 0, MAX_LIST_SIZE,js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
@@ -219,7 +219,7 @@ public class UserManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 UserManagementUser.deleteUser(sf, uuid).
-                    chain(()->UserManagementList.createUserManagementList(sf, 0, MAX_LIST_SIZE))).asTuple().
+                    chain(()->UserManagementList.createUserManagementList(sf, 0, MAX_LIST_SIZE, js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(),
                     t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());

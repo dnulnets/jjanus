@@ -27,15 +27,11 @@
 
     {#form_start action=janus:concat(janus:property('janus.http.root-path'), "/j_security_check")/}
 
-        {#text_input "" label=msg:login_enter_username name="user" value="" id="user" extra="required" validate=true}
-            {msg:login_username_required}
-        {/text_input}
+        {#text_input workarea.username/}
 
-        {#password_input "" label=msg:login_enter_password name="password" value="" id="password" extra="required" validate=true}
-            {msg:login_password_required}
-        {/password_input}
+        {#password_input workarea.password/}
 
-        {#button_submit label=msg:login_login extra=""/}
+        {#button_submit workarea.login/}
 
     {#form_end/}
 

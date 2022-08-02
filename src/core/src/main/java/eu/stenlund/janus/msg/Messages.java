@@ -1,5 +1,6 @@
 package eu.stenlund.janus.msg;
 
+import io.quarkus.qute.i18n.Localized;
 import io.quarkus.qute.i18n.Message;
 import io.quarkus.qute.i18n.MessageBundle;
 

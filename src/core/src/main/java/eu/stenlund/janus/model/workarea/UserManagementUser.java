@@ -5,11 +5,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
+import javax.security.auth.callback.TextInputCallback;
+
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
+import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.User;
+import eu.stenlund.janus.model.ui.Button;
+import eu.stenlund.janus.model.ui.TextInput;
+import eu.stenlund.janus.msg.UserManagement;
 import io.smallrye.mutiny.Uni;
 
 /**
@@ -20,6 +26,16 @@ import io.smallrye.mutiny.Uni;
  * 
  */
 public class UserManagementUser {
+
+    public Button deleteButton;
+    public Button saveButton;
+    public Button cancelButton;
+
+    public TextInput name;
+    public TextInput username;
+    public TextInput email;
+    public TextInput password;
+    public TextInput uuid;
 
     /**
      * The root path, comes from configuration.
@@ -93,12 +109,33 @@ public class UserManagementUser {
      * @param r    The list of available roles in the application.
      * @param back The return URI if the user presses cancel.
      */
-    public UserManagementUser(User u, List<Role> r, URI back, boolean nu) {
-        user = u;
-        roles = r;
-        uri = back;
-        newUser = nu;
+    public UserManagementUser(User user, List<Role> roles, URI back, boolean newUser, String locale) {
+
+        this.user = user;
+        this.roles = roles;
+        this.uri = back;
+        this.newUser = newUser;
         ROOT_PATH = ConfigProvider.getConfig().getValue("janus.http.root-path", String.class);
+    
+        // Get hold of the message bundle
+        UserManagement msg = JanusTemplateHelper.getMessageBundle(UserManagement.class, locale);
+
+        // Create the buttons
+        String deleteURL = ROOT_PATH + "/user/delete";
+        if (newUser)
+            deleteButton = null;
+        else
+            deleteButton = new Button (msg.user_delete(), deleteURL, null);
+
+        saveButton = new Button (msg.user_save(), null);
+        cancelButton = new Button(msg.user_cancel(), back.toString(), "up-follow up-history=\"true\" up-target=\"#workarea\"");
+
+        // Create the form inputs
+        name = new TextInput(msg.user_name(), "name", "id-name", user.name, msg.user_must_have_name(), "required");
+        username = new TextInput(msg.user_username(), "username", "id-username", user.username, msg.user_must_have_username(), "required");
+        uuid = new TextInput("UUID", "uuid", "id-uuid", user.id!=null?user.id.toString():null, null, "readonly");
+        email = new TextInput(msg.user_email(), "email", "id-email", user.email, msg.user_must_have_email(), "required");
+        password = new TextInput(msg.user_password(), "password", "id-password", null, newUser?msg.user_must_have_password():null, newUser?"required":null);
     }
 
     /**
@@ -109,14 +146,14 @@ public class UserManagementUser {
      * @param uri The URI of the cancel or return URL.
      * @return A populated UserManagementUser.
      */
-    public static Uni<UserManagementUser> createUserManagementUser (SessionFactory sf, UUID uuid, URI uri)
+    public static Uni<UserManagementUser> createUserManagementUser (SessionFactory sf, UUID uuid, URI uri, String locale)
     {
         if (uuid == null)
             return sf.withSession(s -> Role.getListOfRoles(s))
             .map(lr -> new UserManagementUser(
                     new User(),
                     lr,
-                    uri, true));        
+                    uri, true, locale));        
         else
             return Uni.combine().all().unis(
                 sf.withSession(s -> User.getUser(s, uuid)),
@@ -124,7 +161,7 @@ public class UserManagementUser {
             .map(lu -> new UserManagementUser(
                     lu.getItem1(),
                     lu.getItem2(),
-                    uri, false));
+                    uri, false, locale));
     }
 
     /**

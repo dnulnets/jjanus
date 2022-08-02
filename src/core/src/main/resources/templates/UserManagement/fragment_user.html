@@ -9,50 +9,26 @@
 
             <div class="row">
                 <div class="col">
-
-                    {#text_input workarea.user.name label=usermsg:user_name name="name" id="id-name" extra="required" validate=true}
-                        {usermsg:user_must_have_name}
-                    {/text_input}
-
+                    {#text_input workarea.name/}
                 </div>
             </div>
 
             <div class="row">
                 <div class="col">
-
-                    {#text_input workarea.user.username label=usermsg:user_username name="username" id="id-username" extra="required" validate=true}
-                        {usermsg:user_must_have_username}
-                    {/text_input}
-
+                    {#text_input workarea.username/}
                 </div>
                 <div class="col">
-
-                    {#text_input workarea.user.id label="UUID" name="uuid" id="id-uuid" extra="readonly" validate=false/}
- 
+                    {#text_input workarea.uuid/}
                 </div>
             </div>
 
 
             <div class="row">
-
                 <div class="col">
-
-                    {#text_input workarea.user.email label=usermsg:user_email name="email" id="id-email" extra="required" validate=true}
-                        {usermsg:user_must_have_email}
-                    {/text_input}
-
+                    {#text_input workarea.email/}
                 </div>
-
                 <div class="col">
-
-                    {#if workarea.newUser}
-                        {#password_input label=usermsg:user_password name="password" id="id-password" extra="required" validate=true}
-                            {usermsg:user_must_have_password}
-                        {/password_input}
-                    {#else}
-                        {#password_input label=usermsg:user_password name="password" id="id-password" extra="" validate=false/}
-                    {/if}
-        
+                    {#password_input workarea.password/} 
                 </div>
             </div>
 
@@ -73,11 +49,11 @@
             </div>
 
             <div class="text-start pt-4">
-                {#button_submit label=usermsg:user_save extra=""/}
+                {#button_submit workarea.saveButton/}
                 {#if !workarea.newUser}
-                    {#button_action_submit label=usermsg:user_delete action=workarea.deleteURL() extra=""/}
+                    {#button_submit workarea.deleteButton/}
                 {/if}
-                {#button_link label=usermsg:user_cancel action=workarea.uri extra="up-follow up-history=\"true\" up-target=\"#workarea\""/}
+                {#button_link workarea.cancelButton/}
             </div>
 
         {#form_end/}

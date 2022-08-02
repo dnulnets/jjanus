@@ -10,7 +10,7 @@ import io.quarkus.qute.i18n.Message;
  * @since 2022-07-11
  * 
  */
-@Localized("sv")
+@Localized("sv-SE")
 public interface Messages_sv extends Messages {
 
     @Message("sv")

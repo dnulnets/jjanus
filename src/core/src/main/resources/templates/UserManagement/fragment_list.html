@@ -6,7 +6,7 @@
                 {usermsg:list_showing_max(workarea.max)}
             </div>
             <div class="col d-flex align-items-center justify-content-end">
-                {#button_link action=workarea.createPageURL() label=usermsg:list_add extra="up-follow up-history=\"true\" up-target=\"#workarea\""/}
+                {#button_link workarea.createButton/}
             </div>  
         </div>
 
@@ -24,23 +24,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {#for user in workarea.users}
-                        <tr>
-                            <td>{workarea.calculateTrueIndex(user_count)}</td>
-                            <td>{user.name}</td>
-                            <td>{user.username}</td>
-                            <td>{user.email}</td>
-                            <td>
-                                {#for role in user.roles}
-                                    {role.longName}<br />
-                                {/for}
-                            </td>
-                            <td>
-                                <div class="col d-flex align-items-center justify-content-start">
-                                    {#button_link action=workarea.userPageURL(user.id) label=usermsg:list_edit extra="up-follow up-history=\"true\" up-target=\"#workarea\""/}
-                                </div>
-                            </td>
-                        </tr>
+                        {#for item in workarea.users}
+                            {#let user=item.getItem1() button=item.getItem2()}
+                                <tr>
+                                    <td>{workarea.calculateTrueIndex(item_count)}</td>
+                                    <td>{user.name}</td>
+                                    <td>{user.username}</td>
+                                    <td>{user.email}</td>
+                                    <td>
+                                        {#for role in user.roles}
+                                            {role.longName}<br />
+                                        {/for}
+                                    </td>
+                                    <td>
+                                        <div class="col d-flex align-items-center justify-content-start">
+                                            {#button_link button/}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {/let}
                         {/for}
                     </tbody>
                 </table>

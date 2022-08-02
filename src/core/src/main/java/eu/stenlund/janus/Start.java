@@ -21,6 +21,7 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.workarea.Base;
+import eu.stenlund.janus.model.workarea.StartLogin;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
@@ -66,7 +67,7 @@ public class Start {
 
         public static native TemplateInstance start2(Base base);
 
-        public static native TemplateInstance login();
+        public static native TemplateInstance login(StartLogin workarea);
 
         public static native TemplateInstance auth_error();
 
@@ -139,7 +140,7 @@ public class Start {
     @Path("login")
     public Uni<RestResponse<String>> login() {
         return JanusTemplateHelper
-                .createResponseFrom(Templates.login(), js.getLocale())
+                .createResponseFrom(Templates.login(new StartLogin(js.getLocale())), js.getLocale())
                 .onFailure()
                 .invoke(t -> ResponseBuilder.serverError().build());
     }
