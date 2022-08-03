@@ -90,7 +90,7 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementList.createUserManagementList(sf, six, max, js.getLocale())
+                UserManagementList.createModel(sf, six, max, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -146,7 +146,7 @@ public class UserManagement {
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
             UserManagementUser.updateUser(sf, uuid, username, name, email, roles, password).
-                chain(user -> UserManagementList.createUserManagementList(sf, 0, MAX_LIST_SIZE, js.getLocale()))
+                chain(user -> UserManagementList.createModel(sf, 0, MAX_LIST_SIZE, js.getLocale()))
         ).asTuple().
         chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
         onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -195,7 +195,7 @@ public class UserManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 UserManagementUser.createUser(sf, username, name, email, roles, password).
-                    chain(user->UserManagementList.createUserManagementList(sf, 0, MAX_LIST_SIZE,js.getLocale()))).asTuple().
+                    chain(user->UserManagementList.createModel(sf, 0, MAX_LIST_SIZE,js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
@@ -219,7 +219,7 @@ public class UserManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 UserManagementUser.deleteUser(sf, uuid).
-                    chain(()->UserManagementList.createUserManagementList(sf, 0, MAX_LIST_SIZE, js.getLocale()))).asTuple().
+                    chain(()->UserManagementList.createModel(sf, 0, MAX_LIST_SIZE, js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(),
                     t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());

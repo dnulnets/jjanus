@@ -16,9 +16,6 @@ public interface UserManagement_sv extends UserManagement {
     @Message("Användaradministration")
     String list_administration();
 
-    @Message("Visar {pages} användare per sida")
-    String list_showing_max(int pages);
-
     @Message("Namn")
     String list_name();
 
@@ -31,24 +28,13 @@ public interface UserManagement_sv extends UserManagement {
     @Message("Roller")
     String list_roles();
 
-    @Message("Visar användare {start} till {end} av {max}")
-    String list_showing_users(int start, int end, int max);
-
-    @Message("Visar sida {current} av {max}")
-    String list_showing_pages(int current, int max);    
-
-    @Message("Föregående")
-    String list_previous();
-
-    @Message("Nästa")
-    String list_next();
-
     @Message("Ny användare")
     String list_add();
 
     @Message("Editera")
     String list_edit();
 
+    
     @Message("Användaradministration")
     String user_administration();
     

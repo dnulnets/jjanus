@@ -81,7 +81,7 @@ public class UserManagementList {
      * @param max Max number of items to retrieve
      * @return A user management list
      */
-    public static Uni<UserManagementList> createUserManagementList(SessionFactory sf, int start, int max, String locale)
+    public static Uni<UserManagementList> createModel(SessionFactory sf, int start, int max, String locale)
     {
         return Uni.combine().all().unis(
             sf.withSession(s -> User.getListOfUsers(s, start, max)),
@@ -92,5 +92,6 @@ public class UserManagementList {
                 start,
                 max,
                 locale));
-    }    
+    }  
+
 }
