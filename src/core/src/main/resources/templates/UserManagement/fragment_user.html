@@ -1,59 +1,53 @@
 {#workarea title=usermsg:user_administration}
     <div>
         <div class="row">
-            {#if workarea.newUser}
-                {#form_start action=workarea.createURL/}
-            {#else} 
-                {#form_start action=workarea.updateURL/}
-            {/if}
-
-            <div class="row">
-                <div class="col">
-                    {#text_input workarea.name/}
+            {#form workarea.form}
+                <div class="row">
+                    <div class="col">
+                        {#text_input workarea.name/}
+                    </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col">
-                    {#text_input workarea.username/}
+                <div class="row">
+                    <div class="col">
+                        {#text_input workarea.username/}
+                    </div>
+                    <div class="col">
+                        {#text_input workarea.uuid/}
+                    </div>
                 </div>
-                <div class="col">
-                    {#text_input workarea.uuid/}
+
+
+                <div class="row">
+                    <div class="col">
+                        {#text_input workarea.email/}
+                    </div>
+                    <div class="col">
+                        {#password_input workarea.password/} 
+                    </div>
                 </div>
-            </div>
 
-
-            <div class="row">
-                <div class="col">
-                    {#text_input workarea.email/}
+                <div class="row">
+                    <div class="col mb-1">
+                        {usermsg:user_roles}
+                    </div>
                 </div>
-                <div class="col">
-                    {#password_input workarea.password/} 
+
+                <div class="mb-3">
+                        {#for role in workarea.roles}
+                            {#checkbox_inline role/}
+                        {/for}
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col mb-1">
-                    {usermsg:user_roles}
+                <div class="text-start pt-4">
+                    {#button_submit workarea.saveButton/}
+                    {#if !workarea.newUser}
+                        {#button_submit workarea.deleteButton/}
+                    {/if}
+                    {#button_link workarea.cancelButton/}
                 </div>
-            </div>
-
-            <div class="mb-3">
-                    {#for role in workarea.roles}
-                        {#checkbox_inline role/}
-                    {/for}
-            </div>
-
-            <div class="text-start pt-4">
-                {#button_submit workarea.saveButton/}
-                {#if !workarea.newUser}
-                    {#button_submit workarea.deleteButton/}
-                {/if}
-                {#button_link workarea.cancelButton/}
-            </div>
-
-        {#form_end/}
+            {/form}
+        </div>
     </div>
-</div>
 {/workarea}
 {#form_validate/}

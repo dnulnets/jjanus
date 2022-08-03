@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    {#form_start action=janus:concat(janus:property('janus.http.root-path'), "/j_security_check")/}
+    {#form workarea.form}
 
         {#text_input workarea.username/}
 
@@ -33,7 +33,7 @@
 
         {#button_submit workarea.login/}
 
-    {#form_end/}
+    {/form}
 
 </div>
 {#form_validate/}

@@ -1,4 +1,4 @@
-package eu.stenlund.janus.model.workarea;
+package eu.stenlund.janus.ssr.workarea;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -13,10 +13,11 @@ import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.User;
-import eu.stenlund.janus.model.ui.Button;
-import eu.stenlund.janus.model.ui.Checkbox;
-import eu.stenlund.janus.model.ui.TextInput;
 import eu.stenlund.janus.msg.UserManagement;
+import eu.stenlund.janus.ssr.ui.Button;
+import eu.stenlund.janus.ssr.ui.Checkbox;
+import eu.stenlund.janus.ssr.ui.Form;
+import eu.stenlund.janus.ssr.ui.TextInput;
 import io.smallrye.mutiny.Uni;
 
 /**
@@ -27,6 +28,11 @@ import io.smallrye.mutiny.Uni;
  * 
  */
 public class UserManagementUser {
+
+    /**
+     * The form used.
+     */
+    public Form form;
 
     /*
      * All the buttons for the page.
@@ -102,6 +108,12 @@ public class UserManagementUser {
         // Create the form's role checkboxes
         this.roles = new ArrayList<Checkbox>(roles.size());
         roles.forEach(role -> this.roles.add(new Checkbox(role.longName, "roles", "id-" + role.name, role.id.toString(), user.hasRole(role.name), null)));
+
+        // Create the form
+        if (newUser)
+            form = new Form(Form.POST, createURL, true);
+        else
+            form = new Form(Form.POST, updateURL, true);
     }
 
     /**

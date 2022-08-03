@@ -1,4 +1,4 @@
-package eu.stenlund.janus.model.ui;
+package eu.stenlund.janus.ssr.ui;
 
 import java.util.Map;
 

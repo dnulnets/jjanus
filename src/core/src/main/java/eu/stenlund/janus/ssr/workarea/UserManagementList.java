@@ -1,17 +1,18 @@
-package eu.stenlund.janus.model.workarea;
+package eu.stenlund.janus.ssr.workarea;
 
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.User;
-import eu.stenlund.janus.model.ui.TableAction;
 import eu.stenlund.janus.msg.UserManagement;
+import eu.stenlund.janus.ssr.ui.TableAction;
 import io.smallrye.mutiny.Uni;
 
 /**
@@ -62,7 +63,8 @@ public class UserManagementList {
             row.add(user.name);
             row.add(user.username);
             row.add(user.email);
-            row.add(user.roles.toString());
+            String s = user.roles.stream().map(r -> r.longName).collect(Collectors.joining(", "));
+            row.add(s);
             data.add(row);
             actionURLs.add(ROOT_PATH + "/user/?uuid=" + URLEncoder.encode(user.id.toString(), Charset.defaultCharset()) 
                 + "&return=" + returnURL);

@@ -1,4 +1,4 @@
-package eu.stenlund.janus.model.ui;
+package eu.stenlund.janus.ssr.ui;
 
 /**
  * A button in the user interface, it contains both datamodel and view.
