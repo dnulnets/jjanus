@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col">
+        {ssr:table_action_showing_max(it.max)}
+    </div>
+    {#if it.createButton??}
+        <div class="col d-flex align-items-center justify-content-end">
+            {#button_link it.createButton/}
+        </div>
+    {/if}
+</div>
+
+<div class="row">
+    <div class="col">
+        <table class="table table-striped style="width:100%">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    {#for column in it.columns}
+                        <th>{column}</th>
+                    {/for}
+                    <th>{ssr:table_action_action}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#for row in it.data}
+                    <tr>
+                        <td>{it.trueIndex(row_count)}</td>
+                        {#for column in row}
+                            <td>{column}</td>
+                        {/for}
+                        <td>
+                            <div class="col d-flex align-items-center justify-content-start">
+                                {#button_link it.actionButtons.get(row_index)/}
+                            </div>
+                        </td>
+                    </tr>
+                {/for}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        {ssr:table_action_showing_items(it.trueIndex(1), it.eix, it.total)}
+        <br />
+        {ssr:table_action_showing_pages(it.page, it.pages)}
+    </div>
+    <div class="col d-flex align-items-center justify-content-end pt-4">
+        <ul class="pagination">
+            {#if it.page == 1}
+                <li class="page-item disabled"><a class="page-link" href="#">{ssr:table_action_previous}</a></li>
+            {#else}
+                <li class="page-item"><a class="page-link" href="{it.previousPageURL}" up-history="true" up-follow up-target="#workarea">{ssr:table_action_previous}</a></li>
+            {/if}
+            {#for i in it.pages}
+                {#if i != it.page}
+                    <li class="page-item"><a class="page-link" href="{it.pageURL(i)}" up-history="true" up-follow up-target="#workarea">{i}</a></li>
+                {#else}
+                    <li class="page-item disabled"><a class="page-link" href="#">{i}</a></li>
+                {/if}
+            {/for}
+            {#if it.page == it.pages}
+                <li class="page-item disabled"><a class="page-link" href="#">{ssr:table_action_next}</a></li>
+            {#else}
+                <li class="page-item"><a class="page-link" href="{it.nextPageURL}" up-history="true" up-follow up-target="#workarea">{ssr:table_action_next}</a></li>
+            {/if}
+        </ul>
+    </div>
+</div>

@@ -84,13 +84,13 @@ public class UserManagement {
     @GET
     @Path("list")
     @RolesAllowed({"admin"})
-    public Uni<RestResponse<String>> list(  @DefaultValue ("0") @RestQuery("start") int start,
+    public Uni<RestResponse<String>> list(  @DefaultValue ("0") @RestQuery("six") int six,
                                             @DefaultValue (MAX_LIST_SIZE_STRING) @RestQuery("max") int max)
     {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementList.createUserManagementList(sf, start, max, js.getLocale())
+                UserManagementList.createUserManagementList(sf, six, max, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
