@@ -18,6 +18,6 @@ The first code has been created with a fully working RBAC security solution and 
 * Login and logout of the application
 * Administration of users and their roles, i.e. list, view, create, update and delete. Requires role admin.
 
-It is just the rest of the application left ;-)
+It is just the rest of the application left ;-) Look at the issues tab to see what is currently ongoing.
 
 See [wiki](https://github.com/dnulnets/janus/wiki/)
