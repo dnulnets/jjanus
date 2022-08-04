@@ -10,16 +10,16 @@ package eu.stenlund.janus.base;
 public abstract class JanusHelper {
     
     /**
-     * Check if the string exists and contains a non emtpy string.
+     * Check if the string is not null and not empty.
      * 
      * @param s The string to check.
      * @return True if the string is not null and contain at least some alphanumeric character.
      */
-    public static boolean isValid (String s)
+    public static boolean isBlank (String s)
     {
         if (s!=null)
-            return !s.isBlank();
+            return s.isBlank();
         else
-            return false;
+            return true;
     }
 }

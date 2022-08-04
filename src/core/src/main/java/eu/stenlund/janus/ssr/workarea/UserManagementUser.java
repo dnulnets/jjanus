@@ -175,7 +175,7 @@ public class UserManagementUser {
                 user.name = name;
                 user.username = username;
                 user.email = email;
-                if (JanusHelper.isValid(password))
+                if (!JanusHelper.isBlank(password))
                     user.setPassword(password);
 
                 // Add roles

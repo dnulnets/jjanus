@@ -8,7 +8,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -77,19 +76,22 @@ public class UserManagement {
                                             @RestQuery("max") String smax)
     {
         int six=0, max=js.getListSize();
-        if (JanusHelper.isValid(ssix))
+
+        // Check validity and set default values if nessescary
+        if (!JanusHelper.isBlank(ssix))
             try {
                 six = Integer.parseUnsignedInt(ssix);
             } catch (NumberFormatException e) {
                 six = 0;
             }
-        if (JanusHelper.isValid(smax))
+        if (!JanusHelper.isBlank(smax))
             try {
                 max = Integer.parseUnsignedInt(smax);
             } catch (NumberFormatException e) {
                 max = js.getListSize();
             }
 
+        // Create the page
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
@@ -97,7 +99,6 @@ public class UserManagement {
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
-
     }
 
     /**
@@ -143,8 +144,8 @@ public class UserManagement {
                                             @RestForm String password)
     {
         // We need data for all of the fields
-        if (!(JanusHelper.isValid(name) && JanusHelper.isValid(username) && JanusHelper.isValid(email) && uuid !=null))
-            throw new BadRequestException();
+        if (JanusHelper.isBlank(name) || JanusHelper.isBlank(username) || JanusHelper.isBlank(email) || uuid !=null)
+            throw new IllegalArgumentException("Missing required data");
 
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
@@ -190,8 +191,8 @@ public class UserManagement {
                                             @RestForm String password)
     {
         // We need data for all of the fields
-        if (!(JanusHelper.isValid(password) && JanusHelper.isValid(name) && JanusHelper.isValid(username) && JanusHelper.isValid(email)))
-            throw new BadRequestException();
+        if (JanusHelper.isBlank(password) || JanusHelper.isBlank(name) || JanusHelper.isBlank(username) || JanusHelper.isBlank(email))
+            throw new IllegalArgumentException("Missing required data");
 
         // Return with a user interface
         return Uni.
