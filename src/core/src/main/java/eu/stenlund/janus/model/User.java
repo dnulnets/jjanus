@@ -139,18 +139,40 @@ public class User extends JanusEntity {
             .setParameter("name", uid).getSingleResult();
     }
 
+    /**
+     * Returns with the number of users.
+     * 
+     * @param s The session.
+     * @return Number of users in the database.
+     */
     public static Uni<Long> getNumberOfUsers(Session s)
     {
         return s.createNamedQuery("User_NumberOfUsers", Long.class)
             .getSingleResult();
     }
 
+    /**
+     * Returns with the list of users based on start and max number of users. It is mainly used
+     * for tables in the gui.
+     * 
+     * @param s The session.
+     * @param start Start index tio search from.
+     * @param max Max number of items to return.
+     * @return List of users.
+     */
     public static Uni<List<User>> getListOfUsers(Session s, int start, int max)
     {
         return s.createNamedQuery("User_ListOfUsers", User.class)
             .setFirstResult(start).setMaxResults(max).getResultList();
     }
 
+    /**
+     * Delete a user given the UUID.
+     * 
+     * @param s The session.
+     * @param uuid The UUID of the user.
+     * @return Nothing.
+     */
     public static Uni<Void> deleteUser(Session s, UUID uuid)
     {
         return getUser(s, uuid).chain(u -> s.remove(u));

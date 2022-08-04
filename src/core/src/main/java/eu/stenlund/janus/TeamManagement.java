@@ -1,0 +1,231 @@
+package eu.stenlund.janus;
+
+import java.net.URI;
+import java.util.UUID;
+
+import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.hibernate.reactive.mutiny.Mutiny;
+import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestForm;
+import org.jboss.resteasy.reactive.RestQuery;
+import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
+
+import eu.stenlund.janus.base.JanusHelper;
+import eu.stenlund.janus.base.JanusSession;
+import eu.stenlund.janus.base.JanusTemplateHelper;
+import eu.stenlund.janus.ssr.workarea.Base;
+import eu.stenlund.janus.ssr.workarea.TeamManagementList;
+import eu.stenlund.janus.ssr.workarea.UserManagementUser;
+import io.quarkus.qute.CheckedTemplate;
+import io.quarkus.qute.TemplateInstance;
+import io.quarkus.security.identity.CurrentIdentityAssociation;
+import io.smallrye.mutiny.Uni;
+
+/**
+ * The resource for the User management. It handles users and roles.
+ * 
+ * @author Tomas Stenlund
+ * @since 2022-07-19
+ * 
+ */
+@Path("team")
+@Produces(MediaType.TEXT_HTML)
+@RequestScoped
+public class TeamManagement {
+
+    private static final Logger log = Logger.getLogger(TeamManagement.class);
+
+    @Inject
+    CurrentIdentityAssociation securityIdentityAssociation;
+
+    @Inject
+    Mutiny.SessionFactory sf;
+
+    @Inject
+    JanusSession js;
+
+    /**
+     * All of the checked templates for the Start resource.
+     */
+    @CheckedTemplate
+    public static class Templates {
+        public static native TemplateInstance list(Base base, TeamManagementList workarea);
+        public static native TemplateInstance team(Base base, UserManagementUser workarea);
+    }
+
+    /**
+     * List all of the users in the database.
+     * 
+     * @return The list of all users
+     */
+    @GET
+    @Path("list")
+    @RolesAllowed({"admin"})
+    public Uni<RestResponse<String>> list(  @RestQuery("six") String ssix,
+                                            @RestQuery("max") String smax)
+    {
+        int six=0, max=js.getListSize();
+
+        // Check validity and set default values if nessescary
+        if (!JanusHelper.isBlank(ssix))
+            try {
+                six = Integer.parseUnsignedInt(ssix);
+            } catch (NumberFormatException e) {
+                six = 0;
+            }
+        if (!JanusHelper.isBlank(smax))
+            try {
+                max = Integer.parseUnsignedInt(smax);
+            } catch (NumberFormatException e) {
+                max = js.getListSize();
+            }
+
+        // Create the page
+        return Uni.
+            combine().all().unis(
+                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                TeamManagementList.createModel(sf, six, max, js.getLocale())
+            ).asTuple().
+            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
+            onFailure().invoke(t -> ResponseBuilder.serverError().build());
+    }
+
+    /**
+     * Show the user data and a ui that allows you to change certain aspects of the user.
+     * 
+     * @return The user page
+     */
+    @GET
+    @Path("")
+    @RolesAllowed({"admin"})
+    public Uni<RestResponse<String>> user(@RestQuery("uuid") UUID id,
+                                            @RestQuery("return") URI uri)
+    {
+        // Check that we got the id
+        if (id==null || uri==null)
+            throw new BadRequestException();
+
+        // Return with a user interface
+        return Uni.
+            combine().all().unis(
+                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                UserManagementUser.createModel(sf, id, uri, js.getLocale())
+            ).asTuple().
+            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.team(t.getItem1(), t.getItem2()), js.getLocale())).
+            onFailure().invoke(t -> ResponseBuilder.serverError().build());
+
+    }
+
+    /**
+     * Show the user data and a ui that allows you to change certain aspects of the user.
+     * 
+     * @return The user page
+     */
+    @POST
+    @Path("")
+    @RolesAllowed({"admin"})
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Uni<RestResponse<String>> user(@RestForm UUID uuid,
+                                            @RestForm String username,
+                                            @RestForm String name,
+                                            @RestForm String email,
+                                            @RestForm UUID[] roles,
+                                            @RestForm String password)
+    {
+        // We need data for all of the fields
+        if (JanusHelper.isBlank(name) || JanusHelper.isBlank(username) || JanusHelper.isBlank(email) || uuid !=null)
+            throw new IllegalArgumentException("Missing required data");
+
+        return Uni.combine().all().unis(
+            securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+            UserManagementUser.updateUser(sf, uuid, username, name, email, roles, password).
+                chain(user -> TeamManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))
+        ).asTuple().
+        chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
+        onFailure().invoke(t -> ResponseBuilder.serverError().build());
+    }
+
+    /**
+     * Creates a new user page.
+     * 
+     * @return The user page
+     */
+    @GET
+    @Path("create")
+    @RolesAllowed({"admin"})
+    public Uni<RestResponse<String>> create(@RestQuery("return") URI uri)
+    {
+        // Return with a user interface
+        return Uni.
+            combine().all().unis(
+                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                UserManagementUser.createModel(sf, null, uri, js.getLocale())
+            ).asTuple().
+            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.team(t.getItem1(), t.getItem2()), js.getLocale())).
+            onFailure().invoke(t -> ResponseBuilder.serverError().build());
+    }
+
+        /**
+     * Show the user data and a ui that allows you to change certain aspects of the user.
+     * 
+     * @return The user page
+     */
+    @POST
+    @Path("create")
+    @RolesAllowed({"admin"})
+    public Uni<RestResponse<String>> create(@RestForm String username,
+                                            @RestForm String name,
+                                            @RestForm String email,
+                                            @RestForm UUID[] roles,
+                                            @RestForm String password)
+    {
+        // We need data for all of the fields
+        if (JanusHelper.isBlank(password) || JanusHelper.isBlank(name) || JanusHelper.isBlank(username) || JanusHelper.isBlank(email))
+            throw new IllegalArgumentException("Missing required data");
+
+        // Return with a user interface
+        return Uni.
+            combine().all().unis(
+                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                UserManagementUser.createUser(sf, username, name, email, roles, password).
+                    chain(user->TeamManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).asTuple().
+            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
+            onFailure().invoke(t -> ResponseBuilder.serverError().build());
+    }
+
+    /**
+     * Show the user data and a ui that allows you to change certain aspects of the user.
+     * 
+     * @return The user page
+     */
+    @POST
+    @Path("delete")
+    @RolesAllowed({"admin"})
+    public Uni<RestResponse<String>> delete(@RestForm UUID uuid)
+    {
+        // Check that we got the id
+        if (uuid==null)
+            throw new BadRequestException();
+
+        // Return with a user interface
+        return Uni.
+            combine().all().unis(
+                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                UserManagementUser.deleteUser(sf, uuid).
+                    chain(()->TeamManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).asTuple().
+            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(),
+                    t.getItem2()), js.getLocale())).
+            onFailure().invoke(t -> ResponseBuilder.serverError().build());
+    }
+}
