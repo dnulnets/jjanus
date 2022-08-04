@@ -6,6 +6,8 @@ import java.util.Locale;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import io.vertx.core.http.HttpServerRequest;
 
 /**
@@ -30,6 +32,11 @@ public class JanusSession {
     private String locale;
 
     /**
+     * User interface list size
+     */
+    private int listSize;
+
+    /**
      * The host for the request, i.e. the host of the URL the user used for browsing to the application.
      * It gets set by the JanusFilter when the requests comes in.
      */
@@ -46,8 +53,9 @@ public class JanusSession {
      * 
      * @param request The request the session object is associated with.
      */
-    public JanusSession(HttpServerRequest request) {
+    public JanusSession(HttpServerRequest request, @ConfigProperty(name = "janus.gui.listsize") int ls) {
         locale = Locale.getDefault().toString();
+        listSize = ls;
         timeStamp = Instant.now().getEpochSecond();
     }
 
@@ -88,6 +96,15 @@ public class JanusSession {
         changed = true;
     }
 
+    public int getListSize() {
+        return listSize;
+    }
+
+    public void setListSize(int n) {
+        listSize = n;
+        changed = true;
+    }
+
     /**
      * Copies all the values from the plain java object to the session object. Used when we
      * are deseralizing the cookie.
@@ -98,6 +115,7 @@ public class JanusSession {
         locale = js.locale;
         timeStamp = js.timeStamp;
         changed = false;
+        listSize = js.listSize;
     }
 
     /**
@@ -111,6 +129,7 @@ public class JanusSession {
         JanusSessionPOJO jsp = new JanusSessionPOJO();
         jsp.locale = locale;
         jsp.timeStamp = timeStamp;
+        jsp.listSize = listSize;
         return jsp;
     }
 }

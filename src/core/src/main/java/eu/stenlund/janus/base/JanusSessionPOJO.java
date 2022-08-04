@@ -14,7 +14,7 @@ public class JanusSessionPOJO implements Serializable {
     /**
      * Version of the object
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     /**
      * ISO-standard locale <languag>-<COUNTRY>
@@ -25,4 +25,9 @@ public class JanusSessionPOJO implements Serializable {
      * Creation date of the session object
      */
     public long timeStamp;
+
+    /**
+     * User interface list size
+     */
+    public int listSize;
 }

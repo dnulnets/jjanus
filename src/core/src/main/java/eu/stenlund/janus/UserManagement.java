@@ -57,17 +57,6 @@ public class UserManagement {
     JanusSession js;
 
     /**
-     * Maximum numbr of rows for tables in the user interface, as a string, see MAX_LIST_SIZE
-     */
-    private static final String MAX_LIST_SIZE_STRING = "5";
-
-
-    /**
-     * Maximum number of rows for tables in the user interface, as an int, see MAX_LIST_SIZE_STRING.
-     */
-    private static final int MAX_LIST_SIZE = 5;
-
-    /**
      * All of the checked templates for the Start resource.
      */
     @CheckedTemplate
@@ -84,9 +73,23 @@ public class UserManagement {
     @GET
     @Path("list")
     @RolesAllowed({"admin"})
-    public Uni<RestResponse<String>> list(  @DefaultValue ("0") @RestQuery("six") int six,
-                                            @DefaultValue (MAX_LIST_SIZE_STRING) @RestQuery("max") int max)
+    public Uni<RestResponse<String>> list(  @RestQuery("six") String ssix,
+                                            @RestQuery("max") String smax)
     {
+        int six=0, max=js.getListSize();
+        if (JanusHelper.isValid(ssix))
+            try {
+                six = Integer.parseUnsignedInt(ssix);
+            } catch (NumberFormatException e) {
+                six = 0;
+            }
+        if (JanusHelper.isValid(smax))
+            try {
+                max = Integer.parseUnsignedInt(smax);
+            } catch (NumberFormatException e) {
+                max = js.getListSize();
+            }
+
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
@@ -146,7 +149,7 @@ public class UserManagement {
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
             UserManagementUser.updateUser(sf, uuid, username, name, email, roles, password).
-                chain(user -> UserManagementList.createModel(sf, 0, MAX_LIST_SIZE, js.getLocale()))
+                chain(user -> UserManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))
         ).asTuple().
         chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
         onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -195,7 +198,7 @@ public class UserManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 UserManagementUser.createUser(sf, username, name, email, roles, password).
-                    chain(user->UserManagementList.createModel(sf, 0, MAX_LIST_SIZE,js.getLocale()))).asTuple().
+                    chain(user->UserManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
@@ -219,7 +222,7 @@ public class UserManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 UserManagementUser.deleteUser(sf, uuid).
-                    chain(()->UserManagementList.createModel(sf, 0, MAX_LIST_SIZE, js.getLocale()))).asTuple().
+                    chain(()->UserManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(),
                     t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
