@@ -46,6 +46,12 @@ class JanusFilter {
     String SAMESITE;
 
     /**
+     * The name of the cookie where Janus stores its session.
+     */
+    @ConfigProperty(name = "janus.security.session.cookie.name")
+    String COOKIE_NAME_SESSION;
+
+    /**
      * Extract the cookie from the request, decrypt and update the session object.
      * 
      * @param requestContext The request with the cookie
@@ -57,9 +63,8 @@ class JanusFilter {
         js.host = requestContext.getUriInfo().getBaseUri().getHost();
 
         // Get the cookie from the request, decrypt it and create the session
-        Cookie c = requestContext.getCookies().get(JanusSessionHelper.COOKIE_NAME_SESSION);
+        Cookie c = requestContext.getCookies().get(COOKIE_NAME_SESSION);
         if (c != null) {
-            log.info("Create JanusSession from Cookie");
             try {
                 JanusSessionPOJO ljs = jsh.createSession(c.getValue());
                 js.createFromPOJO(ljs);

@@ -49,7 +49,8 @@ public class JanusSessionHelper {
     /**
      * The name of the cookie where Janus stores its session.
      */
-    public static String COOKIE_NAME_SESSION = "janus_session";
+    @ConfigProperty(name = "janus.security.session.cookie.name")
+    public String COOKIE_NAME_SESSION;
 
     /**
      * The key used for encryption and decryption of the cookie. Generated from

@@ -114,10 +114,6 @@ public class Start {
     public Uni<RestResponse<String>> start2() {
 
         Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
-
-        log.info("Locale = " + js.getLocale());
-        log.info("Age = " + js.getAge());
-        log.info("Host = " + js.host);
         
         return di.map(si -> new Base(si))
                 .chain(nb -> JanusTemplateHelper.createResponseFrom(Templates.start2(nb), js.getLocale()))
