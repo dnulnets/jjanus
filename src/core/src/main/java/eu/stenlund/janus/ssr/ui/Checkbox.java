@@ -15,7 +15,7 @@ import io.quarkus.qute.RawString;
  * @since 2022-08-01
  * 
  */
-public class Checkbox {
+public class Checkbox extends Base {
 
     private static final Logger log = Logger.getLogger(Checkbox.class);
 
@@ -25,6 +25,12 @@ public class Checkbox {
     public boolean checked;
     public String value;
     public String extra;
+
+    @Override
+    public String type()
+    {
+        return "checkbox";
+    }
 
     /**
      * Creates a button for submit in formas with label and action.

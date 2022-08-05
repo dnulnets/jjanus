@@ -11,10 +11,11 @@ import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Team;
-import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.TeamManagement;
-import eu.stenlund.janus.msg.UserManagement;
-import eu.stenlund.janus.ssr.ui.TableAction;
+import eu.stenlund.janus.ssr.ui.Base;
+import eu.stenlund.janus.ssr.ui.Button;
+import eu.stenlund.janus.ssr.ui.Table;
+import eu.stenlund.janus.ssr.ui.Text;
 import io.smallrye.mutiny.Uni;
 
 /**
@@ -27,9 +28,9 @@ import io.smallrye.mutiny.Uni;
 public class TeamManagementList {
 
     /**
-     * The user table
+     * The team table
      */
-    public TableAction table;
+    public Table table;
  
     /**
      * Create a new workarea from the teams in the database.
@@ -55,22 +56,23 @@ public class TeamManagementList {
         columns.add(msg.list_name());
         columns.add(msg.list_number_of_users());
         columns.add(msg.list_users());
+        columns.add(msg.list_action());
 
         // Create the table data matrix
-        List<List<String>> data = new ArrayList<List<String>>(teams.size());
-        List<String> actionURLs = new ArrayList<String>(teams.size());
+        List<List<Base>> data = new ArrayList<List<Base>>(teams.size());
         teams.forEach(team -> {
-            List<String> row = new ArrayList<String>(4);
-            row.add(team.name);
-            row.add("0");
-            String s = team.members.stream().map(u -> u.name).collect(Collectors.joining(", "));
-            row.add(s);
+            List<Base> row = new ArrayList<Base>(columns.size());
+            row.add(new Text(team.name));
+            row.add(new Text(String.valueOf(team.members.size())));
+            String s = team.members.stream().map(u -> u.username).collect(Collectors.joining("<br/>"));
+            row.add(new Text(s,true));
+            String actionURL = ROOT_PATH + "/team/?uuid=" + URLEncoder.encode(team.id.toString(), Charset.defaultCharset()) 
+                + "&return=" + returnURL;
+            row.add(new Button(msg.list_edit(), actionURL, ""));
             data.add(row);
-            actionURLs.add(ROOT_PATH + "/team/?uuid=" + URLEncoder.encode(team.id.toString(), Charset.defaultCharset()) 
-                + "&return=" + returnURL);
         });
 
-        table = new TableAction(columns, data, tableURL, msg.list_add(), createURL, msg.list_edit(), actionURLs, six, max, total);
+        table = new Table(columns, data, tableURL, msg.list_add(), createURL, six, max, total);
     }
 
     /**

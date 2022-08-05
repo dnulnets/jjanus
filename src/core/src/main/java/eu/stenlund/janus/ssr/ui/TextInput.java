@@ -7,7 +7,7 @@ package eu.stenlund.janus.ssr.ui;
  * @since 2022-08-01
  * 
  */
-public class TextInput {
+public class TextInput extends Base {
 
     public String label;
     public String name;
@@ -15,6 +15,12 @@ public class TextInput {
     public String value;
     public String feedback;
     public String extra;
+
+    @Override
+    public String type()
+    {
+        return "textinput";
+    }
 
     public TextInput (String label, String name, String id, String value, String feedback, String extra)
     {

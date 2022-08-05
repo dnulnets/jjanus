@@ -18,7 +18,6 @@
                     {#for column in it.columns}
                         <th>{column}</th>
                     {/for}
-                    <th>{ssr:table_action_action}</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,13 +25,15 @@
                     <tr>
                         <td>{it.trueIndex(row_count)}</td>
                         {#for column in row}
-                            <td>{column}</td>
+                            {#when column.type()}
+                                {#is "text"}
+                                    <td>{#text column/}</td>
+                                {#is "button"}
+                                    <td>{#button_link column/}</td>
+                                {#else}
+                                    <td>GUI Component not supported.</td>
+                            {/when}
                         {/for}
-                        <td>
-                            <div class="col d-flex align-items-center justify-content-start">
-                                {#button_link it.actionButtons.get(row_index)/}
-                            </div>
-                        </td>
                     </tr>
                 {/for}
             </tbody>

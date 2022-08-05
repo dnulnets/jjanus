@@ -15,13 +15,19 @@ import io.quarkus.qute.RawString;
  * @since 2022-08-01
  * 
  */
-public class Button {
+public class Button extends Base {
 
     private static final Logger log = Logger.getLogger(Button.class);
 
     public String label;
     public String action;
     public String extra;
+
+    @Override
+    public String type()
+    {
+        return "button";
+    }
 
     /**
      * Creates a button for submit in formas with label and action.

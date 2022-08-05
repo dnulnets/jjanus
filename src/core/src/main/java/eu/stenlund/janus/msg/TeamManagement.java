@@ -28,6 +28,9 @@ public interface TeamManagement {
     @Message("Edit")
     String list_edit();
 
+    @Message("Action")
+    String list_action();
+
     @Message("Add team")
     String list_add();
 

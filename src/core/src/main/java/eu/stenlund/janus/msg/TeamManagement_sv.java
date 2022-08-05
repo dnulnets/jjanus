@@ -31,4 +31,7 @@ public interface TeamManagement_sv extends TeamManagement {
     @Message("Skapa team")
     String list_add();
 
+    @Message("Aktivitet")
+    String list_action();
+
 }

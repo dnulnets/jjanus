@@ -18,9 +18,9 @@ import io.quarkus.qute.RawString;
  * @since 2022-08-02
  * 
  */
-public class TableAction {
+public class Table extends Base {
 
-    private static final Logger log = Logger.getLogger(TableAction.class);
+    private static final Logger log = Logger.getLogger(Table.class);
 
     /**
      * Start index of the tables first row.
@@ -60,9 +60,14 @@ public class TableAction {
     public String previousPageURL;
 
     public List<String> columns;
-    public List<List<String>> data;
-    public List<Button> actionButtons;
+    public List<List<Base>> data;
     public Button createButton;
+
+    @Override
+    public String type()
+    {
+        return "table";
+    }
 
     /**
      * Calculates the absolute index of the user at row n in the table. The index is
@@ -99,19 +104,16 @@ public class TableAction {
     }
 
     /**
-     * @param columns The labels for each column in the table.
-     * @param data The actual data in the table, must contain the same number of coolumns as the labels.
+     * @param headers The labels for each column in the table.
+     * @param data The actual gui components data model for each cell in the table, must contain the same number of columns as the header.
      * @param tableURL The tables URL, used by pagination to <path>?six=<six>&max=<max>.
      * @param createLabel The label of the create button.
      * @param createURL The create URL (GET).
-     * @param actionLabel The label of the action buttons for each row.
-     * @param actionURLs The URL:s for the action buttons for each row (GET).
      * @param six The Start index of the table.
      * @param max Max number of items in the table.
      * @param total Total number of items in all pages.
      */
-    public TableAction (List<String> columns, List<List<String>> data, String tableURL, String createLabel, String createURL, 
-        String actionLabel, List<String> actionURLs, int six, int max, int total)
+    public Table (List<String> headers, List<List<Base>> data, String tableURL, String createLabel, String createURL, int six, int max, int total)
     {
         this.six = six;
         this.max = max;
@@ -126,23 +128,24 @@ public class TableAction {
         this.previousPageURL = pageURLBasedOnIndex(six-max);
 
         // Check incoming data
-        if (data.size() <= 0)
-            throw new IllegalArgumentException("Data matrix do not contain any data");
+        if (data.size() > 0) {
+            int n = data.get(0).size();
+            data.forEach(row -> {if (row.size() != n) throw new IllegalArgumentException("Data matrix do not have the same number of columns for every row");});
 
-        int n = data.get(0).size();
-        data.forEach(row -> {if (row.size() != n) throw new IllegalArgumentException("Data matrix size do not match number of columns");});
+            if (headers.size() != n) {
+                throw new IllegalArgumentException("Data matrix number columns do not match number of columns in the headers");
+            }
 
-        if (columns.size() != n || data.size() > max || data.size() != actionURLs.size()) {
-            throw new IllegalArgumentException("Data matrix size do not match columns and rows with header and actions");
+            if (data.size() > max) {
+                throw new IllegalArgumentException("Data matrix number of rows exceeds max number");
+            }
         }
 
         // Set up the widget
-        this.columns = columns;
+        this.columns = headers;
         this.data = data;
 
         // Create the buttons
-        this.actionButtons = new ArrayList<Button>(data.size());
-        actionURLs.forEach(url -> this.actionButtons.add (new Button(actionLabel, url, null)));
         createButton = new Button(createLabel, createURL, null);
     }
 }

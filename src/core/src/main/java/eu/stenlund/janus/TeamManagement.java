@@ -216,7 +216,7 @@ public class TeamManagement {
     {
         // Check that we got the id
         if (uuid==null)
-            throw new BadRequestException();
+            throw new IllegalArgumentException("Missing required data");
 
         // Return with a user interface
         return Uni.

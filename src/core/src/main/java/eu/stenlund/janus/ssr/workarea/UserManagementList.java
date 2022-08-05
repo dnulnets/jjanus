@@ -12,7 +12,10 @@ import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.UserManagement;
-import eu.stenlund.janus.ssr.ui.TableAction;
+import eu.stenlund.janus.ssr.ui.Table;
+import eu.stenlund.janus.ssr.ui.Text;
+import eu.stenlund.janus.ssr.ui.Base;
+import eu.stenlund.janus.ssr.ui.Button;
 import io.smallrye.mutiny.Uni;
 
 /**
@@ -27,7 +30,7 @@ public class UserManagementList {
     /**
      * The user table
      */
-    public TableAction table;
+    public Table table;
  
     /**
      * Create a new workarea from the users inthe database.
@@ -54,23 +57,24 @@ public class UserManagementList {
         columns.add(msg.list_username());
         columns.add(msg.list_email());
         columns.add(msg.list_roles());
+        columns.add(msg.list_action());
 
         // Create the table data matrix
-        List<List<String>> data = new ArrayList<List<String>>(users.size());
-        List<String> actionURLs = new ArrayList<String>(users.size());
+        List<List<Base>> data = new ArrayList<List<Base>>(users.size());
         users.forEach(user -> {
-            List<String> row = new ArrayList<String>(4);
-            row.add(user.name);
-            row.add(user.username);
-            row.add(user.email);
-            String s = user.roles.stream().map(r -> r.longName).collect(Collectors.joining(", "));
-            row.add(s);
+            List<Base> row = new ArrayList<Base>(columns.size());
+            row.add(new Text (user.name));
+            row.add(new Text (user.username));
+            row.add(new Text (user.email));
+            String s = user.roles.stream().map(r -> r.longName).collect(Collectors.joining("<br/>"));
+            row.add(new Text (s, true));
+            String actionURLs  = ROOT_PATH + "/user/?uuid=" + URLEncoder.encode(user.id.toString(), Charset.defaultCharset()) 
+                + "&return=" + returnURL;
+            row.add(new Button (msg.list_edit(), actionURLs, ""));
             data.add(row);
-            actionURLs.add(ROOT_PATH + "/user/?uuid=" + URLEncoder.encode(user.id.toString(), Charset.defaultCharset()) 
-                + "&return=" + returnURL);
         });
 
-        table = new TableAction(columns, data, tableURL, msg.list_add(), createURL, msg.list_edit(), actionURLs, six, max, total);
+        table = new Table(columns, data, tableURL, msg.list_add(), createURL, six, max, total);
     }
 
     /**

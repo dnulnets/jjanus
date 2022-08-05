@@ -34,6 +34,8 @@ public interface UserManagement_sv extends UserManagement {
     @Message("Editera")
     String list_edit();
 
+    @Message("Aktivitet")
+    String list_action();
     
     @Message("Användaradministration")
     String user_administration();

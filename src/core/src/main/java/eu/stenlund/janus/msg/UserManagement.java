@@ -34,6 +34,8 @@ public interface UserManagement {
     @Message("Edit")
     String list_edit();
 
+    @Message("Action")
+    String list_action();
     
     @Message("User management")
     String user_administration();

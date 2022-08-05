@@ -7,7 +7,7 @@ package eu.stenlund.janus.ssr.ui;
  * @since 2022-08-01
  * 
  */
-public class Form {
+public class Form extends Base {
     
     public static String GET = "get";
     public static String POST = "post";
@@ -26,6 +26,12 @@ public class Form {
      * The method to use when submitting a form.
      */
     public String method;
+
+    @Override
+    public String type()
+    {
+        return "form";
+    }
 
     /**
      * Creates a form model.
