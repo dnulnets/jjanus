@@ -79,10 +79,13 @@ public class UserManagementUser {
     public UserManagementUser(User user, List<Role> roles, URI back, boolean newUser, String locale) {
 
         // Create the URL:s
-        String ROOT_PATH = ConfigProvider.getConfig().getValue("janus.http.root-path", String.class);
+        String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path","/");
         String deleteURL = ROOT_PATH + "/user/delete";
+        String backURL = ROOT_PATH;
         createURL = ROOT_PATH + "/user/create";
         updateURL = ROOT_PATH + "/user";
+        if (back != null)
+            backURL = back.toString();
 
         // Get hold of the message bundle
         UserManagement msg = JanusTemplateHelper.getMessageBundle(UserManagement.class, locale);
@@ -96,14 +99,14 @@ public class UserManagementUser {
         else
             deleteButton = new Button (msg.user_delete(), deleteURL, null);
         saveButton = new Button (msg.user_save(), null);
-        cancelButton = new Button(msg.user_cancel(), back.toString(), "up-follow up-history=\"true\" up-target=\"#workarea\"");
+        cancelButton = new Button(msg.user_cancel(), backURL, "up-follow up-history=\"true\" up-target=\"#workarea\"");
 
         // Create the form's text inputs
         name = new TextInput(msg.user_name(), "name", "id-name", user.name, msg.user_must_have_name(), "required");
-        username = new TextInput(msg.user_username(), "username", "id-username", user.username, msg.user_must_have_username(), "required");
+        username = new TextInput(msg.user_username(), "username", "id-username", user.username, msg.user_must_have_username(), "required data-lpignore=true");
         uuid = new TextInput("UUID", "uuid", "id-uuid", user.id!=null?user.id.toString():null, null, "readonly");
         email = new TextInput(msg.user_email(), "email", "id-email", user.email, msg.user_must_have_email(), "required");
-        password = new TextInput(msg.user_password(), "password", "id-password", null, newUser?msg.user_must_have_password():null, newUser?"required":null);
+        password = new TextInput(msg.user_password(), "password", "id-password", null, newUser?msg.user_must_have_password():null, "data-lpignore=true " + (newUser?"required":""));
 
         // Create the form's role checkboxes
         this.roles = new ArrayList<Checkbox>(roles.size());

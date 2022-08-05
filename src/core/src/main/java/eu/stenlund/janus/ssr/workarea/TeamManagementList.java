@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
+import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.msg.TeamManagement;
@@ -44,7 +45,7 @@ public class TeamManagementList {
     private TeamManagementList(List<Team> teams, int total, int six, int max, String locale) {
 
         // Get hold of the message bundle and root path
-        String ROOT_PATH = ConfigProvider.getConfig().getValue("janus.http.root-path", String.class);
+        String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path", "/");
         TeamManagement msg = JanusTemplateHelper.getMessageBundle(TeamManagement.class, locale);
         String returnURL = URLEncoder.encode(ROOT_PATH + "/team/list?six=" + String.valueOf(six) + "&max="+String.valueOf(max),
             Charset.defaultCharset());

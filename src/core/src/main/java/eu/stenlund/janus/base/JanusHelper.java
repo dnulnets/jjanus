@@ -1,5 +1,9 @@
 package eu.stenlund.janus.base;
 
+import java.util.Optional;
+
+import org.eclipse.microprofile.config.ConfigProvider;
+
 /**
  * A helper class for various functions used in the Janus application.
  *
@@ -9,6 +13,35 @@ package eu.stenlund.janus.base;
  */
 public abstract class JanusHelper {
     
+
+    /**
+     * Return with the value of a property.
+     * 
+     * @param <T> The type of the property.
+     * @param type The type class of the property.
+     * @param property The name of the property.
+     * @return Returns with the value.
+     */
+    public static <T> T getConfig(Class<T> type, String property)
+    {
+        return ConfigProvider.getConfig().getValue(property, type);
+    }
+
+    /**
+     * Return with the value of a property or default.
+     * 
+     * @param <T> The type of the property.
+     * @param type The type class of the property.
+     * @param property The name of the property.
+     * @param dflt The default of the property if it does not exists.
+     * @return Returns with the value.
+     */
+    public static <T> T getConfig(Class<T> type, String property, T dflt)
+    {
+        Optional<T> value = ConfigProvider.getConfig().getOptionalValue(property, type);
+        return value.orElse(dflt);
+    }
+
     /**
      * Check if the string is not null and not empty.
      * 

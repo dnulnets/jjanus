@@ -113,7 +113,7 @@ public class UserManagement {
                                             @RestQuery("return") URI uri)
     {
         // Check that we got the id
-        if (id==null || uri==null)
+        if (id==null)
             throw new BadRequestException();
 
         // Return with a user interface
@@ -144,7 +144,7 @@ public class UserManagement {
                                             @RestForm String password)
     {
         // We need data for all of the fields
-        if (JanusHelper.isBlank(name) || JanusHelper.isBlank(username) || JanusHelper.isBlank(email) || uuid !=null)
+        if (JanusHelper.isBlank(name) || JanusHelper.isBlank(username) || JanusHelper.isBlank(email) || uuid ==null)
             throw new IllegalArgumentException("Missing required data");
 
         return Uni.combine().all().unis(

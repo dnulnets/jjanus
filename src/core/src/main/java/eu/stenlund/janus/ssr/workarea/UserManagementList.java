@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
+import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.UserManagement;
@@ -44,7 +45,7 @@ public class UserManagementList {
     private UserManagementList(List<User> users, int total, int six, int max, String locale) {
 
         // Get hold of the message bundle and root path
-        String ROOT_PATH = ConfigProvider.getConfig().getValue("janus.http.root-path", String.class);
+        String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path", "/");
         UserManagement msg = JanusTemplateHelper.getMessageBundle(UserManagement.class, locale);
         String returnURL = URLEncoder.encode(ROOT_PATH + "/user/list?six=" + String.valueOf(six) + "&max="+String.valueOf(max),
             Charset.defaultCharset());
@@ -68,7 +69,7 @@ public class UserManagementList {
             row.add(new Text (user.email));
             String s = user.roles.stream().map(r -> r.longName).collect(Collectors.joining("<br/>"));
             row.add(new Text (s, true));
-            String actionURLs  = ROOT_PATH + "/user/?uuid=" + URLEncoder.encode(user.id.toString(), Charset.defaultCharset()) 
+            String actionURLs  = ROOT_PATH + "/user?uuid=" + URLEncoder.encode(user.id.toString(), Charset.defaultCharset()) 
                 + "&return=" + returnURL;
             row.add(new Button (msg.list_edit(), actionURLs, ""));
             data.add(row);
