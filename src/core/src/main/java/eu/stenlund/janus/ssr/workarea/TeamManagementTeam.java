@@ -5,11 +5,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
+import javax.ws.rs.NotFoundException;
 
+import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
+import org.jboss.logging.Logger;
+
+import eu.stenlund.janus.base.JanusException;
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.base.URLBuilder;
+import eu.stenlund.janus.model.Backlog;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.model.User;
@@ -17,6 +22,7 @@ import eu.stenlund.janus.msg.TeamManagement;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Form;
 import eu.stenlund.janus.ssr.ui.TextInput;
+import io.quarkus.qute.Results.NotFound;
 import io.smallrye.mutiny.Uni;
 
 /**
@@ -27,6 +33,8 @@ import io.smallrye.mutiny.Uni;
  * 
  */
 public class TeamManagementTeam {
+
+    private static final Logger log = Logger.getLogger(TeamManagementTeam.class);
 
     /**
      * The form used.
@@ -121,20 +129,24 @@ public class TeamManagementTeam {
      */
     public static Uni<TeamManagementTeam> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
     {
-        if (uuid == null)
+        if (uuid == null) {
             return sf.withSession(s -> User.getListOfUsers(s))
             .map(lr -> new TeamManagementTeam(
                     new Team(),
                     lr,
                     uri, true, locale));        
-        else
+        } else {
             return Uni.combine().all().unis(
-                sf.withSession(s -> Team.getTeam(s, uuid)),
+                sf.withSession(s -> Team.getTeam(s, uuid)
+                    .onItem()
+                        .ifNull()
+                            .failWith(new JanusException("No team with that UUID exists", uri.toString()))),
                 sf.withSession(s -> User.getListOfUsers(s))).asTuple()
             .map(lu -> new TeamManagementTeam(
                     lu.getItem1(),
                     lu.getItem2(),
                     uri, false, locale));
+        }
     }
 
     /**
@@ -185,7 +197,8 @@ public class TeamManagementTeam {
 
                     // Update the user
                     team.name = name;
-
+                    team.backlog = new Backlog();
+                    
                     // Return with data
                     return Team.addTeam(s, team);
                 }

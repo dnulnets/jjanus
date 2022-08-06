@@ -67,4 +67,10 @@ public interface Messages_sv extends Messages {
 
     @Message("Team")
     String menu_administration_teams();
+
+    @Message("Systemfel")
+    String error_title();
+
+    @Message("Tillbaka")
+    String error_back();
 }

@@ -42,7 +42,6 @@ public class AuthenticationFailedExceptionMapper implements ExceptionMapper<Auth
             header("X-Up-Dismiss-Layer", "null").
             build();
             */
-        log.info ("Got an authorization exception");
         return Response.status(401).
             header("WWW-Authenticate", "Basic realm=\"janus\"").
             header("X-Up-Dismiss-Layer", "null").

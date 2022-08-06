@@ -68,4 +68,10 @@ public interface Messages {
     @Message("Teams")
     String menu_administration_teams();
 
+    @Message("System error")
+    String error_title();
+
+    @Message("Return")
+    String error_back();
+
 }
