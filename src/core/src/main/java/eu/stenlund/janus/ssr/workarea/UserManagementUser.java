@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusHelper;

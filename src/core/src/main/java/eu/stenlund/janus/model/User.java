@@ -167,6 +167,18 @@ public class User extends JanusEntity {
     }
 
     /**
+     * Returns with the list of all users.
+     * 
+     * @param s The session.
+     * @return List of users.
+     */
+    public static Uni<List<User>> getListOfUsers(Session s)
+    {
+        return s.createNamedQuery("User_ListOfUsers", User.class)
+            .getResultList();
+    }
+
+    /**
      * Delete a user given the UUID.
      * 
      * @param s The session.

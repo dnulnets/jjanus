@@ -1,12 +1,9 @@
 package eu.stenlund.janus.ssr.workarea;
 
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusHelper;
@@ -14,10 +11,10 @@ import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.base.URLBuilder;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.UserManagement;
-import eu.stenlund.janus.ssr.ui.Table;
-import eu.stenlund.janus.ssr.ui.Text;
 import eu.stenlund.janus.ssr.ui.Base;
 import eu.stenlund.janus.ssr.ui.Button;
+import eu.stenlund.janus.ssr.ui.Table;
+import eu.stenlund.janus.ssr.ui.Text;
 import io.smallrye.mutiny.Uni;
 
 /**

@@ -34,4 +34,21 @@ public interface TeamManagement {
     @Message("Add team")
     String list_add();
 
+    @Message("Save")
+    String team_save();
+    
+    @Message("Delete")
+    String team_delete();
+    
+    @Message("Cancel")
+    String team_cancel();
+
+    @Message("A team must have a name")
+    String team_must_have_name();
+
+    @Message("Name")
+    String team_name();
+
+    @Message ("Team administration")
+    String team_administration();
 }

@@ -186,21 +186,4 @@ public class Start {
             return ResponseBuilder.seeOther(URI.create("")).build();
     }
 
-        // Just testcreate something for hibernate
-        /*
-         * User newUser = new User();
-         * newUser.username = "tomas";
-         * newUser.name = "Tomas Stenlund";
-         * newUser.email = "tomas.stenlund@telia.com";
-         * newUser.roles = new HashSet<Role>();
-         * newUser.setPassword("mandelmassa");
-         * return sf.withTransaction((s,t) -> Role.findByName(s, "user")
-         * .chain(role -> {
-         * newUser.roles.add(role);
-         * return User.addUser(s, newUser);
-         * })
-         * .chain(item -> JanusTemplateHelper.createStringFrom(Templates.fragment1(),
-         * js.getLocale())));
-         */
-
 }

@@ -1,4 +1,4 @@
-{#workarea title=usermsg:user_administration}
+{#workarea title=teammsg:team_administration}
     <div>
         <div class="row">
             {#form workarea.form}
@@ -6,42 +6,14 @@
                     <div class="col">
                         {#text_input workarea.name/}
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col">
-                        {#text_input workarea.username/}
-                    </div>
                     <div class="col">
                         {#text_input workarea.uuid/}
                     </div>
                 </div>
 
-
-                <div class="row">
-                    <div class="col">
-                        {#text_input workarea.email/}
-                    </div>
-                    <div class="col">
-                        {#password_input workarea.password/} 
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col mb-1">
-                        {usermsg:user_roles}
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                        {#for role in workarea.roles}
-                            {#checkbox_inline role/}
-                        {/for}
-                </div>
-
                 <div class="text-start pt-4">
                     {#button_submit workarea.saveButton/}
-                    {#if !workarea.newUser}
+                    {#if !workarea.newTeam}
                         {#button_submit workarea.deleteButton/}
                     {/if}
                     {#button_link workarea.cancelButton/}

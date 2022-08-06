@@ -3,6 +3,7 @@ package eu.stenlund.janus.model;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -72,6 +73,40 @@ public class Team extends JanusEntity {
     {
         return s.createNamedQuery("Team_NumberOfTeams", Long.class)
             .getSingleResult();
+    }
+
+    /**
+     * Retrieves a specific team based on its key identity.
+     * 
+     * @param s The session.
+     * @param id The teams UUID as a string.
+     * @return The team or null.
+     */
+    public static Uni<Team> getTeam(Session s, UUID uuid) {
+        return s.find(Team.class, uuid);
+    }
+
+    /**
+     * Delete a team given the UUID.
+     * 
+     * @param s The session.
+     * @param uuid The UUID of the team.
+     * @return Nothing.
+     */
+    public static Uni<Void> deleteTeam(Session s, UUID uuid)
+    {
+        return getTeam(s, uuid).chain(u -> s.remove(u));
+    }
+
+    /**
+     * Add a team to the database.
+     * 
+     * @param s    A mutiny session.
+     * @param user The team to add.
+     * @return An asynchronous result.
+     */
+    public static Uni<Team> addTeam(Session s, Team team) {
+        return s.persist(team).replaceWith(team);   
     }
 
     /**

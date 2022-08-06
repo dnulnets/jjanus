@@ -34,4 +34,22 @@ public interface TeamManagement_sv extends TeamManagement {
     @Message("Aktivitet")
     String list_action();
 
+    @Message("Spara")
+    String team_save();
+    
+    @Message("Ta bort")
+    String team_delete();
+    
+    @Message("Avbryt")
+    String team_cancel();
+
+    @Message("Ett team måste ha ett namen")
+    String team_must_have_name();
+
+    @Message("Namn")
+    String team_name();
+
+    @Message ("Teamadministrering")
+    String team_administration();
+
 }
