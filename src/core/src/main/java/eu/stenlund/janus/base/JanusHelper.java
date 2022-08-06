@@ -1,5 +1,9 @@
 package eu.stenlund.janus.base;
 
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -12,7 +16,6 @@ import org.eclipse.microprofile.config.ConfigProvider;
  * 
  */
 public abstract class JanusHelper {
-    
 
     /**
      * Return with the value of a property.
@@ -55,4 +58,5 @@ public abstract class JanusHelper {
         else
             return true;
     }
+
 }

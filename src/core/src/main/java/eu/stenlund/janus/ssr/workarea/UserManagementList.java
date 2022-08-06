@@ -11,6 +11,7 @@ import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
+import eu.stenlund.janus.base.URLBuilder;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.UserManagement;
 import eu.stenlund.janus.ssr.ui.Table;
@@ -47,10 +48,25 @@ public class UserManagementList {
         // Get hold of the message bundle and root path
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path", "/");
         UserManagement msg = JanusTemplateHelper.getMessageBundle(UserManagement.class, locale);
-        String returnURL = URLEncoder.encode(ROOT_PATH + "/user/list?six=" + String.valueOf(six) + "&max="+String.valueOf(max),
-            Charset.defaultCharset());
-        String tableURL = ROOT_PATH + "/user/list";
-        String createURL = ROOT_PATH + "/user/create?return=" + returnURL;
+
+        // Create the action URL:s
+        String returnURL = URLBuilder.root(ROOT_PATH)
+            .addSegment("user")
+            .addSegment("list")
+            .addQueryParameter("six", String.valueOf(six))
+            .addQueryParameter("max", String.valueOf(max))
+            .build();
+        
+        String tableURL = URLBuilder.root(ROOT_PATH)
+            .addSegment("user")
+            .addSegment("list")
+            .build();
+
+        String createURL = URLBuilder.root(ROOT_PATH)
+            .addSegment("user")
+            .addSegment("create")
+            .addQueryParameter("return", returnURL)
+            .build();
 
         // Create the table header
         List<String> columns = new ArrayList<String>(4);
@@ -69,9 +85,12 @@ public class UserManagementList {
             row.add(new Text (user.email));
             String s = user.roles.stream().map(r -> r.longName).collect(Collectors.joining("<br/>"));
             row.add(new Text (s, true));
-            String actionURLs  = ROOT_PATH + "/user?uuid=" + URLEncoder.encode(user.id.toString(), Charset.defaultCharset()) 
-                + "&return=" + returnURL;
-            row.add(new Button (msg.list_edit(), actionURLs, ""));
+            String actionURL  = URLBuilder.root(ROOT_PATH)
+                .addSegment("user")
+                .addQueryParameter("uuid", user.id.toString())
+                .addQueryParameter("return", returnURL)
+                .build();
+            row.add(new Button (msg.list_edit(), actionURL, ""));
             data.add(row);
         });
 

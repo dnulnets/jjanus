@@ -11,6 +11,7 @@ import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
+import eu.stenlund.janus.base.URLBuilder;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.UserManagement;
@@ -78,12 +79,20 @@ public class UserManagementUser {
      */
     public UserManagementUser(User user, List<Role> roles, URI back, boolean newUser, String locale) {
 
-        // Create the URL:s
+        // Create action URL:s
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path","/");
-        String deleteURL = ROOT_PATH + "/user/delete";
-        String backURL = ROOT_PATH;
-        createURL = ROOT_PATH + "/user/create";
-        updateURL = ROOT_PATH + "/user";
+        String deleteURL = URLBuilder.root(ROOT_PATH)
+            .addSegment("user")
+            .addSegment("delete").build();
+        createURL = URLBuilder.root(ROOT_PATH)
+            .addSegment("user")
+            .addSegment("create")
+            .build();
+        updateURL = URLBuilder.root(ROOT_PATH)
+            .addSegment("user")
+            .build();
+
+        String backURL = ROOT_PATH; 
         if (back != null)
             backURL = back.toString();
 

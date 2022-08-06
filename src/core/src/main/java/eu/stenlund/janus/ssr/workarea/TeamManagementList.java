@@ -1,5 +1,6 @@
 package eu.stenlund.janus.ssr.workarea;
 
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
+import eu.stenlund.janus.base.URLBuilder;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.msg.TeamManagement;
 import eu.stenlund.janus.ssr.ui.Base;
@@ -47,11 +49,27 @@ public class TeamManagementList {
         // Get hold of the message bundle and root path
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path", "/");
         TeamManagement msg = JanusTemplateHelper.getMessageBundle(TeamManagement.class, locale);
-        String returnURL = URLEncoder.encode(ROOT_PATH + "/team/list?six=" + String.valueOf(six) + "&max="+String.valueOf(max),
-            Charset.defaultCharset());
-        String tableURL = ROOT_PATH + "/team/list";
-        String createURL = ROOT_PATH + "/team/create?return=" + returnURL;
 
+        // Create action URL:s
+        String returnURL = URLBuilder.root(ROOT_PATH)
+        .addSegment("team")
+        .addSegment("list")
+        .addQueryParameter("six", String.valueOf(six))
+        .addQueryParameter("max", String.valueOf(max))
+        .build();
+
+        String tableURL = URLBuilder.root(ROOT_PATH)
+            .addSegment("team")
+            .addSegment("list")
+            .build();
+
+        String createURL = URLBuilder.root(ROOT_PATH)
+            .addSegment("team")
+            .addSegment("create")
+            .addQueryParameter("return", returnURL)
+            .build();
+
+        
         // Create the table header
         List<String> columns = new ArrayList<String>(4);
         columns.add(msg.list_name());
@@ -67,8 +85,11 @@ public class TeamManagementList {
             row.add(new Text(String.valueOf(team.members.size())));
             String s = team.members.stream().map(u -> u.username).collect(Collectors.joining("<br/>"));
             row.add(new Text(s,true));
-            String actionURL = ROOT_PATH + "/team/?uuid=" + URLEncoder.encode(team.id.toString(), Charset.defaultCharset()) 
-                + "&return=" + returnURL;
+            String actionURL  = URLBuilder.root(ROOT_PATH)
+                .addSegment("team")
+                .addQueryParameter("uuid", team.id.toString())
+                .addQueryParameter("return", returnURL)
+                .build();
             row.add(new Button(msg.list_edit(), actionURL, ""));
             data.add(row);
         });
