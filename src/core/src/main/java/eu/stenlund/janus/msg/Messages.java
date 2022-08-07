@@ -68,9 +68,18 @@ public interface Messages {
     @Message("Teams")
     String menu_administration_teams();
 
-    @Message("System error")
+    @Message("An error has occured")
     String error_title();
 
+    @Message("No such item")
+    String error_nosuchitem_title();
+
+    @Message("No item of type {type} with uuid {uuid} exists.")
+    String error_nosuchitem(String type, String uuid);
+
+    @Message("Technical information:")
+    String error_technical_info();
+    
     @Message("Return")
     String error_back();
 

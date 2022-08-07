@@ -12,6 +12,7 @@ import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.base.JanusException;
 import eu.stenlund.janus.base.JanusHelper;
+import eu.stenlund.janus.base.JanusNoSuchItemException;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.base.URLBuilder;
 import eu.stenlund.janus.model.Backlog;
@@ -140,7 +141,10 @@ public class TeamManagementTeam {
                 sf.withSession(s -> Team.getTeam(s, uuid)
                     .onItem()
                         .ifNull()
-                            .failWith(new JanusException("No team with that UUID exists", uri.toString()))),
+                            .failWith(new JanusNoSuchItemException("Failed to read the team from the database using the given uuid."
+                                , "team"
+                                , uuid.toString()
+                                , uri.toString()))),
                 sf.withSession(s -> User.getListOfUsers(s))).asTuple()
             .map(lu -> new TeamManagementTeam(
                     lu.getItem1(),

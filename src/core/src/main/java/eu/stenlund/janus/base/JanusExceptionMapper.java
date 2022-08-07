@@ -1,6 +1,11 @@
 package eu.stenlund.janus.base;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Locale;
+
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -26,16 +31,36 @@ public class JanusExceptionMapper implements ExceptionMapper<JanusException> {
     @Context
     UriInfo uriInfo;
 
+    /**
+     * The session object for the application, it comes with every request as a cookie.
+     */
+    @Inject
+    JanusSession js;
+
     private static final Logger log = Logger.getLogger(JanusExceptionMapper.class);
 
     @Override
-    public Response toResponse(JanusException exception) {
+    public Response toResponse(JanusException exception) {;
 
-        String msg = Qute.fmt("{#include error.html/}")
+        // Get hold of the sessions locale
+        Locale tag = Locale.forLanguageTag(js.getLocale());
+
+        // Get hold of the stack trace
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        exception.printStackTrace(pw);
+
+        // Decide what template to use and do formatting with qute
+        String template = "{#include " + exception.getTemplate() + "/}";
+        String msg = Qute.fmt(template)
+            .attribute("locale", tag)
+            .data("stack", sw.toString())
             .data("exception", exception).render();
-
+        
+        /* OK message */
         return Response.ok(msg).
             header("X-Up-Dismiss-Layer", "null").
             build();
+
     }
 }

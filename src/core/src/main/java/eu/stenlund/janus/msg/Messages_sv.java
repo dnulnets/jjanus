@@ -68,8 +68,17 @@ public interface Messages_sv extends Messages {
     @Message("Team")
     String menu_administration_teams();
 
-    @Message("Systemfel")
+    @Message("Ett fel har inträffat")
     String error_title();
+
+    @Message("Objektet saknas")
+    String error_nosuchitem_title();
+
+    @Message("Det finns inget objekt av typen {type} med uuid {uuid}.")
+    String error_nosuchitem(String type, String uuid);
+
+    @Message("Teknisk information:")
+    String error_technical_info();
 
     @Message("Tillbaka")
     String error_back();
