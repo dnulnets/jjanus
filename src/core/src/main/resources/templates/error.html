@@ -1,6 +1,10 @@
 {#include base-simple.html}
 {#workarea title=msg:error_title}
-    <br/>{exception.getLocalizedMessage()}<br/><br/>
+    <br/>
+    <p>{exception.getLocalizedMessage()}</p>
     <a class="btn btn-primary" role="button" href="{exception.getReturn()}">{msg:error_back}</a>
+    <br/><br/>
+    <p>{msg:error_technical_info}</p><p> {exception.getLocalizedMessage()}</p>
+    <p>Stacktrace:</p><p>{stack}</p>
 {/workarea}
 {/include}
