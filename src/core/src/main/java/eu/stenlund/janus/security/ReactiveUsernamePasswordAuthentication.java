@@ -73,7 +73,7 @@ public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<
             UsernamePasswordAuthenticationRequest request,
             AuthenticationRequestContext context) {
         String username = request.getUsername();
-        log.info("Username: + username");
+        log.info("Username:" + username);
         String password = String.valueOf(request.getPassword().getPassword());
         return sf.withSession(session -> User.findByUsername(session, username)
                 .onFailure().transform(t -> new AuthenticationFailedException(t))

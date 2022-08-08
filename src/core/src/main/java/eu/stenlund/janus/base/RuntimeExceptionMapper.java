@@ -27,7 +27,7 @@ import io.quarkus.qute.Qute;
  */
 @Provider
 @Priority(Priorities.USER)
-public class JanusExceptionMapper implements ExceptionMapper<JanusException> {
+public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {
 
     @Context
     UriInfo uriInfo;
@@ -38,10 +38,10 @@ public class JanusExceptionMapper implements ExceptionMapper<JanusException> {
     @Inject
     JanusSession js;
 
-    private static final Logger log = Logger.getLogger(JanusExceptionMapper.class);
+    private static final Logger log = Logger.getLogger(RuntimeException.class);
 
     @Override
-    public Response toResponse(JanusException exception) {;
+    public Response toResponse(RuntimeException exception) {;
 
         // Get hold of the sessions locale
         Locale tag = Locale.forLanguageTag(js.getLocale());
@@ -52,11 +52,13 @@ public class JanusExceptionMapper implements ExceptionMapper<JanusException> {
         exception.printStackTrace(pw);
 
         // Decide what template to use and do formatting with qute
-        String template = "{#include " + exception.getTemplate() + "/}";
+        String template = "{#include runtimeexception.html/}";
         String msg = Qute.fmt(template)
             .attribute("locale", tag)
+            .data("back", uriInfo.getBaseUri().toString())
             .data("stack", sw.toString())
-            .data("exception", exception).render();
+            .data("exception", exception)
+            .render();
         
         /* OK message */
         return Response.ok(msg, MediaType.TEXT_HTML).
