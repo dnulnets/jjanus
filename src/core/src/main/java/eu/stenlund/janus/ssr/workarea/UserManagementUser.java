@@ -6,11 +6,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
+import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
-import eu.stenlund.janus.base.URLBuilder;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.UserManagement;
@@ -28,6 +32,14 @@ import io.smallrye.mutiny.Uni;
  * 
  */
 public class UserManagementUser {
+
+    /**
+     * Get hold of the applications URI info and builder
+     */
+    @Context
+    UriInfo uriInfo;
+    
+    private static final Logger log = Logger.getLogger(UserManagementUser.class);
 
     /**
      * The form used.
@@ -80,16 +92,20 @@ public class UserManagementUser {
 
         // Create action URL:s
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path","/");
-        String deleteURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("user")
-            .addSegment("delete").build();
-        createURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("user")
-            .addSegment("create")
-            .build();
-        updateURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("user")
-            .build();
+        
+        String deleteURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("user")
+            .segment("delete")
+            .build().toString();
+
+        createURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("user")
+            .segment("create")
+            .build().toString();
+
+        updateURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("user")
+            .build().toString();
 
         String backURL = ROOT_PATH; 
         if (back != null)
@@ -122,9 +138,9 @@ public class UserManagementUser {
 
         // Create the form
         if (newUser)
-            form = new Form(Form.POST, createURL, true);
+            form = new Form(Form.POST, createURL, true, "");
         else
-            form = new Form(Form.POST, updateURL, true);
+            form = new Form(Form.POST, updateURL, true, "");
     }
 
     /**

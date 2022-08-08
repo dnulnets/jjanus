@@ -23,6 +23,11 @@ public class Form extends Base {
     public boolean validate;
 
     /**
+     * Any extra attributes for the form tag.
+     */
+    public String extra;
+
+    /**
      * The method to use when submitting a form.
      */
     public String method;
@@ -45,5 +50,20 @@ public class Form extends Base {
         this.method = method;
         this.action = action;
         this.validate = validate;
+    }
+
+        /**
+     * Creates a form model.
+     * 
+     * @param method The method to use.
+     * @param action The form action URL.
+     * @param validate If it should be validated.
+     */
+    public Form (String method, String action, boolean validate, String extra)
+    {
+        this.method = method;
+        this.action = action;
+        this.validate = validate;
+        this.extra = extra;
     }
 }

@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ws.rs.core.UriBuilder;
+
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
-import eu.stenlund.janus.base.URLBuilder;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.UserManagement;
 import eu.stenlund.janus.ssr.ui.Base;
@@ -47,23 +48,23 @@ public class UserManagementList {
         UserManagement msg = JanusTemplateHelper.getMessageBundle(UserManagement.class, locale);
 
         // Create the action URL:s
-        String returnURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("user")
-            .addSegment("list")
-            .addQueryParameter("six", String.valueOf(six))
-            .addQueryParameter("max", String.valueOf(max))
-            .build();
+        String returnURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("user")
+            .segment("list")
+            .queryParam("six", six)
+            .queryParam("max", max)
+            .build().toString();
         
-        String tableURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("user")
-            .addSegment("list")
-            .build();
+        String tableURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("user")
+            .segment("list")
+            .build().toString();
 
-        String createURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("user")
-            .addSegment("create")
-            .addQueryParameter("return", returnURL)
-            .build();
+        String createURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("user")
+            .segment("create")
+            .queryParam("return", returnURL)
+            .build().toString();
 
         // Create the table header
         List<String> columns = new ArrayList<String>(4);
@@ -82,12 +83,12 @@ public class UserManagementList {
             row.add(new Text (user.email));
             String s = user.roles.stream().map(r -> r.longName).collect(Collectors.joining("<br/>"));
             row.add(new Text (s, true));
-            String actionURL  = URLBuilder.root(ROOT_PATH)
-                .addSegment("user")
-                .addQueryParameter("uuid", user.id.toString())
-                .addQueryParameter("return", returnURL)
-                .build();
-            row.add(new Button (msg.list_edit(), actionURL, ""));
+            String actionURL  = UriBuilder.fromPath(ROOT_PATH)
+                .segment("user")
+                .queryParam("uuid", user.id)
+                .queryParam("return", returnURL)
+                .build().toString();
+            row.add(new Button (msg.list_edit(), actionURL, "up-follow up-target=\"#workarea\""));
             data.add(row);
         });
 
