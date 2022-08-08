@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ws.rs.core.UriBuilder;
+
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
-import eu.stenlund.janus.base.URLBuilder;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.msg.TeamManagement;
 import eu.stenlund.janus.ssr.ui.Base;
@@ -47,23 +48,23 @@ public class TeamManagementList {
         TeamManagement msg = JanusTemplateHelper.getMessageBundle(TeamManagement.class, locale);
 
         // Create action URL:s
-        String returnURL = URLBuilder.root(ROOT_PATH)
-        .addSegment("team")
-        .addSegment("list")
-        .addQueryParameter("six", String.valueOf(six))
-        .addQueryParameter("max", String.valueOf(max))
-        .build();
+        String returnURL = UriBuilder.fromPath(ROOT_PATH)
+        .segment("team")
+        .segment("list")
+        .queryParam("six", six)
+        .queryParam("max", max)
+        .build().toString();
 
-        String tableURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("team")
-            .addSegment("list")
-            .build();
+        String tableURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("team")
+            .segment("list")
+            .build().toString();
 
-        String createURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("team")
-            .addSegment("create")
-            .addQueryParameter("return", returnURL)
-            .build();
+        String createURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("team")
+            .segment("create")
+            .queryParam("return", returnURL)
+            .build().toString();
 
         
         // Create the table header
@@ -81,11 +82,11 @@ public class TeamManagementList {
             row.add(new Text(String.valueOf(team.members.size())));
             String s = team.members.stream().map(u -> u.username).collect(Collectors.joining("<br/>"));
             row.add(new Text(s,true));
-            String actionURL  = URLBuilder.root(ROOT_PATH)
-                .addSegment("team")
-                .addQueryParameter("uuid", team.id.toString())
-                .addQueryParameter("return", returnURL)
-                .build();
+            String actionURL  = UriBuilder.fromPath(ROOT_PATH)
+                .segment("team")
+                .queryParam("uuid", team.id)
+                .queryParam("return", returnURL)
+                .build().toString();
             row.add(new Button(msg.list_edit(), actionURL, "up-follow up-target=\"#workarea\""));
             data.add(row);
         });

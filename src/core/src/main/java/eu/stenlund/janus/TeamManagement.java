@@ -1,7 +1,6 @@
 package eu.stenlund.janus;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -28,7 +27,6 @@ import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.workarea.Base;
 import eu.stenlund.janus.ssr.workarea.TeamManagementList;
 import eu.stenlund.janus.ssr.workarea.TeamManagementTeam;
-import eu.stenlund.janus.ssr.workarea.UserManagementUser;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;

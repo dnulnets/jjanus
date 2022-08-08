@@ -2,6 +2,6 @@
     {#if it.validate}
         class="needs-validation" novalidate
     {/if}
-    action={it.action} method="{it.method}">
+    action={it.action} method="{it.method}" {it.extra}>
     {nested-content}
 </form>

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.UriBuilder;
 
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 import org.jboss.logging.Logger;
@@ -14,7 +15,6 @@ import eu.stenlund.janus.base.JanusException;
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusNoSuchItemException;
 import eu.stenlund.janus.base.JanusTemplateHelper;
-import eu.stenlund.janus.base.URLBuilder;
 import eu.stenlund.janus.model.Backlog;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.Team;
@@ -80,16 +80,20 @@ public class TeamManagementTeam {
 
         // Create action URL:s
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path","/");
-        String deleteURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("team")
-            .addSegment("delete").build();
-        createURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("team")
-            .addSegment("create")
-            .build();
-        updateURL = URLBuilder.root(ROOT_PATH)
-            .addSegment("team")
-            .build();
+
+        String deleteURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("team")
+            .segment("delete")
+            .build().toString();
+
+        createURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("team")
+            .segment("create")
+            .build().toString();
+
+        updateURL = UriBuilder.fromPath(ROOT_PATH)
+            .segment("team")
+            .build().toString();
 
         String backURL = ROOT_PATH; 
         if (back != null)
