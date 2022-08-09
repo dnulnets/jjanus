@@ -20,11 +20,11 @@ public class Checkbox extends Base {
     private static final Logger log = Logger.getLogger(Checkbox.class);
 
     public String label;
-    public String name;
-    public String id;
+    public RawString name;
+    public RawString id;
     public boolean checked;
-    public String value;
-    public String extra;
+    public RawString value;
+    public RawString extra;
 
     @Override
     public String type()
@@ -41,11 +41,11 @@ public class Checkbox extends Base {
      */
     public Checkbox(String label, String name, String id, String value, boolean checked, String extra) {
         this.label = label;
-        this.name = name;
-        this.id = id;
-        this.value = value;
+        this.name = new RawString(name);
+        this.id = new RawString(id);
+        this.value = new RawString(value);
         this.checked = checked;
-        this.extra = extra;
+        this.extra = new RawString(extra);
     }
 
 }

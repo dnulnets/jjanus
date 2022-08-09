@@ -87,7 +87,7 @@ public class TeamManagementList {
                 .queryParam("uuid", team.id)
                 .queryParam("return", returnURL)
                 .build().toString();
-            row.add(new Button(msg.list_edit(), actionURL, "up-follow up-target=\"#workarea\""));
+            row.add(new Button(msg.list_edit(), actionURL, "up-follow up-history=true up-target=\"#workarea\""));
             data.add(row);
         });
 

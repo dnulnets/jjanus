@@ -119,9 +119,9 @@ public class TeamManagementTeam {
 
         // Create the form
         if (newUser)
-            form = new Form(Form.POST, createURL, true);
+            form = new Form(Form.POST, createURL, true, "up-submit up-target=\"#workarea\" up-history=true up-location=\""+ backURL + "\"");
         else
-            form = new Form(Form.POST, updateURL, true);
+            form = new Form(Form.POST, updateURL, true, "up-submit up-target=\"#workarea\" up-history=true up-location=\""+ backURL + "\"");
     }
 
     /**

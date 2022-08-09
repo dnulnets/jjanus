@@ -1,11 +1,7 @@
 package eu.stenlund.janus.ssr.ui;
 
-import java.util.Map;
-
 import org.jboss.logging.Logger;
 
-import eu.stenlund.janus.base.JanusHelper;
-import io.quarkus.qute.Qute;
 import io.quarkus.qute.RawString;
 
 /**
@@ -20,8 +16,8 @@ public class Button extends Base {
     private static final Logger log = Logger.getLogger(Button.class);
 
     public String label;
-    public String action;
-    public String extra;
+    public RawString action;
+    public RawString extra;
 
     @Override
     public String type()
@@ -38,8 +34,8 @@ public class Button extends Base {
      */
     public Button(String label, String action, String extra) {
         this.label = label;
-        this.action = action;
-        this.extra = extra;
+        this.action = new RawString(action);
+        this.extra = new RawString(extra);
     }
 
     /**
@@ -52,7 +48,7 @@ public class Button extends Base {
     public Button(String label, String extra) {
         this.label = label;
         this.action = null;
-        this.extra = extra;
+        this.extra = new RawString(extra);
     }
 
 }

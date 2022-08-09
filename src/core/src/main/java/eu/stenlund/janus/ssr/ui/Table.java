@@ -1,14 +1,9 @@
 package eu.stenlund.janus.ssr.ui;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.jboss.logging.Logger;
 
-import eu.stenlund.janus.base.JanusHelper;
-import eu.stenlund.janus.base.JanusTemplateHelper;
-import io.quarkus.qute.Qute;
 import io.quarkus.qute.RawString;
 
 /**
@@ -55,9 +50,9 @@ public class Table extends Base {
     /**
      * The base URL for sleecting a new page.
      */
-    public String tableURL;
-    public String nextPageURL;
-    public String previousPageURL;
+    public RawString tableURL;
+    public RawString nextPageURL;
+    public RawString previousPageURL;
 
     public List<String> columns;
     public List<List<Base>> data;
@@ -87,9 +82,9 @@ public class Table extends Base {
      * @param n The page.
      * @return An URL to the page.
      */
-    public String pageURL(int page)
+    public RawString pageURL(int page)
     {
-        return tableURL + "?six=" + String.valueOf((page-1)*max) + "&max="+String.valueOf(max);
+        return new RawString(tableURL + "?six=" + String.valueOf((page-1)*max) + "&max="+String.valueOf(max));
     }
 
     /**
@@ -118,14 +113,14 @@ public class Table extends Base {
         this.six = six;
         this.max = max;
         this.total = total;
-        this.tableURL = tableURL;
+        this.tableURL = new RawString(tableURL);
 
         // Calculated values
         this.eix = six + data.size();
         this.pages = (total-1) / max + 1;
         this.page = six/max + 1;
-        this.nextPageURL = pageURLBasedOnIndex(six+max);
-        this.previousPageURL = pageURLBasedOnIndex(six-max);
+        this.nextPageURL = new RawString(pageURLBasedOnIndex(six+max));
+        this.previousPageURL = new RawString(pageURLBasedOnIndex(six-max));
 
         // Check incoming data
         if (data.size() > 0) {
