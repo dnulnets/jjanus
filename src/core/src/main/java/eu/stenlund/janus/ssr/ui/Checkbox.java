@@ -43,9 +43,9 @@ public class Checkbox extends Base {
         this.label = label;
         this.name = new RawString(name);
         this.id = new RawString(id);
-        this.value = new RawString(value);
+        this.value = new RawString(value==null?"":value);
         this.checked = checked;
-        this.extra = new RawString(extra);
+        this.extra = new RawString(extra==null?"":value);
     }
 
 }

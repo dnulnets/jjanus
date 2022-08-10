@@ -66,6 +66,6 @@ public class Form extends Base {
         this.method = new RawString(method);
         this.action = new RawString (action);
         this.validate = validate;
-        this.extra = new RawString(extra);
+        this.extra = new RawString(extra==null?"":extra);
     }
 }

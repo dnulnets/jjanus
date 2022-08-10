@@ -35,7 +35,7 @@ public class Button extends Base {
     public Button(String label, String action, String extra) {
         this.label = label;
         this.action = new RawString(action);
-        this.extra = new RawString(extra);
+        this.extra = new RawString(extra==null?"":extra);
     }
 
     /**
@@ -48,7 +48,7 @@ public class Button extends Base {
     public Button(String label, String extra) {
         this.label = label;
         this.action = null;
-        this.extra = new RawString(extra);
+        this.extra = new RawString(extra==null?"":extra);
     }
 
 }

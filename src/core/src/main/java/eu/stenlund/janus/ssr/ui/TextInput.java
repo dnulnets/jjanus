@@ -29,9 +29,9 @@ public class TextInput extends Base {
         this.label = label;
         this.name = new RawString(name);
         this.id = new RawString(id);
-        this.value = new RawString(value);
+        this.value = new RawString(value==null?"":value);
         this.feedback = feedback;
-        this.extra = new RawString(extra);
+        this.extra = new RawString(extra==null?"":extra);
     }
 
 }
