@@ -2,6 +2,7 @@
     <div>
         <div class="row">
             {#form workarea.form}
+            
                 <div class="row">
                     <div class="col">
                         {#text_input workarea.name/}
@@ -28,15 +29,12 @@
                 </div>
 
                 <div class="row">
-                    <div class="col mb-1">
-                        {usermsg:user_roles}
+                    <div class="col">
+                        {#select_multi workarea.roles/}
                     </div>
-                </div>
-
-                <div class="mb-3">
-                        {#for role in workarea.roles}
-                            {#checkbox_inline role/}
-                        {/for}
+                    <div class="col">
+                        {#select_multi workarea.teams/}
+                    </div>
                 </div>
 
                 <div class="text-start pt-4">
@@ -46,6 +44,7 @@
                     {/if}
                     {#button_link workarea.cancelButton/}
                 </div>
+
             {/form}
         </div>
     </div>

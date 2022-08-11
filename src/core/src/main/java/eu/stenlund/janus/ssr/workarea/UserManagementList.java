@@ -110,10 +110,10 @@ public class UserManagementList {
     {
         return Uni.combine().all().unis(
             sf.withSession(s -> User.getListOfUsers(s, start, max)),
-            sf.withSession(s -> User.getNumberOfUsers(s))).asTuple()
-        .map(lu -> new UserManagementList(
-                lu.getItem1(),
-                lu.getItem2().intValue(),
+            sf.withSession(s -> User.getNumberOfUsers(s)))
+        .combinedWith((users, nof) -> new UserManagementList(
+                users,
+                nof.intValue(),
                 start,
                 max,
                 locale));

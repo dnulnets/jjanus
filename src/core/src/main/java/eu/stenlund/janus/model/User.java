@@ -79,12 +79,30 @@ public class User extends JanusEntity {
         , inverseJoinColumns = {@JoinColumn(name = "role") })
     public Set<Role> roles;
 
-    
     /**
      * All the teams the user belongs to.
      */
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "members")
     public Set<Team> teams;
+
+
+    public void addTeam (Team team)
+    {
+        teams.add(team);
+        team.members.add(this);
+    }
+
+    public void removeTeam (Team team)
+    {
+        teams.remove(team);
+        team.members.remove(this);
+    }
+
+    public void clearTeams()
+    {
+        teams.forEach(team->team.members.remove(this));
+        teams.clear();
+    }
 
     /**
      * Returns true if the user has a specific role.
@@ -99,6 +117,25 @@ public class User extends JanusEntity {
             boolean has = false;
             while (i.hasNext())
                 has |= (i.next().name.compareTo(role)==0);
+            return has;
+        } else
+            return false;
+
+    }
+
+    /**
+     * Returns true if the user belongs to a specific team.
+     * 
+     * @param uuid The uuid of the team.
+     * @return True if the user has the team.
+     */
+    public boolean belongsToTeam(UUID uuid)
+    {
+        if (teams != null) {
+            Iterator<Team> i = teams.iterator();
+            boolean has = false;
+            while (i.hasNext())
+                has |= (i.next().id.compareTo(uuid)==0);
             return has;
         } else
             return false;

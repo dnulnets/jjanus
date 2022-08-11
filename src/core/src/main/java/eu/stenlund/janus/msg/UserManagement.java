@@ -69,7 +69,10 @@ public interface UserManagement {
     
     @Message("Roles")
     String user_roles();
-    
+
+    @Message("Teams")
+    String user_teams();
+
     @Message("Save")
     String user_save();
     

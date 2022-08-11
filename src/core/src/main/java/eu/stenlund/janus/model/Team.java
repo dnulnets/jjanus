@@ -1,7 +1,9 @@
 package eu.stenlund.janus.model;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,6 +20,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.reactive.mutiny.Mutiny.Session;
+import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.model.base.JanusEntity;
 import io.smallrye.mutiny.Uni;
@@ -40,6 +43,8 @@ import io.smallrye.mutiny.Uni;
 })
 public class Team extends JanusEntity {
 
+    private static final Logger log = Logger.getLogger(Team.class);
+
     /**
      * Short name of the team, e.g. "Codestorm"
      */
@@ -55,6 +60,24 @@ public class Team extends JanusEntity {
         , joinColumns = { @JoinColumn(name = "team") }
         , inverseJoinColumns = {@JoinColumn(name = "\"user\"") })
     public Set<User> members;
+
+    public void addMember(User user)
+    {
+        members.add(user);
+        user.teams.add(this);
+    }
+
+    public void removeMember(User user)
+    {
+        members.remove(user);
+        user.teams.remove(this);
+    }
+
+    public void clearMembers()
+    {
+        members.forEach(user->user.teams.remove(this));
+        members.clear();
+    }
 
     /**
      * The teams backlog.
@@ -110,7 +133,7 @@ public class Team extends JanusEntity {
     }
 
     /**
-     * Returns with the list of users based on start and max number of users. It is mainly used
+     * Returns with the list of teams based on start and max number of users. It is mainly used
      * for tables in the gui.
      * 
      * @param s The session.
@@ -122,5 +145,34 @@ public class Team extends JanusEntity {
     {
         return s.createNamedQuery("Team_ListOfTeams", Team.class)
             .setFirstResult(start).setMaxResults(max).getResultList();
+    }
+
+    /**
+     * Returns with the list of teams based on start and max number of users. It is mainly used
+     * for tables in the gui.
+     * 
+     * @param s The session.
+     * @param start Start index tio search from.
+     * @param max Max number of items to return.
+     * @return List of users.
+     */
+    public static Uni<List<Team>> getListOfTeams(Session s)
+    {
+        return s.createNamedQuery("Team_ListOfTeams", Team.class).getResultList();
+    }
+
+    /**
+     * Utility function to find a Role in a list of roles based on the uuid.
+     * 
+     * @param roles The list of roles.
+     * @param uuid The UUID.
+     * @return The found role or null.
+     */
+    public static Team findTeamById(List<Team> teams, UUID uuid)
+    {
+        Optional<Team> team = teams.stream().filter(t-> {
+            return t.id.compareTo(uuid)==0;
+        }).findFirst();
+        return team.orElse(null);
     }
 }

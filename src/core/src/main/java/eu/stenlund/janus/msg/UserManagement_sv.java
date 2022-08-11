@@ -69,7 +69,10 @@ public interface UserManagement_sv extends UserManagement {
     
     @Message("Roller")
     String user_roles();
-    
+
+    @Message("Team")
+    String user_teams();
+
     @Message("Spara")
     String user_save();
     

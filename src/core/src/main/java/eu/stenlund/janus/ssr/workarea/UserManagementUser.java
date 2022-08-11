@@ -16,11 +16,13 @@ import org.jboss.logging.Logger;
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Role;
+import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.UserManagement;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Checkbox;
 import eu.stenlund.janus.ssr.ui.Form;
+import eu.stenlund.janus.ssr.ui.SelectMulti;
 import eu.stenlund.janus.ssr.ui.TextInput;
 import io.smallrye.mutiny.Uni;
 
@@ -69,10 +71,15 @@ public class UserManagementUser {
     public String updateURL;
 
     /**
-     * The checkboxes for the available roles to choose from in the application.
+     * The roles list
      */
-    public List<Checkbox> roles;
+    public SelectMulti roles;
 
+    /**
+     * The teams list
+     */
+    public SelectMulti teams;
+    
     /**
      * Flag so we know if it is a new user that we want to create.
      */
@@ -88,7 +95,7 @@ public class UserManagementUser {
      * @param newUser Flag telling if it is a new user page or an update/edit page.
      * @param locale The locale of the page.
      */
-    public UserManagementUser(User user, List<Role> roles, URI back, boolean newUser, String locale) {
+    public UserManagementUser(User user, List<Role> roles, List<Team> teams, URI back, boolean newUser, String locale) {
 
         // Create action URL:s
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path","/");
@@ -132,9 +139,15 @@ public class UserManagementUser {
         email = new TextInput(msg.user_email(), "email", "id-email", user.email, msg.user_must_have_email(), "required");
         password = new TextInput(msg.user_password(), "password", "id-password", null, newUser?msg.user_must_have_password():null, "data-lpignore=true " + (newUser?"required":""));
 
-        // Create the form's role checkboxes
-        this.roles = new ArrayList<Checkbox>(roles.size());
-        roles.forEach(role -> this.roles.add(new Checkbox(role.longName, "roles", "id-" + role.name, role.id.toString(), user.hasRole(role.name), null)));
+        // Create the form's multiselect role
+        List<SelectMulti.Item> ritems = new ArrayList<SelectMulti.Item>(roles.size());
+        roles.forEach(role -> ritems.add(new SelectMulti.Item (role.longName, user.hasRole(role.name), role.id.toString())));
+        this.roles = new SelectMulti (msg.user_roles(), "roles", "id-roles", ritems, null);
+
+        // Create the forms multiselect teams
+        List<SelectMulti.Item> items = new ArrayList<SelectMulti.Item>(teams.size());
+        teams.forEach(team -> items.add(new SelectMulti.Item(team.name, user.belongsToTeam(team.id), team.id.toString())));
+        this.teams = new SelectMulti(msg.user_teams(), "teams", "id-teams", items, null);
 
         // Create the form
         if (newUser)
@@ -154,18 +167,21 @@ public class UserManagementUser {
     public static Uni<UserManagementUser> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
     {
         if (uuid == null)
-            return sf.withSession(s -> Role.getListOfRoles(s))
-            .map(lr -> new UserManagementUser(
+            return Uni.combine().all().unis(
+                sf.withSession(s -> Role.getListOfRoles(s)),
+                sf.withSession(s -> Team.getListOfTeams(s)))
+            .combinedWith((roles, teams) -> new UserManagementUser(
                     new User(),
-                    lr,
+                    roles,
+                    teams,
                     uri, true, locale));        
         else
             return Uni.combine().all().unis(
-                sf.withSession(s -> User.getUser(s, uuid)),
-                sf.withSession(s -> Role.getListOfRoles(s))).asTuple()
-            .map(lu -> new UserManagementUser(
-                    lu.getItem1(),
-                    lu.getItem2(),
+                sf.withSession(s ->  User.getUser(s, uuid)),
+                sf.withSession(s -> Role.getListOfRoles(s)),
+                sf.withSession(s -> Team.getListOfTeams(s)))
+            .combinedWith((user, roles, teams) -> new UserManagementUser(
+                    user, roles, teams,
                     uri, false, locale));
     }
 
@@ -187,36 +203,44 @@ public class UserManagementUser {
                                         String name,
                                         String email,
                                         UUID[] roles,
+                                        UUID[] teams,
                                         String password)
     {
         return sf.withTransaction((s,t)->
-        Uni.combine().all().unis(
-            User.getUser(s, uuid),
-            Role.getListOfRoles(s)
-        ).asTuple().
-        map(lu-> {
-                User user = lu.getItem1();
-                List<Role> listOfRoles = lu.getItem2();
+            Uni.combine().all().unis(
+                User.getUser(s, uuid),
+                Role.getListOfRoles(s),
+                Team.getListOfTeams(s)).
+                combinedWith((user, listOfRoles, listOfTeams) -> {
 
-                // Update the user
-                user.name = name;
-                user.username = username;
-                user.email = email;
-                if (!JanusHelper.isBlank(password))
-                    user.setPassword(password);
+                    // Update the user
+                    user.name = name;
+                    user.username = username;
+                    user.email = email;
+                    if (!JanusHelper.isBlank(password))
+                        user.setPassword(password);
 
-                // Add roles
-                user.roles.clear();
-                for (UUID ruid : roles) {
-                    Role r = Role.findRoleById(listOfRoles, ruid);
-                    if (r!=null)
-                        user.roles.add(r);
-                }
+                    // Add roles
+                    user.roles.clear();
+                    for (UUID ruid : roles) {
+                        Role role = Role.findRoleById(listOfRoles, ruid);
+                        if (role!=null)
+                            user.roles.add(role);
+                    }
 
-                // Return with data
-                return user;
-            }
-        ));
+                    // Add teams
+                    user.clearTeams();
+                    for (UUID tuid : teams) {
+                        Team team = Team.findTeamById(listOfTeams, tuid);
+                        if (team!=null) {
+                            user.teams.add(team);
+                            team.members.add (user);
+                        }
+                    }
+
+                    // Return with data
+                    return user;
+                }));
     }
 
     /**
