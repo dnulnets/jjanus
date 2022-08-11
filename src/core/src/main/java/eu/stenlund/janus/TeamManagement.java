@@ -109,7 +109,7 @@ public class TeamManagement {
     @GET
     @Path("")
     @RolesAllowed({"admin"})
-    public Uni<RestResponse<String>> user(@RestQuery("uuid") UUID id,
+    public Uni<RestResponse<String>> team(@RestQuery("uuid") UUID id,
                                             @RestQuery("return") URI uri)
     {
         // Check that we got the id
@@ -136,7 +136,7 @@ public class TeamManagement {
     @Path("")
     @RolesAllowed({"admin"})
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Uni<RestResponse<String>> user(@RestForm UUID uuid,
+    public Uni<RestResponse<String>> team(@RestForm UUID uuid,
                                             @RestForm String name)
     {
         // We need data for all of the fields

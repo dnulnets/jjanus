@@ -1,5 +1,5 @@
-<button type="submit" class="btn btn-primary" {it.extra.raw or ''}
+<button type="submit" class="btn btn-primary" {it.extra.raw}
     {#if it.action??}
-        formaction="{it.action}"
+        formaction="{it.action.raw}"
     {/if}
 >{it.label}</button>

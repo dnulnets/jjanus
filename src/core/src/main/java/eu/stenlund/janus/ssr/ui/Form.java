@@ -1,7 +1,5 @@
 package eu.stenlund.janus.ssr.ui;
 
-import io.quarkus.qute.RawString;
-
 /**
  * A form
  *
@@ -17,7 +15,7 @@ public class Form extends Base {
     /**
      * The URL to be used when pressing submit.
      */
-    public RawString action;
+    public String action;
 
     /**
      * If the form whould be validated before submitting.
@@ -27,12 +25,12 @@ public class Form extends Base {
     /**
      * Any extra attributes for the form tag.
      */
-    public RawString extra;
+    public String extra;
 
     /**
      * The method to use when submitting a form.
      */
-    public RawString method;
+    public String method;
 
     @Override
     public String type()
@@ -49,9 +47,10 @@ public class Form extends Base {
      */
     public Form (String method, String action, boolean validate)
     {
-        this.method = new RawString(method);
-        this.action = new RawString(action);
+        this.method = method;
+        this.action = action;
         this.validate = validate;
+        this.extra = "";
     }
 
         /**
@@ -60,12 +59,13 @@ public class Form extends Base {
      * @param method The method to use.
      * @param action The form action URL.
      * @param validate If it should be validated.
+     * @param extra The extra attributes to the form, can be null.
      */
     public Form (String method, String action, boolean validate, String extra)
     {
-        this.method = new RawString(method);
-        this.action = new RawString (action);
+        this.method = method;
+        this.action = action;
         this.validate = validate;
-        this.extra = new RawString(extra==null?"":extra);
+        this.extra = extra==null?"":extra;
     }
 }

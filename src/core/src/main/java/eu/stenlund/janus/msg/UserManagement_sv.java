@@ -25,6 +25,9 @@ public interface UserManagement_sv extends UserManagement {
     @Message("Epost")
     String list_email();
 
+    @Message("Team")
+    String list_teams();
+
     @Message("Roller")
     String list_roles();
 

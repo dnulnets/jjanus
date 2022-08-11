@@ -71,6 +71,7 @@ public class UserManagementList {
         columns.add(msg.list_name());
         columns.add(msg.list_username());
         columns.add(msg.list_email());
+        columns.add(msg.list_teams());
         columns.add(msg.list_roles());
         columns.add(msg.list_action());
 
@@ -81,8 +82,10 @@ public class UserManagementList {
             row.add(new Text (user.name));
             row.add(new Text (user.username));
             row.add(new Text (user.email));
-            String s = user.roles.stream().map(r -> r.longName).collect(Collectors.joining("<br/>"));
-            row.add(new Text (s, true));
+            String teams = user.teams.stream().map(t -> t.name).collect(Collectors.joining("<br/>"));
+            row.add (new Text(teams, true));
+            String roles = user.roles.stream().map(r -> r.longName).collect(Collectors.joining("<br/>"));
+            row.add(new Text (roles, true));
             String actionURL  = UriBuilder.fromPath(ROOT_PATH)
                 .segment("user")
                 .queryParam("uuid", user.id)

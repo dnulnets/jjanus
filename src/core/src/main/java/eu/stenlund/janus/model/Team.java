@@ -59,7 +59,7 @@ public class Team extends JanusEntity {
     /**
      * The teams backlog.
      */
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(nullable=false, name = "backlog", referencedColumnName = "id")
     public Backlog backlog;
     

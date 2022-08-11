@@ -28,6 +28,9 @@ public interface UserManagement {
     @Message("Roles")
     String list_roles();
 
+    @Message("Team")
+    String list_teams();
+
     @Message("Add user")
     String list_add();
 

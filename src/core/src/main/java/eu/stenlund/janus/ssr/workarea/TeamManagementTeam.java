@@ -205,6 +205,7 @@ public class TeamManagementTeam {
 
                     // Update the user
                     team.name = name;
+                    team.members = new HashSet<User>();
                     team.backlog = new Backlog();
                     
                     // Return with data

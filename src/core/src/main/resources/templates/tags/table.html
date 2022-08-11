@@ -52,11 +52,11 @@
             {#if it.page == 1}
                 <li class="page-item disabled"><a class="page-link" href="#">{ssr:table_action_previous}</a></li>
             {#else}
-                <li class="page-item"><a class="page-link" href="{it.previousPageURL}" up-history="true" up-follow up-target="#workarea">{ssr:table_action_previous}</a></li>
+                <li class="page-item"><a class="page-link" href="{it.previousPageURL.raw}" up-history="true" up-follow up-target="#workarea">{ssr:table_action_previous}</a></li>
             {/if}
             {#for i in it.pages}
                 {#if i != it.page}
-                    <li class="page-item"><a class="page-link" href="{it.pageURL(i)}" up-history="true" up-follow up-target="#workarea">{i}</a></li>
+                    <li class="page-item"><a class="page-link" href="{it.pageURL(i).raw}" up-history="true" up-follow up-target="#workarea">{i}</a></li>
                 {#else}
                     <li class="page-item disabled"><a class="page-link" href="#">{i}</a></li>
                 {/if}
@@ -64,7 +64,7 @@
             {#if it.page == it.pages}
                 <li class="page-item disabled"><a class="page-link" href="#">{ssr:table_action_next}</a></li>
             {#else}
-                <li class="page-item"><a class="page-link" href="{it.nextPageURL}" up-history="true" up-follow up-target="#workarea">{ssr:table_action_next}</a></li>
+                <li class="page-item"><a class="page-link" href="{it.nextPageURL.raw}" up-history="true" up-follow up-target="#workarea">{ssr:table_action_next}</a></li>
             {/if}
         </ul>
     </div>

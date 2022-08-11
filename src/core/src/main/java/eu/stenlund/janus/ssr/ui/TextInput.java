@@ -1,7 +1,5 @@
 package eu.stenlund.janus.ssr.ui;
 
-import io.quarkus.qute.RawString;
-
 /**
  * A button in the user interface, it contains both datamodel and view.
  *
@@ -12,11 +10,11 @@ import io.quarkus.qute.RawString;
 public class TextInput extends Base {
 
     public String label;
-    public RawString name;
-    public RawString id;
-    public RawString value;
+    public String name;
+    public String id;
+    public String value;
     public String feedback;
-    public RawString extra;
+    public String extra;
 
     @Override
     public String type()
@@ -27,11 +25,11 @@ public class TextInput extends Base {
     public TextInput (String label, String name, String id, String value, String feedback, String extra)
     {
         this.label = label;
-        this.name = new RawString(name);
-        this.id = new RawString(id);
-        this.value = new RawString(value==null?"":value);
+        this.name = name;
+        this.id = id;
+        this.value = value;
         this.feedback = feedback;
-        this.extra = new RawString(extra==null?"":extra);
+        this.extra = extra==null?"":extra;
     }
 
 }
