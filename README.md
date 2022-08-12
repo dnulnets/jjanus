@@ -13,10 +13,12 @@ The project is in an early design and startup phase. It started 2022-06-06 and i
 
 The first code has been created with a fully working RBAC security solution and form authentication that allows you to login based on users in the database and their roles.
 
+* SSR framework for GUI elements, such as forms, buttons, links, tables, checkboxes, navigation created.
 * Language support using @MessageBundles
 * Session support via client side cookie
 * Login and logout of the application
-* Administration of users and their roles, i.e. list, view, create, update and delete. Requires role admin.
+* Administration of users, their roles and team designation, i.e. list, view, create, update and delete. Requires role admin.
+* Administration of teams and its members, i.e. list, view, create, update and delete. Requires role admin.
 
 It is just the rest of the application left ;-) Look at the issues tab to see what is currently ongoing.
 
