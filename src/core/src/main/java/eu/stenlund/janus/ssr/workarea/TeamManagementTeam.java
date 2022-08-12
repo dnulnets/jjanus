@@ -5,25 +5,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriBuilder;
 
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 import org.jboss.logging.Logger;
 
-import eu.stenlund.janus.base.JanusException;
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusNoSuchItemException;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Backlog;
-import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.TeamManagement;
+import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Form;
 import eu.stenlund.janus.ssr.ui.TextInput;
-import io.quarkus.qute.Results.NotFound;
 import io.smallrye.mutiny.Uni;
 
 /**
@@ -111,17 +108,14 @@ public class TeamManagementTeam {
         else
             deleteButton = new Button (msg.team_delete(), deleteURL, null);
         saveButton = new Button (msg.team_save(), null);
-        cancelButton = new Button(msg.team_cancel(), backURL, "up-follow up-history=\"true\" up-target=\"#workarea\"");
+        cancelButton = new Button(msg.team_cancel(), backURL, JanusSSRHelper.unpolyFollow());
 
         // Create the form's text inputs
         name = new TextInput(msg.team_name(), "name", "id-name", team.name, msg.team_must_have_name(), "required");
         uuid = new TextInput("UUID", "uuid", "id-uuid", team.id!=null?team.id.toString():null, null, "readonly");
 
         // Create the form
-        if (newUser)
-            form = new Form(Form.POST, createURL, true, "up-submit up-target=\"#workarea\" up-history=true up-location=\""+ backURL + "\"");
-        else
-            form = new Form(Form.POST, updateURL, true, "up-submit up-target=\"#workarea\" up-history=true up-location=\""+ backURL + "\"");
+        form = new Form(Form.POST, newUser?createURL:updateURL, true, JanusSSRHelper.unpolySubmit(backURL));
     }
 
     /**
@@ -205,11 +199,9 @@ public class TeamManagementTeam {
 
                     // Update the user
                     team.name = name;
-                    team.members = new HashSet<User>();
-                    team.backlog = new Backlog();
                     
                     // Return with data
-                    return Team.addTeam(s, team);
+                    return Team.createTeam(s, team);
                 }
         );
     }

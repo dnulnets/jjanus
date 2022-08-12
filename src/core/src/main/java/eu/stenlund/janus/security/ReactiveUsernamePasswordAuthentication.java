@@ -75,7 +75,7 @@ public class ReactiveUsernamePasswordAuthentication implements IdentityProvider<
         String username = request.getUsername();
         log.info("Username:" + username);
         String password = String.valueOf(request.getPassword().getPassword());
-        return sf.withSession(session -> User.findByUsername(session, username)
+        return sf.withSession(session -> User.getByUsername(session, username)
                 .onFailure().transform(t -> new AuthenticationFailedException(t))
                 .onItem().transform(user -> checkPassword(user, password))
                 .onItem().transform(QuarkusSecurityIdentity.Builder::build));

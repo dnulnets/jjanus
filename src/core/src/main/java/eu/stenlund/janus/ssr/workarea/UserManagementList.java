@@ -12,6 +12,7 @@ import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.UserManagement;
+import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.ui.Base;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Table;
@@ -91,7 +92,7 @@ public class UserManagementList {
                 .queryParam("uuid", user.id)
                 .queryParam("return", returnURL)
                 .build().toString();
-            row.add(new Button (msg.list_edit(), actionURL, "up-follow up-history=true up-target=\"#workarea\""));
+            row.add(new Button (msg.list_edit(), actionURL, JanusSSRHelper.unpolyFollow()));
             data.add(row);
         });
 

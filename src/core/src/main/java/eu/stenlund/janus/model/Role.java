@@ -2,6 +2,7 @@ package eu.stenlund.janus.model;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -67,7 +68,7 @@ public class Role extends JanusEntity {
      * @param name The name of the role to locate.
      * @return The found role or null
      */
-    public static Uni<Role> findByName(Session s, String name) {
+    public static Uni<Role> getByName(Session s, String name) {
         return s.createNamedQuery("Role_FindByName", Role.class)
                 .setParameter("name", name).getSingleResult();
 
@@ -93,13 +94,7 @@ public class Role extends JanusEntity {
      */
     public static Role findRoleById(List<Role> roles, UUID uuid)
     {
-        Iterator<Role> i = roles.iterator();
-        Role role = null;
-        while(i.hasNext()) {
-            Role r = i.next();
-            if (r.id.compareTo(uuid) == 0)
-                role = r;
-        }
-        return role;
+        Optional<Role> role = roles.stream().filter(t-> t.id.compareTo(uuid)==0).findFirst();
+        return role.orElse(null);
     }
 }

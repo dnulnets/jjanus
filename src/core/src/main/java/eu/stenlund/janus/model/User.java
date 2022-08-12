@@ -38,9 +38,9 @@ import io.smallrye.mutiny.Uni;
 @Entity
 @Table(name = "\"user\"")
 @NamedQueries({
-    @NamedQuery(name = "User_FindByUsername", query = "from User u where u.username = :name"),
-    @NamedQuery(name = "User_ListOfUsers", query = "from User u order by u.name"),
-    @NamedQuery(name = "User_NumberOfUsers", query = "Select count (u.id) from User u")
+        @NamedQuery(name = "User_FindByUsername", query = "from User u where u.username = :name"),
+        @NamedQuery(name = "User_ListOfUsers", query = "from User u order by u.name"),
+        @NamedQuery(name = "User_NumberOfUsers", query = "Select count (u.id) from User u")
 })
 public class User extends JanusEntity {
 
@@ -74,9 +74,8 @@ public class User extends JanusEntity {
      * All of the roles for the user.
      */
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role"
-        , joinColumns = { @JoinColumn(name = "\"user\"") }
-        , inverseJoinColumns = {@JoinColumn(name = "role") })
+    @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "\"user\"") }, inverseJoinColumns = {
+            @JoinColumn(name = "role") })
     public Set<Role> roles;
 
     /**
@@ -85,22 +84,41 @@ public class User extends JanusEntity {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "members")
     public Set<Team> teams;
 
-
-    public void addTeam (Team team)
+    /**
+     * Default constructor, initialize all fields that requires it.
+     */
+    public User()
     {
+        super();
+        teams = new HashSet<Team>();
+        roles = new HashSet<Role>();
+    }
+
+    /**
+     * Add a team to the user and also to the owning relation holder.
+     * 
+     * @param team Team to add.
+     */
+    public void addTeam(Team team) {
         teams.add(team);
         team.members.add(this);
     }
 
-    public void removeTeam (Team team)
-    {
+    /**
+     * Remove the team from the user and also on the owning relation holder.
+     * 
+     * @param team The team to remove.
+     */
+    public void removeTeam(Team team) {
         teams.remove(team);
         team.members.remove(this);
     }
 
-    public void clearTeams()
-    {
-        teams.forEach(team->team.members.remove(this));
+    /**
+     * Remove all teams from the user and also from the owning relation holder.
+     */
+    public void clearTeams() {
+        teams.forEach(team -> team.members.remove(this));
         teams.clear();
     }
 
@@ -110,13 +128,12 @@ public class User extends JanusEntity {
      * @param role The role that you want to check.
      * @return True if the user has the role.
      */
-    public boolean hasRole(String role)
-    {
+    public boolean hasRole(String role) {
         if (roles != null) {
             Iterator<Role> i = roles.iterator();
             boolean has = false;
             while (i.hasNext())
-                has |= (i.next().name.compareTo(role)==0);
+                has |= (i.next().name.compareTo(role) == 0);
             return has;
         } else
             return false;
@@ -129,13 +146,12 @@ public class User extends JanusEntity {
      * @param uuid The uuid of the team.
      * @return True if the user has the team.
      */
-    public boolean belongsToTeam(UUID uuid)
-    {
+    public boolean belongsToTeam(UUID uuid) {
         if (teams != null) {
             Iterator<Team> i = teams.iterator();
             boolean has = false;
             while (i.hasNext())
-                has |= (i.next().id.compareTo(uuid)==0);
+                has |= (i.next().id.compareTo(uuid) == 0);
             return has;
         } else
             return false;
@@ -149,14 +165,14 @@ public class User extends JanusEntity {
      * @param user The user to add.
      * @return An asynchronous result.
      */
-    public static Uni<User> addUser(Session s, User user) {
-        return s.persist(user).replaceWith(user);   
+    public static Uni<User> createUser(Session s, User user) {
+        return s.persist(user).replaceWith(user);
     }
 
     /**
      * Retrieves a specific user based on its key identity.
      * 
-     * @param s The session.
+     * @param s  The session.
      * @param id The users UUID as a string.
      * @return The user or null.
      */
@@ -171,9 +187,9 @@ public class User extends JanusEntity {
      * @param uid The username of the user.
      * @return An synchronous result.
      */
-    public static Uni<User> findByUsername(Session s, String uid) {
+    public static Uni<User> getByUsername(Session s, String uid) {
         return s.createNamedQuery("User_FindByUsername", User.class)
-            .setParameter("name", uid).getSingleResult();
+                .setParameter("name", uid).getSingleResult();
     }
 
     /**
@@ -182,25 +198,24 @@ public class User extends JanusEntity {
      * @param s The session.
      * @return Number of users in the database.
      */
-    public static Uni<Long> getNumberOfUsers(Session s)
-    {
+    public static Uni<Long> getNumberOfUsers(Session s) {
         return s.createNamedQuery("User_NumberOfUsers", Long.class)
-            .getSingleResult();
+                .getSingleResult();
     }
 
     /**
-     * Returns with the list of users based on start and max number of users. It is mainly used
+     * Returns with the list of users based on start and max number of users. It is
+     * mainly used
      * for tables in the gui.
      * 
-     * @param s The session.
+     * @param s     The session.
      * @param start Start index tio search from.
-     * @param max Max number of items to return.
+     * @param max   Max number of items to return.
      * @return List of users.
      */
-    public static Uni<List<User>> getListOfUsers(Session s, int start, int max)
-    {
+    public static Uni<List<User>> getListOfUsers(Session s, int start, int max) {
         return s.createNamedQuery("User_ListOfUsers", User.class)
-            .setFirstResult(start).setMaxResults(max).getResultList();
+                .setFirstResult(start).setMaxResults(max).getResultList();
     }
 
     /**
@@ -209,21 +224,19 @@ public class User extends JanusEntity {
      * @param s The session.
      * @return List of users.
      */
-    public static Uni<List<User>> getListOfUsers(Session s)
-    {
+    public static Uni<List<User>> getListOfUsers(Session s) {
         return s.createNamedQuery("User_ListOfUsers", User.class)
-            .getResultList();
+                .getResultList();
     }
 
     /**
      * Delete a user given the UUID.
      * 
-     * @param s The session.
+     * @param s    The session.
      * @param uuid The UUID of the user.
      * @return Nothing.
      */
-    public static Uni<Void> deleteUser(Session s, UUID uuid)
-    {
+    public static Uni<Void> deleteUser(Session s, UUID uuid) {
         return getUser(s, uuid).chain(u -> s.remove(u));
     }
 

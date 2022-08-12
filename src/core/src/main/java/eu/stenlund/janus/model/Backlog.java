@@ -36,4 +36,13 @@ public class Backlog extends JanusEntity {
         , inverseJoinColumns = {@JoinColumn(name = "backlogitem") })
     public Set<BacklogItem> items;
 
+    /**
+     * Default consturctor, init all members that need init.
+     */
+    public Backlog()
+    {
+        super();
+        items = new HashSet<BacklogItem>();
+    }
+
 }

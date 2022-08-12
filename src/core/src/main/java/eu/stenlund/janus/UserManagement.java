@@ -189,6 +189,7 @@ public class UserManagement {
                                             @RestForm String name,
                                             @RestForm String email,
                                             @RestForm UUID[] roles,
+                                            @RestForm UUID[] teams,
                                             @RestForm String password)
     {
         // We need data for all of the fields
@@ -199,7 +200,7 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementUser.createUser(sf, username, name, email, roles, password).
+                UserManagementUser.createUser(sf, username, name, email, roles, teams, password).
                     chain(user->UserManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());

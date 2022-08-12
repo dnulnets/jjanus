@@ -61,18 +61,31 @@ public class Team extends JanusEntity {
         , inverseJoinColumns = {@JoinColumn(name = "\"user\"") })
     public Set<User> members;
 
+    /**
+     * Add a member to the team and update the other side of the relation.
+     * 
+     * @param user The user to add.
+     */
     public void addMember(User user)
     {
         members.add(user);
         user.teams.add(this);
     }
 
+    /**
+     * Remove a member from the team and update the other side of the relation.
+     * 
+     * @param user The user to remove.
+     */
     public void removeMember(User user)
     {
         members.remove(user);
         user.teams.remove(this);
     }
 
+    /**
+     * Remove all members of the team and update the other side of the relation.
+     */
     public void clearMembers()
     {
         members.forEach(user->user.teams.remove(this));
@@ -86,6 +99,13 @@ public class Team extends JanusEntity {
     @JoinColumn(nullable=false, name = "backlog", referencedColumnName = "id")
     public Backlog backlog;
     
+    public Team()
+    {
+        super();
+        backlog = new Backlog();
+        members = new HashSet<User>();
+    }
+
     /**
      * Returns with the number of users.
      * 
@@ -128,7 +148,7 @@ public class Team extends JanusEntity {
      * @param user The team to add.
      * @return An asynchronous result.
      */
-    public static Uni<Team> addTeam(Session s, Team team) {
+    public static Uni<Team> createTeam(Session s, Team team) {
         return s.persist(team).replaceWith(team);   
     }
 
@@ -170,9 +190,7 @@ public class Team extends JanusEntity {
      */
     public static Team findTeamById(List<Team> teams, UUID uuid)
     {
-        Optional<Team> team = teams.stream().filter(t-> {
-            return t.id.compareTo(uuid)==0;
-        }).findFirst();
+        Optional<Team> team = teams.stream().filter(t-> t.id.compareTo(uuid)==0).findFirst();
         return team.orElse(null);
     }
 }
