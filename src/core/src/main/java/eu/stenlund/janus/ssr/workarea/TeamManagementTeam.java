@@ -12,12 +12,12 @@ import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusNoSuchItemException;
-import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Backlog;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.TeamManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
+import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Form;
 import eu.stenlund.janus.ssr.ui.TextInput;
@@ -111,8 +111,8 @@ public class TeamManagementTeam {
         cancelButton = new Button(msg.team_cancel(), backURL, JanusSSRHelper.unpolyFollow());
 
         // Create the form's text inputs
-        name = new TextInput(msg.team_name(), "name", "id-name", team.name, msg.team_must_have_name(), "required");
-        uuid = new TextInput("UUID", "uuid", "id-uuid", team.id!=null?team.id.toString():null, null, "readonly");
+        name = new TextInput(msg.team_name(), "name", "id-name", team.name, msg.team_must_have_name(), JanusSSRHelper.required());
+        uuid = new TextInput("UUID", "uuid", "id-uuid", team.id!=null?team.id.toString():null, null, JanusSSRHelper.readonly());
 
         // Create the form
         form = new Form(Form.POST, newUser?createURL:updateURL, true, JanusSSRHelper.unpolySubmit(backURL));

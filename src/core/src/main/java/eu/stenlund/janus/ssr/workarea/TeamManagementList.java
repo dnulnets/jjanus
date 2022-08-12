@@ -9,10 +9,10 @@ import javax.ws.rs.core.UriBuilder;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusHelper;
-import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.msg.TeamManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
+import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Base;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Table;

@@ -1,4 +1,4 @@
-package eu.stenlund.janus.base;
+package eu.stenlund.janus.ssr;
 
 import java.util.Locale;
 

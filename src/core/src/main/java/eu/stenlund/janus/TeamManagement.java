@@ -23,7 +23,7 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusSession;
-import eu.stenlund.janus.base.JanusTemplateHelper;
+import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.workarea.Base;
 import eu.stenlund.janus.ssr.workarea.TeamManagementList;
 import eu.stenlund.janus.ssr.workarea.TeamManagementTeam;

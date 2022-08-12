@@ -14,12 +14,12 @@ import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.base.JanusHelper;
-import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.UserManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
+import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Form;
 import eu.stenlund.janus.ssr.ui.SelectMulti;
@@ -133,14 +133,14 @@ public class UserManagementUser {
         cancelButton = new Button(msg.user_cancel(), backURL, JanusSSRHelper.unpolyFollow());
 
         // Create the form's text inputs
-        name = new TextInput(msg.user_name(), "name", "id-name", user.name, msg.user_must_have_name(), "required");
+        name = new TextInput(msg.user_name(), "name", "id-name", user.name, msg.user_must_have_name(), JanusSSRHelper.required());
         username = new TextInput(msg.user_username(), "username", "id-username", user.username,
-                msg.user_must_have_username(), "required data-lpignore=true");
-        uuid = new TextInput("UUID", "uuid", "id-uuid", user.id != null ? user.id.toString() : null, null, "readonly");
-        email = new TextInput(msg.user_email(), "email", "id-email", user.email, msg.user_must_have_email(),
-                "required");
+                msg.user_must_have_username(), JanusSSRHelper.required() + " " + JanusSSRHelper.ignorePasswordManagers());
+        uuid = new TextInput("UUID", "uuid", "id-uuid", user.id != null ? user.id.toString() : null, null, JanusSSRHelper.readonly());
+        email = new TextInput(msg.user_email(), "email", "id-email", user.email, msg.user_must_have_email(),JanusSSRHelper.required());
         password = new TextInput(msg.user_password(), "password", "id-password", null,
-                newUser ? msg.user_must_have_password() : null, "data-lpignore=true " + (newUser ? "required" : ""));
+                newUser ? msg.user_must_have_password() : null,
+                JanusSSRHelper.ignorePasswordManagers()+ " " + (newUser ? JanusSSRHelper.required() : ""));
 
         // Create the form's multiselect role
         List<SelectMulti.Item> ritems = new ArrayList<SelectMulti.Item>(roles.size());

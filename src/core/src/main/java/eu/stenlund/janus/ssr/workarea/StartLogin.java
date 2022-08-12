@@ -2,8 +2,9 @@ package eu.stenlund.janus.ssr.workarea;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 
-import eu.stenlund.janus.base.JanusTemplateHelper;
 import eu.stenlund.janus.msg.Messages;
+import eu.stenlund.janus.ssr.JanusSSRHelper;
+import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Form;
 import eu.stenlund.janus.ssr.ui.TextInput;
@@ -47,8 +48,8 @@ public class StartLogin {
         String ROOT_PATH = ConfigProvider.getConfig().getValue("janus.http.root-path", String.class);
         Messages msg = JanusTemplateHelper.getMessageBundle(Messages.class, locale);
         login = new Button(msg.login_login(),null);
-        username = new TextInput(msg.login_username(), "j_username", "id-username", null, msg.login_username_required(), "required");
-        password = new TextInput(msg.login_password(), "j_password", "id-password", null, msg.login_password_required(), "required");
+        username = new TextInput(msg.login_username(), "j_username", "id-username", null, msg.login_username_required(), JanusSSRHelper.required());
+        password = new TextInput(msg.login_password(), "j_password", "id-password", null, msg.login_password_required(), JanusSSRHelper.required());
         form = new Form(Form.POST, ROOT_PATH + "/j_security_check", true);
     }
 }

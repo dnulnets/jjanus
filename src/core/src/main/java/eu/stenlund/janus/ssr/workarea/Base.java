@@ -3,7 +3,7 @@ package eu.stenlund.janus.ssr.workarea;
 import io.quarkus.security.identity.SecurityIdentity;
 
 /**
- * The Base object for the user interface, holds information for the
+ * The Base object used by Qute for the user interface. Holds information for the
  * navbar and other generic items. Used by all pages.
  *
  * @author Tomas Stenlund
