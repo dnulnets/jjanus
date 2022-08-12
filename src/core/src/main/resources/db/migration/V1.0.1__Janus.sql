@@ -21,7 +21,7 @@
         primary key (id)
     );
 
-    create table role (
+    create table "role" (
        id uuid not null,
         description varchar(255),
         longName varchar(255) not null,
@@ -32,7 +32,7 @@
     create table team (
        id uuid not null,
         name varchar(255) not null,
-        backlog uuid,
+        backlog uuid not null,
         primary key (id)
     );
 
@@ -66,10 +66,10 @@
     alter table if exists product 
        add constraint UK_jmivyxk9rmgysrmsqw15lqr5b unique (name);
 
-    alter table if exists role 
+    alter table if exists "role" 
        add constraint UK_o8bfng039ihyylu5vhv60143a unique (longName);
 
-    alter table if exists role 
+    alter table if exists "role" 
        add constraint UK_8sewwnpamngi6b1dwaa88askk unique (name);
 
     alter table if exists team 
@@ -104,17 +104,32 @@
        references team;
 
     alter table if exists user_role 
-       add constraint FK26f1qdx6r8j1ggkgras9nrc1d 
+       add constraint FKfvosxogs5j57ymatc75n98psx 
        foreign key (role) 
-       references role;
+       references "role";
 
     alter table if exists user_role 
        add constraint FKte5t6n42fa7onvfamnqrgqg8b 
        foreign key ("user") 
        references "user";
 
+
 insert into role values (gen_random_uuid(), 'A user responsible for the products entire life cycle', 'Product owner', 'product');
 insert into role values (gen_random_uuid(), 'A user supporting a team and a product', 'User', 'user');
 insert into role values (gen_random_uuid(), 'A user responsible for the administration of the Janus system', 'Administrator', 'admin');
 insert into role values (gen_random_uuid(), 'An authenticated user', 'Anyone', 'any');
 
+create extension if not exists pgcrypto;
+insert into "user" (id, email, name, password, username) 
+   values (
+      gen_random_uuid(), 
+      'admin@changeme.com', 
+      'Administrator', 
+      crypt('admin', gen_salt('bf', 10)),
+      'admin');
+insert into user_role ("user", role) values (
+   (select id from "user" where username ='admin'),
+   (select id from role where name='admin'));
+insert into user_role ("user", role) values (
+   (select id from "user" where username ='admin'),
+   (select id from role where name='any'));
