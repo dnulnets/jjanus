@@ -34,4 +34,24 @@ public interface ProductManagement {
     @Message("Create")
     String list_add();
 
+    @Message("Delete")
+    String product_delete();
+
+    @Message("Save")
+    String product_save();
+
+    @Message("Cancel")
+    String product_cancel();
+
+    @Message("Name")
+    String product_name();
+
+    @Message("Description")
+    String product_description();
+
+    @Message("A product must have a name")
+    String product_must_have_name();
+
+    @Message ("Product administration")
+    String product_administration();
 }

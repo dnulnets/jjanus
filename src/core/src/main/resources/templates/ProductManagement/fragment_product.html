@@ -1,4 +1,4 @@
-{#workarea title=teammsg:team_administration}
+{#workarea title=productmsg:product_administration}
     <div>
         <div class="row">
             {#form workarea.form}
@@ -11,13 +11,20 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col">
+                        {#textarea_input workarea.description rows=3 /}
+                    </div>
+                </div>
+
                 <div class="text-start pt-4">
                     {#button_submit workarea.saveButton/}
-                    {#if !workarea.newTeam}
+                    {#if !workarea.newProduct}
                         {#button_submit workarea.deleteButton/}
                     {/if}
                     {#button_link workarea.cancelButton/}
                 </div>
+
             {/form}
         </div>
     </div>

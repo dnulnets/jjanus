@@ -85,7 +85,7 @@ public class ProductManagementList {
             row.add(new Text(product.current!=null?product.current.version:""));
             row.add(new Text(product.description));
             String actionURL  = UriBuilder.fromPath(ROOT_PATH)
-                .segment("team")
+                .segment("product")
                 .queryParam("uuid", product.id)
                 .queryParam("return", returnURL)
                 .build().toString();

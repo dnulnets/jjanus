@@ -26,6 +26,7 @@ import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.workarea.Base;
 import eu.stenlund.janus.ssr.workarea.ProductManagementList;
+import eu.stenlund.janus.ssr.workarea.ProductManagementProduct;
 import eu.stenlund.janus.ssr.workarea.TeamManagementList;
 import eu.stenlund.janus.ssr.workarea.TeamManagementTeam;
 import io.quarkus.qute.CheckedTemplate;
@@ -62,13 +63,13 @@ public class ProductManagement {
     @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance list(Base base, ProductManagementList workarea);
-        public static native TemplateInstance product(Base base, TeamManagementTeam workarea);
+        public static native TemplateInstance product(Base base, ProductManagementProduct workarea);
     }
 
     /**
-     * List all of the teams in the database.
+     * List all of the products in the database.
      * 
-     * @return The list of all users
+     * @return The list of all products
      */
     @GET
     @Path("list")
@@ -103,9 +104,9 @@ public class ProductManagement {
     }
 
     /**
-     * Show the team data and a ui that allows you to change certain aspects of the team.
+     * Show the product data and a ui that allows you to change certain attributes of the product
      * 
-     * @return The team page
+     * @return The product page
      */
     @GET
     @Path("")
@@ -121,15 +122,14 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                TeamManagementTeam.createModel(sf, id, uri, js.getLocale())
+                ProductManagementProduct.createModel(sf, id, uri, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.product(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
-
     }
 
     /**
-     * Updates the teams values.
+     * Updates the products values.
      * 
      * @return The team list page
      */
@@ -138,7 +138,8 @@ public class ProductManagement {
     @RolesAllowed({"admin"})
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Uni<RestResponse<String>> product(@RestForm UUID uuid,
-                                            @RestForm String name)
+                                            @RestForm String name,
+                                            @RestForm String description)
     {
         // We need data for all of the fields
         if (JanusHelper.isBlank(name) || uuid ==null)
@@ -146,7 +147,7 @@ public class ProductManagement {
 
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-            TeamManagementTeam.updateTeam(sf, uuid, name, null).
+            ProductManagementProduct.updateProduct(sf, uuid, name, description).
                 chain(user -> ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))
         ).asTuple().
         chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
@@ -167,7 +168,7 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                TeamManagementTeam.createModel(sf, null, uri, js.getLocale())
+                ProductManagementProduct.createModel(sf, null, uri, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.product(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -181,17 +182,20 @@ public class ProductManagement {
     @POST
     @Path("create")
     @RolesAllowed({"admin"})
-    public Uni<RestResponse<String>> create(@RestForm String name)
+    public Uni<RestResponse<String>> create(@RestForm String name,
+                                            @RestForm String description)
     {
         // We need data for all of the fields
         if (JanusHelper.isBlank(name))
             throw new BadRequestException("Missing required data");
+        if (description == null)
+            description = "";
 
         // Return with a user interface
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                TeamManagementTeam.createTeam(sf, name, null).
+                ProductManagementProduct.createProduct(sf, name, description).
                     chain(user->ProductManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -215,7 +219,7 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                TeamManagementTeam.deleteTeam(sf, uuid).
+                ProductManagementProduct.deleteProduct(sf, uuid).
                     chain(()->ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(),
                     t.getItem2()), js.getLocale())).

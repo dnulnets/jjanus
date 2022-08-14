@@ -33,4 +33,26 @@ public interface ProductManagement_sv extends ProductManagement {
 
     @Message("Skapa")
     String list_add();
+
+    @Message("Ta bort")
+    String product_delete();
+
+    @Message("Spara")
+    String product_save();
+
+    @Message("Avbryt")
+    String product_cancel();
+
+    @Message("Namn")
+    String product_name();
+
+    @Message("Beskrivning")
+    String product_description();
+
+    @Message("En produkt måste ha ett namn")
+    String product_must_have_name();
+
+    @Message ("Product administration")
+    String product_administration();
+
 }

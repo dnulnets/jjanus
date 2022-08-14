@@ -3,6 +3,7 @@ package eu.stenlund.janus.model;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -100,4 +101,39 @@ public class Product extends JanusEntity {
         return s.createNamedQuery("Product_ListOfProducts", Product.class)
             .setFirstResult(start).setMaxResults(max).getResultList();
     }
+
+    /**
+     * Retrieves a specific team based on its key identity.
+     * 
+     * @param s The session.
+     * @param id The products UUID as a string.
+     * @return The product or null.
+     */
+    public static Uni<Product> getProduct(Session s, UUID uuid) {
+        return s.find(Product.class, uuid);
+    }
+
+    /**
+     * Delete a product given the UUID.
+     * 
+     * @param s The session.
+     * @param uuid The UUID of the product.
+     * @return Nothing.
+     */
+    public static Uni<Void> deleteProduct(Session s, UUID uuid)
+    {
+        return getProduct(s, uuid).chain(u -> s.remove(u));
+    }
+
+    /**
+     * Add a product to the database.
+     * 
+     * @param s    A mutiny session.
+     * @param user The product to add.
+     * @return An asynchronous result.
+     */
+    public static Uni<Product> createProduct(Session s, Product product) {
+        return s.persist(product).replaceWith(product);   
+    }
+
 }
