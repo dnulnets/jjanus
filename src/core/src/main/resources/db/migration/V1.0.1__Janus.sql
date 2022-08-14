@@ -1,3 +1,7 @@
+--
+-- Create the database tables
+--
+
     create table backlog (
        id uuid not null,
         primary key (id)
@@ -17,7 +21,16 @@
 
     create table product (
        id uuid not null,
+        description varchar(255),
         name varchar(255) not null,
+        current uuid,
+        primary key (id)
+    );
+
+    create table productversion (
+       id uuid not null,
+        version varchar(255) not null,
+        product uuid not null,
         primary key (id)
     );
 
@@ -34,6 +47,12 @@
         name varchar(255) not null,
         backlog uuid not null,
         primary key (id)
+    );
+
+    create table team_productversion (
+       team uuid not null,
+        "productversion" uuid not null,
+        primary key (team, "productversion")
     );
 
     create table team_user (
@@ -66,6 +85,9 @@
     alter table if exists product 
        add constraint UK_jmivyxk9rmgysrmsqw15lqr5b unique (name);
 
+    alter table if exists productversion 
+       add constraint UK_mf8ppqcsrrpmp8evgfpi4ocbl unique (version);
+
     alter table if exists "role" 
        add constraint UK_o8bfng039ihyylu5vhv60143a unique (longName);
 
@@ -88,10 +110,30 @@
        foreign key ("backlog") 
        references backlog;
 
+    alter table if exists product 
+       add constraint FKgar6lll0fbbd8h9i3c8wqpiq2 
+       foreign key (current) 
+       references productversion;
+
+    alter table if exists productversion 
+       add constraint FK66derwhwsbodq2gi7khbu8qxf 
+       foreign key (product) 
+       references product;
+
     alter table if exists team 
        add constraint FKeh2mk594huskwm5cqjt3n9kmn 
        foreign key (backlog) 
        references backlog;
+
+    alter table if exists team_productversion 
+       add constraint FK9qpqfsrmm1vi7urnqrcpjv7k4 
+       foreign key ("productversion") 
+       references productversion;
+
+    alter table if exists team_productversion 
+       add constraint FKheu81rp6v0liw15bent1hhy06 
+       foreign key (team) 
+       references team;
 
     alter table if exists team_user 
        add constraint FKs02b7rasvcyl6nxl352mik3d7 
@@ -113,12 +155,17 @@
        foreign key ("user") 
        references "user";
 
-
+--
+-- Create default roles
+--
 insert into role values (gen_random_uuid(), 'A user responsible for the products entire life cycle', 'Product owner', 'product');
 insert into role values (gen_random_uuid(), 'A user supporting a team and a product', 'User', 'user');
 insert into role values (gen_random_uuid(), 'A user responsible for the administration of the Janus system', 'Administrator', 'admin');
 insert into role values (gen_random_uuid(), 'An authenticated user', 'Anyone', 'any');
 
+--
+-- Create the default administrator
+--
 create extension if not exists pgcrypto;
 insert into "user" (id, email, name, password, username) 
    values (
