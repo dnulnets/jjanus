@@ -25,6 +25,7 @@ import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.workarea.Base;
+import eu.stenlund.janus.ssr.workarea.ProductManagementList;
 import eu.stenlund.janus.ssr.workarea.TeamManagementList;
 import eu.stenlund.janus.ssr.workarea.TeamManagementTeam;
 import io.quarkus.qute.CheckedTemplate;
@@ -60,7 +61,7 @@ public class ProductManagement {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance list(Base base, TeamManagementList workarea);
+        public static native TemplateInstance list(Base base, ProductManagementList workarea);
         public static native TemplateInstance product(Base base, TeamManagementTeam workarea);
     }
 
@@ -95,7 +96,7 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                TeamManagementList.createModel(sf, six, max, js.getLocale())
+                ProductManagementList.createModel(sf, six, max, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -109,7 +110,7 @@ public class ProductManagement {
     @GET
     @Path("")
     @RolesAllowed({"admin"})
-    public Uni<RestResponse<String>> team(@RestQuery("uuid") UUID id,
+    public Uni<RestResponse<String>> product(@RestQuery("uuid") UUID id,
                                             @RestQuery("return") URI uri)
     {
         // Check that we got the id
@@ -136,7 +137,7 @@ public class ProductManagement {
     @Path("")
     @RolesAllowed({"admin"})
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Uni<RestResponse<String>> team(@RestForm UUID uuid,
+    public Uni<RestResponse<String>> product(@RestForm UUID uuid,
                                             @RestForm String name)
     {
         // We need data for all of the fields
@@ -146,7 +147,7 @@ public class ProductManagement {
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
             TeamManagementTeam.updateTeam(sf, uuid, name, null).
-                chain(user -> TeamManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))
+                chain(user -> ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))
         ).asTuple().
         chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
         onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -191,7 +192,7 @@ public class ProductManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 TeamManagementTeam.createTeam(sf, name, null).
-                    chain(user->TeamManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).asTuple().
+                    chain(user->ProductManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
@@ -215,7 +216,7 @@ public class ProductManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 TeamManagementTeam.deleteTeam(sf, uuid).
-                    chain(()->TeamManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).asTuple().
+                    chain(()->ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(),
                     t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());

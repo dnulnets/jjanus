@@ -1,6 +1,7 @@
 package eu.stenlund.janus.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -15,7 +16,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.reactive.mutiny.Mutiny.Session;
+
 import eu.stenlund.janus.model.base.JanusEntity;
+import io.smallrye.mutiny.Uni;
 
 /**
  * The product.
@@ -29,6 +33,10 @@ import eu.stenlund.janus.model.base.JanusEntity;
  */
 @Entity
 @Table(name = "product")
+@NamedQueries({
+    @NamedQuery(name = "Product_ListOfProducts", query = "from Product p order by p.name"),
+    @NamedQuery(name = "Product_NumberOfProducts", query = "Select count (p.id) from Product p")
+})
 public class Product extends JanusEntity {
 
     /**
@@ -64,5 +72,32 @@ public class Product extends JanusEntity {
         super();
         versions = new HashSet<ProductVersion>();
         current = null;
+    }
+
+    /**
+     * Returns with the number of products in total.
+     * 
+     * @param s The session.
+     * @return Number of products in the database.
+     */
+    public static Uni<Long> getNumberOfProducts(Session s)
+    {
+        return s.createNamedQuery("Product_NumberOfProducts", Long.class)
+            .getSingleResult();
+    }
+
+    /**
+     * Returns with the list of products based on start and max number of users. It is mainly used
+     * for tables in the gui.
+     * 
+     * @param s The session.
+     * @param start Start index tio search from.
+     * @param max Max number of items to return.
+     * @return List of products.
+     */
+    public static Uni<List<Product>> getListOfProducts(Session s, int start, int max)
+    {
+        return s.createNamedQuery("Product_ListOfProducts", Product.class)
+            .setFirstResult(start).setMaxResults(max).getResultList();
     }
 }
