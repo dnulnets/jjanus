@@ -56,6 +56,9 @@ public interface Messages {
     @Message("Users")
     String menu_administration_users();
 
+    @Message("Products")
+    String menu_administration_products();
+
     @Message("Login")
     String login_login();
     

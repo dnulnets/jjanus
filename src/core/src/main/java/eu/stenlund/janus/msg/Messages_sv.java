@@ -55,6 +55,9 @@ public interface Messages_sv extends Messages {
     @Message("Användare")
     String menu_administration_users();  
 
+    @Message("Produkter")
+    String menu_administration_products();
+
     @Message("Logga in")
     String login_login();    
 

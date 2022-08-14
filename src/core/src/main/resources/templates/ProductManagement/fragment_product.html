@@ -1,0 +1,25 @@
+{#workarea title=teammsg:team_administration}
+    <div>
+        <div class="row">
+            {#form workarea.form}
+                <div class="row">
+                    <div class="col">
+                        {#text_input workarea.name/}
+                    </div>
+                    <div class="col">
+                        {#text_input workarea.uuid/}
+                    </div>
+                </div>
+
+                <div class="text-start pt-4">
+                    {#button_submit workarea.saveButton/}
+                    {#if !workarea.newTeam}
+                        {#button_submit workarea.deleteButton/}
+                    {/if}
+                    {#button_link workarea.cancelButton/}
+                </div>
+            {/form}
+        </div>
+    </div>
+{/workarea}
+{#form_validate/}
