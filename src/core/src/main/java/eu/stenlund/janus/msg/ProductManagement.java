@@ -54,4 +54,7 @@ public interface ProductManagement {
 
     @Message ("Product administration")
     String product_administration();
+
+    @Message("Current version")
+    String product_current_versions();
 }

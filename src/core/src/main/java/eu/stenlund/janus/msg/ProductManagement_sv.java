@@ -55,4 +55,7 @@ public interface ProductManagement_sv extends ProductManagement {
     @Message ("Product administration")
     String product_administration();
 
+    @Message("Nuvarande version")
+    String product_current_version();
+
 }

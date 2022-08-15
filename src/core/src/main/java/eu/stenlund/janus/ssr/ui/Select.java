@@ -11,7 +11,7 @@ import org.jboss.logging.Logger;
  * @since 2022-08-11
  * 
  */
-public class SelectMulti extends Base {
+public class Select extends Base {
 
     private static final Logger log = Logger.getLogger(Checkbox.class);
 
@@ -47,7 +47,7 @@ public class SelectMulti extends Base {
      * @param action The action when the button is pressed, if null the forms default action is used.
      * @param extra Any extra attributes to add for the input tag.
      */
-    public SelectMulti(String label, String name, String id, List<Item> values, String extra) {
+    public Select(String label, String name, String id, List<Item> values, String extra) {
         this.label = label;
         this.name = name;
         this.id = id;

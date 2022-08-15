@@ -139,7 +139,8 @@ public class ProductManagement {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Uni<RestResponse<String>> product(@RestForm UUID uuid,
                                             @RestForm String name,
-                                            @RestForm String description)
+                                            @RestForm String description,
+                                            @RestForm UUID current)
     {
         // We need data for all of the fields
         if (JanusHelper.isBlank(name) || uuid ==null)
@@ -147,7 +148,7 @@ public class ProductManagement {
 
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-            ProductManagementProduct.updateProduct(sf, uuid, name, description).
+            ProductManagementProduct.updateProduct(sf, uuid, name, description, current).
                 chain(user -> ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))
         ).asTuple().
         chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).

@@ -24,6 +24,7 @@ import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Form;
+import eu.stenlund.janus.ssr.ui.Select;
 import eu.stenlund.janus.ssr.ui.TextInput;
 import io.smallrye.mutiny.Uni;
 
@@ -56,6 +57,11 @@ public class ProductManagementProduct {
     public TextInput name;
     public TextInput description;
     public TextInput uuid;
+
+    /*
+     * The current version of the product as well as all versions available.
+     */
+    public Select current;
 
     /*
      * The URL:s for create and delete of the user.
@@ -120,6 +126,11 @@ public class ProductManagementProduct {
         description = new TextInput (msg.product_description(), "description", "id-description", product.description, null, null);
         uuid = new TextInput("UUID", "uuid", "id-uuid", product.id!=null?product.id.toString():null, null, JanusSSRHelper.readonly());
 
+        // Create the versions
+        List<Select.Item> l = 
+            product.versions.stream().map(v -> new Select.Item(v.version, product.current!=null?product.current.id.compareTo(v.id)==0:false, v.id.toString())).toList();
+        current = new Select(msg.product_current_versions(),"current", "id-current", l, null);
+
         // Create the form
         form = new Form(Form.POST, newProduct?createURL:updateURL, true, JanusSSRHelper.unpolySubmit(backURL));
     }
@@ -163,7 +174,8 @@ public class ProductManagementProduct {
     public static Uni<Product> updateProduct(SessionFactory sf,
                                         UUID uuid, 
                                         String name,
-                                        String description)
+                                        String description,
+                                        UUID current)
     {
         return sf.withTransaction((s,t)->
             Product.getProduct(s, uuid).
@@ -171,8 +183,8 @@ public class ProductManagementProduct {
                     // Update the user
                     product.name = name;
                     product.description = description;
-
-                    // Return with data
+                    product.current = null;
+                    product.versions.forEach(v -> product.current = (v.id.compareTo(current)==0)?v:product.current);
                     return product;
                 })
             );

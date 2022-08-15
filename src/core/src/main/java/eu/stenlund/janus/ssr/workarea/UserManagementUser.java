@@ -22,7 +22,7 @@ import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Form;
-import eu.stenlund.janus.ssr.ui.SelectMulti;
+import eu.stenlund.janus.ssr.ui.Select;
 import eu.stenlund.janus.ssr.ui.TextInput;
 import io.smallrye.mutiny.Uni;
 
@@ -73,12 +73,12 @@ public class UserManagementUser {
     /**
      * The roles list
      */
-    public SelectMulti roles;
+    public Select roles;
 
     /**
      * The teams list
      */
-    public SelectMulti teams;
+    public Select teams;
 
     /**
      * Flag so we know if it is a new user that we want to create.
@@ -143,16 +143,16 @@ public class UserManagementUser {
                 JanusSSRHelper.ignorePasswordManagers()+ " " + (newUser ? JanusSSRHelper.required() : ""));
 
         // Create the form's multiselect role
-        List<SelectMulti.Item> ritems = new ArrayList<SelectMulti.Item>(roles.size());
+        List<Select.Item> ritems = new ArrayList<Select.Item>(roles.size());
         roles.forEach(
-                role -> ritems.add(new SelectMulti.Item(role.longName, user.hasRole(role.name), role.id.toString())));
-        this.roles = new SelectMulti(msg.user_roles(), "roles", "id-roles", ritems, null);
+                role -> ritems.add(new Select.Item(role.longName, user.hasRole(role.name), role.id.toString())));
+        this.roles = new Select(msg.user_roles(), "roles", "id-roles", ritems, null);
 
         // Create the forms multiselect teams
-        List<SelectMulti.Item> items = new ArrayList<SelectMulti.Item>(teams.size());
+        List<Select.Item> items = new ArrayList<Select.Item>(teams.size());
         teams.forEach(
-                team -> items.add(new SelectMulti.Item(team.name, user.belongsToTeam(team.id), team.id.toString())));
-        this.teams = new SelectMulti(msg.user_teams(), "teams", "id-teams", items, null);
+                team -> items.add(new Select.Item(team.name, user.belongsToTeam(team.id), team.id.toString())));
+        this.teams = new Select(msg.user_teams(), "teams", "id-teams", items, null);
 
         // Create the form
         form = new Form(Form.POST, newUser?createURL:updateURL, true, JanusSSRHelper.unpolySubmit(backURL));
