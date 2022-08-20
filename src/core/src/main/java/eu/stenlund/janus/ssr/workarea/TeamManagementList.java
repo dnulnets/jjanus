@@ -107,13 +107,13 @@ public class TeamManagementList {
     {
         return Uni.combine().all().unis(
             sf.withSession(s -> Team.getList(s, start, max)),
-            sf.withSession(s -> Team.getCount(s))).asTuple()
-        .map(lu -> new TeamManagementList(
-                lu.getItem1(),
-                lu.getItem2().intValue(),
-                start,
-                max,
-                locale));
+            sf.withSession(s -> Team.getCount(s))).
+        combinedWith((list, count)-> new TeamManagementList(
+            list,
+            count.intValue(),
+            start,
+            max,
+            locale));
     }  
 
 }

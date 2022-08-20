@@ -96,13 +96,13 @@ public class ProductVersionManagementList {
     {
         return Uni.combine().all().unis(
             sf.withSession(s -> ProductVersion.getList(s, start, max)),
-            sf.withSession(s -> ProductVersion.getCount(s))).asTuple()
-        .map(lu -> new ProductVersionManagementList(
-                lu.getItem1(),
-                lu.getItem2().intValue(),
-                start,
-                max,
-                locale));
+            sf.withSession(s -> ProductVersion.getCount(s))).
+        combinedWith((list, count)-> new ProductVersionManagementList(
+            list,
+            count.intValue(),
+            start,
+            max,
+            locale));
     }  
 
 }

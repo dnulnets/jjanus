@@ -109,13 +109,13 @@ public class ProductManagementList {
     {
         return Uni.combine().all().unis(
             sf.withSession(s -> Product.getList(s, start, max)),
-            sf.withSession(s -> Product.getCount(s))).asTuple()
-        .map(lu -> new ProductManagementList(
-                lu.getItem1(),
-                lu.getItem2().intValue(),
-                start,
-                max,
-                locale));
+            sf.withSession(s -> Product.getCount(s))).
+        combinedWith((list, count)-> new ProductManagementList(
+            list,
+            count.intValue(),
+            start,
+            max,
+            locale));
     }  
 
 }

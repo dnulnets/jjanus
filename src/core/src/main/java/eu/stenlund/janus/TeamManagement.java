@@ -2,6 +2,7 @@ package eu.stenlund.janus;
 
 import java.net.URI;
 import java.util.UUID;
+import java.util.function.Function;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -96,8 +97,9 @@ public class TeamManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 TeamManagementList.createModel(sf, six, max, js.getLocale())
-            ).asTuple().
-            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
+            ).
+            combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
+            flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
@@ -120,11 +122,10 @@ public class TeamManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                TeamManagementTeam.createModel(sf, id, uri, js.getLocale())
-            ).asTuple().
-            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.team(t.getItem1(), t.getItem2()), js.getLocale())).
+                TeamManagementTeam.createModel(sf, id, uri, js.getLocale())).
+            combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.team(base, model), js.getLocale())).
+            flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
-
     }
 
     /**
@@ -146,9 +147,9 @@ public class TeamManagement {
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
             TeamManagementTeam.updateTeam(sf, uuid, name, null).
-                chain(user -> TeamManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))
-        ).asTuple().
-        chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
+                chain(user -> TeamManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
+        combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
+        flatMap(Function.identity()).
         onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
@@ -166,9 +167,9 @@ public class TeamManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                TeamManagementTeam.createModel(sf, null, uri, js.getLocale())
-            ).asTuple().
-            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.team(t.getItem1(), t.getItem2()), js.getLocale())).
+                TeamManagementTeam.createModel(sf, null, uri, js.getLocale())).
+            combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.team(base, model), js.getLocale())).
+            flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
@@ -191,8 +192,9 @@ public class TeamManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 TeamManagementTeam.createTeam(sf, name, null).
-                    chain(user->TeamManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).asTuple().
-            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
+                    chain(user->TeamManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
+            combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
+            flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
@@ -215,9 +217,9 @@ public class TeamManagement {
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
                 TeamManagementTeam.deleteTeam(sf, uuid).
-                    chain(()->TeamManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).asTuple().
-            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(),
-                    t.getItem2()), js.getLocale())).
+                    chain(()->TeamManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
+            combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base,model), js.getLocale())).
+            flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 }

@@ -142,10 +142,10 @@ public class TeamManagementTeam {
                                 , "team"
                                 , uuid.toString()
                                 , uri.toString()))),
-                sf.withSession(s -> User.getList(s))).asTuple()
-            .map(lu -> new TeamManagementTeam(
-                    lu.getItem1(),
-                    lu.getItem2(),
+                sf.withSession(s -> User.getList(s))).
+            combinedWith((team, list)-> new TeamManagementTeam(
+                    team,
+                    list,
                     uri, false, locale));
         }
     }
