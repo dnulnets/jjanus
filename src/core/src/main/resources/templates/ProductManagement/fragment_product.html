@@ -1,0 +1,38 @@
+{#workarea title=productmsg:product_administration}
+    <div>
+        <div class="row">
+            {#form workarea.form}
+                <div class="row">
+                    <div class="col">
+                        {#text_input workarea.name/}
+                    </div>
+                    <div class="col">
+                        {#text_input workarea.uuid/}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        {#textarea_input workarea.description rows=3 /}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        {#select workarea.current/}
+                    </div>
+                </div>
+                
+                <div class="text-start pt-4">
+                    {#button_submit workarea.saveButton/}
+                    {#if !workarea.newProduct}
+                        {#button_submit workarea.deleteButton/}
+                    {/if}
+                    {#button_link workarea.cancelButton/}
+                </div>
+
+            {/form}
+        </div>
+    </div>
+{/workarea}
+{#form_validate/}

@@ -62,6 +62,33 @@ public class Team extends JanusEntity {
     public Set<User> members;
 
     /**
+     * All of the products handled by a team
+     */
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "team_product"
+        , joinColumns = { @JoinColumn(name = "team") }
+        , inverseJoinColumns = {@JoinColumn(name = "product") })
+    public Set<Product> products;
+
+    /**
+     * The teams backlog.
+     */
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(nullable=false, name = "backlog", referencedColumnName = "id")
+    public Backlog backlog;
+    
+    /**
+     * The default constructor that initializes some needed members.
+     */
+    public Team()
+    {
+        super();
+        backlog = new Backlog();
+        members = new HashSet<User>();
+        products = new HashSet<Product>();
+    }
+
+    /**
      * Add a member to the team and update the other side of the relation.
      * 
      * @param user The user to add.
@@ -90,20 +117,6 @@ public class Team extends JanusEntity {
     {
         members.forEach(user->user.teams.remove(this));
         members.clear();
-    }
-
-    /**
-     * The teams backlog.
-     */
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(nullable=false, name = "backlog", referencedColumnName = "id")
-    public Backlog backlog;
-    
-    public Team()
-    {
-        super();
-        backlog = new Backlog();
-        members = new HashSet<User>();
     }
 
     /**

@@ -9,14 +9,31 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarAdmin" role="button" data-bs-toggle="dropdown">
+            {msg:menu_product}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-light">
+            <li><a class="dropdown-item" href="#">{msg:menu_product_select}</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/product/list">{msg:menu_product_products}</a></li>
+            <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/productversion/list">{msg:menu_product_productversions}</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">{msg:menu_product_needs}</a></li>
+            <li><a class="dropdown-item" href="#">{msg:menu_product_requirements}</a></li>
+          </ul>
+        </li>
         {#if base.admin}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarAdmin" role="button" data-bs-toggle="dropdown">
               {msg:menu_administration}
             </a>
             <ul class="dropdown-menu dropdown-menu-light">
-              <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/user/list">{msg:menu_administration_users}</a></li>
               <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/team/list">{msg:menu_administration_teams}</a></li>
+              <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/user/list">{msg:menu_administration_users}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/product/list">{msg:menu_administration_products}</a></li>
+              <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/productversion/list">{msg:menu_administration_productversions}</a></li>
             </ul>
           </li>
         {/if}

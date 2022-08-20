@@ -56,6 +56,30 @@ public interface Messages {
     @Message("Users")
     String menu_administration_users();
 
+    @Message("Products")
+    String menu_administration_products();
+
+    @Message("Product versions")
+    String menu_administration_productversions();
+
+    @Message("Product owner")
+    String menu_product();
+
+    @Message("Products")
+    String menu_product_products();
+
+    @Message("Product versions")
+    String menu_product_productversions();
+
+    @Message("User needs")
+    String menu_product_needs();
+
+    @Message("Product requirements")
+    String menu_product_requirements();
+
+    @Message("Select product")
+    String menu_product_select();
+
     @Message("Login")
     String login_login();
     

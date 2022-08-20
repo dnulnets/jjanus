@@ -12,7 +12,8 @@ public class JanusSSRHelper {
     /**
      * Unpoly attributes for submitting a form and update the workarea with the result and the browser URL.
      */
-    private static String UNPOLY_SUBMIT_START = "up-submit up-target=\"#workarea\" up-history=true up-location=\"";
+    private static String UNPOLY_SUBMIT_START_1 = "up-submit up-target=\"";
+    private static String UNPOLY_SUBMIT_START_2 = "\" up-history=true up-location=\"";
     private static String UNPOLY_SUBMIT_END = "\"";
 
     /**
@@ -37,7 +38,12 @@ public class JanusSSRHelper {
      */
     public static String unpolySubmit (String url)
     {
-        return UNPOLY_SUBMIT_START + url + UNPOLY_SUBMIT_END;
+        return unpolySubmit("#workare", url);
+    }
+
+    public static String unpolySubmit (String area, String url)
+    {
+        return UNPOLY_SUBMIT_START_1 + area + UNPOLY_SUBMIT_START_2 + url + UNPOLY_SUBMIT_END;
     }
 
     /**
