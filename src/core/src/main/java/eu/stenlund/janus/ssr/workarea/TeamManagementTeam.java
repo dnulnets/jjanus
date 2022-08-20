@@ -1,7 +1,6 @@
 package eu.stenlund.janus.ssr.workarea;
 
 import java.net.URI;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,7 +11,6 @@ import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusNoSuchItemException;
-import eu.stenlund.janus.model.Backlog;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.model.base.JanusEntity;

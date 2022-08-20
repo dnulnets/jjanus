@@ -25,8 +25,6 @@ import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.workarea.Base;
-import eu.stenlund.janus.ssr.workarea.ProductManagementList;
-import eu.stenlund.janus.ssr.workarea.ProductManagementProduct;
 import eu.stenlund.janus.ssr.workarea.ProductVersionManagementList;
 import eu.stenlund.janus.ssr.workarea.ProductVersionManagementProductVersion;
 import io.quarkus.qute.CheckedTemplate;

@@ -2,7 +2,6 @@ package eu.stenlund.janus.ssr.workarea;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 

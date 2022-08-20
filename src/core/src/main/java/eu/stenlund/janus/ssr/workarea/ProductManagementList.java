@@ -2,7 +2,6 @@ package eu.stenlund.janus.ssr.workarea;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -10,9 +9,7 @@ import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.model.Product;
-import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.msg.ProductManagement;
-import eu.stenlund.janus.msg.TeamManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Base;

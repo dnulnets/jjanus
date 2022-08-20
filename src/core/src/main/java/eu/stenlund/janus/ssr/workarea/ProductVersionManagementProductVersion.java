@@ -9,14 +9,12 @@ import javax.ws.rs.core.UriBuilder;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 import org.jboss.logging.Logger;
 
-import eu.stenlund.janus.msg.ProductVersionManagement;
 import eu.stenlund.janus.base.JanusHelper;
-import eu.stenlund.janus.base.JanusNoSuchItemException;
 import eu.stenlund.janus.model.Product;
 import eu.stenlund.janus.model.ProductState;
 import eu.stenlund.janus.model.ProductVersion;
 import eu.stenlund.janus.model.base.JanusEntity;
-import eu.stenlund.janus.msg.ProductManagement;
+import eu.stenlund.janus.msg.ProductVersionManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Button;
