@@ -1,0 +1,42 @@
+{#workarea title=productversionmsg:list_administration}
+    <div>
+        <div class="row">
+            {#form workarea.form}
+
+            <div class="row">
+                <div class="col">
+                    {#select workarea.product/}
+                </div>
+                <div class="col">
+                    {#text_input workarea.version/}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    {#select workarea.state/}
+                </div>
+                <div class="col">
+                    {#text_input workarea.uuid /}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    {#checkbox_inline workarea.closed /}
+                </div>
+            </div>
+            
+            <div class="text-start pt-4">
+                {#button_submit workarea.saveButton/}
+                {#if !workarea.newProductVersion}
+                    {#button_submit workarea.deleteButton/}
+                {/if}
+                {#button_link workarea.cancelButton/}
+            </div>
+
+            {/form}
+        </div>
+    </div>
+{/workarea}
+{#form_validate/}

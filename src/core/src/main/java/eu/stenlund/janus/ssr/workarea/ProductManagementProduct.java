@@ -1,25 +1,18 @@
 package eu.stenlund.janus.ssr.workarea;
 
 import java.net.URI;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
 import javax.ws.rs.core.UriBuilder;
 
-import org.hibernate.FlushMode;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusNoSuchItemException;
-import eu.stenlund.janus.model.Backlog;
 import eu.stenlund.janus.model.Product;
-import eu.stenlund.janus.model.ProductVersion;
-import eu.stenlund.janus.model.Team;
-import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.msg.ProductManagement;
-import eu.stenlund.janus.msg.TeamManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Button;
@@ -64,16 +57,15 @@ public class ProductManagementProduct {
     public Select current;
 
     /*
-     * The URL:s for create and delete of the user.
+     * The URL:s for create and delete of the product.
      */
     public String createURL;
     public String updateURL;
 
     /**
-     * Flag so we know if it is a new user that we want to create.
+     * Flag so we know if it is a new product that we want to create.
      */
     public boolean newProduct;
-
 
     /**
      * Creates the workarea for the user interface based on existing user and roles.
@@ -128,7 +120,9 @@ public class ProductManagementProduct {
 
         // Create the versions
         List<Select.Item> l = 
-            product.versions.stream().map(v -> new Select.Item(v.version, product.current!=null?product.current.id.compareTo(v.id)==0:false, v.id.toString())).toList();
+            product.versions.stream().map(v -> new Select.Item(
+                v.version + " (" + (v.state!=null?v.state.display:"No state") + ")",
+                product.current!=null?product.current.id.compareTo(v.id)==0:false, v.id.toString())).toList();
         current = new Select(msg.product_current_versions(),"current", "id-current", l, null);
 
         // Create the form

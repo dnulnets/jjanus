@@ -27,6 +27,8 @@ import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.workarea.Base;
 import eu.stenlund.janus.ssr.workarea.ProductManagementList;
 import eu.stenlund.janus.ssr.workarea.ProductManagementProduct;
+import eu.stenlund.janus.ssr.workarea.ProductVersionManagementList;
+import eu.stenlund.janus.ssr.workarea.ProductVersionManagementProductVersion;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
@@ -39,10 +41,10 @@ import io.smallrye.mutiny.Uni;
  * @since 2022-08-01
  * 
  */
-@Path("product")
+@Path("productversion")
 @Produces(MediaType.TEXT_HTML)
 @RequestScoped
-public class ProductManagement {
+public class ProductVersionManagement {
 
     private static final Logger log = Logger.getLogger(ProductManagement.class);
 
@@ -60,8 +62,8 @@ public class ProductManagement {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance list(Base base, ProductManagementList workarea);
-        public static native TemplateInstance product(Base base, ProductManagementProduct workarea);
+        public static native TemplateInstance list(Base base, ProductVersionManagementList workarea);
+        public static native TemplateInstance productversion(Base base, ProductVersionManagementProductVersion workarea);
     }
 
     /**
@@ -95,7 +97,7 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementList.createModel(sf, six, max, js.getLocale())
+                ProductVersionManagementList.createModel(sf, six, max, js.getLocale())
             ).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -120,9 +122,13 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.createModel(sf, id, uri, js.getLocale())
+                ProductVersionManagementProductVersion.createModel(sf, id, uri, js.getLocale())
             ).asTuple().
-            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.product(t.getItem1(), t.getItem2()), js.getLocale())).
+            chain(t -> {
+                log.info(t.getItem1().toString());
+                log.info(t.getItem2().version.value);
+                return JanusTemplateHelper.createResponseFrom(Templates.productversion(t.getItem1(), t.getItem2()), js.getLocale());
+            }).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
@@ -136,18 +142,23 @@ public class ProductManagement {
     @RolesAllowed({"admin"})
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Uni<RestResponse<String>> product(@RestForm UUID uuid,
-                                            @RestForm String name,
-                                            @RestForm String description,
-                                            @RestForm UUID current)
+                                            @RestForm UUID product,
+                                            @RestForm String version,
+                                            @RestForm UUID state,
+                                            @RestForm Boolean closed)
     {
         // We need data for all of the fields
-        if (JanusHelper.isBlank(name) || uuid ==null)
+        if (JanusHelper.isBlank(version) || uuid ==null)
             throw new IllegalArgumentException("Missing required data");
+        
+        // Clean up the datat
+        if (closed==null)
+            closed = Boolean.FALSE;
 
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-            ProductManagementProduct.updateProduct(sf, uuid, name, description, current).
-                chain(user -> ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))
+            ProductVersionManagementProductVersion.updateProductVersion(sf, uuid, version, product, state, closed).
+                chain(user -> ProductVersionManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))
         ).asTuple().
         chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
         onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -162,14 +173,15 @@ public class ProductManagement {
     @Path("create")
     @RolesAllowed({"admin"})
     public Uni<RestResponse<String>> create(@RestQuery("return") URI uri)
+
     {
         // Return with a user interface
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.createModel(sf, null, uri, js.getLocale())
+                ProductVersionManagementProductVersion.createModel(sf, null, uri, js.getLocale())
             ).asTuple().
-            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.product(t.getItem1(), t.getItem2()), js.getLocale())).
+            chain(t -> JanusTemplateHelper.createResponseFrom(Templates.productversion(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
@@ -181,21 +193,25 @@ public class ProductManagement {
     @POST
     @Path("create")
     @RolesAllowed({"admin"})
-    public Uni<RestResponse<String>> create(@RestForm String name,
-                                            @RestForm String description)
+    public Uni<RestResponse<String>> create(@RestForm UUID product,
+                                            @RestForm String version,
+                                            @RestForm UUID state,
+                                            @RestForm Boolean closed)
     {
         // We need data for all of the fields
-        if (JanusHelper.isBlank(name))
+        if (JanusHelper.isBlank(version))
             throw new BadRequestException("Missing required data");
-        if (description == null)
-            description = "";
+
+        // Clean up data
+        if (closed == null)
+            closed = Boolean.FALSE;
 
         // Return with a user interface
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.createProduct(sf, name, description).
-                    chain(user->ProductManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).asTuple().
+                ProductVersionManagementProductVersion.createProductVersion(sf, null, version, product, state, closed).
+                    chain(user->ProductVersionManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(), t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
@@ -218,8 +234,8 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.deleteProduct(sf, uuid).
-                    chain(()->ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).asTuple().
+                ProductVersionManagementProductVersion.deleteProductVersion(sf, uuid).
+                    chain(()->ProductVersionManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).asTuple().
             chain(t -> JanusTemplateHelper.createResponseFrom(Templates.list(t.getItem1(),
                     t.getItem2()), js.getLocale())).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());

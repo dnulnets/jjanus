@@ -27,10 +27,18 @@
         primary key (id)
     );
 
+    create table productstate (
+       id uuid not null,
+        display varchar(255) not null,
+        primary key (id)
+    );
+
     create table productversion (
        id uuid not null,
+        closed boolean not null,
         version varchar(255) not null,
         product uuid not null,
+        state uuid not null,
         primary key (id)
     );
 
@@ -49,10 +57,10 @@
         primary key (id)
     );
 
-    create table team_productversion (
+    create table team_product (
        team uuid not null,
-        "productversion" uuid not null,
-        primary key (team, "productversion")
+        product uuid not null,
+        primary key (team, product)
     );
 
     create table team_user (
@@ -120,18 +128,23 @@
        foreign key (product) 
        references product;
 
+    alter table if exists productversion 
+       add constraint FKoyd2sxichvysmv7e6wnjaafh9 
+       foreign key (state) 
+       references productstate;
+
     alter table if exists team 
        add constraint FKeh2mk594huskwm5cqjt3n9kmn 
        foreign key (backlog) 
        references backlog;
 
-    alter table if exists team_productversion 
-       add constraint FK9qpqfsrmm1vi7urnqrcpjv7k4 
-       foreign key ("productversion") 
-       references productversion;
+    alter table if exists team_product 
+       add constraint FKg0fetp05dxl349gmum4bfuqty 
+       foreign key (product) 
+       references product;
 
-    alter table if exists team_productversion 
-       add constraint FKheu81rp6v0liw15bent1hhy06 
+    alter table if exists team_product 
+       add constraint FKh311j8n8ftes8726l72qhccf7 
        foreign key (team) 
        references team;
 
@@ -154,6 +167,7 @@
        add constraint FKte5t6n42fa7onvfamnqrgqg8b 
        foreign key ("user") 
        references "user";
+
 
 --
 -- Create default roles
@@ -180,3 +194,21 @@ insert into user_role ("user", role) values (
 insert into user_role ("user", role) values (
    (select id from "user" where username ='admin'),
    (select id from role where name='any'));
+
+--
+-- Create the default available product states
+--
+insert into productstate values (gen_random_uuid(), 'Pre-alpha');
+insert into productstate values (gen_random_uuid(), 'Alpha');
+insert into productstate values (gen_random_uuid(), 'Feature Complete (FC)');
+insert into productstate values (gen_random_uuid(), 'Beta');
+insert into productstate values (gen_random_uuid(), 'Perpetual beta');
+insert into productstate values (gen_random_uuid(), 'Open Beta');
+insert into productstate values (gen_random_uuid(), 'Closed beta');
+insert into productstate values (gen_random_uuid(), 'Release Candidate (RC)');
+insert into productstate values (gen_random_uuid(), 'Stable Release');
+insert into productstate values (gen_random_uuid(), 'Production Release');
+insert into productstate values (gen_random_uuid(), 'Release to manufacturing (RTM)');
+insert into productstate values (gen_random_uuid(), 'Release to the Web (RTW)');
+insert into productstate values (gen_random_uuid(), 'End of life (EOL)');
+

@@ -2,17 +2,14 @@ package eu.stenlund.janus.ssr.workarea;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.core.UriBuilder;
 
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import eu.stenlund.janus.base.JanusHelper;
-import eu.stenlund.janus.model.Product;
-import eu.stenlund.janus.model.Team;
-import eu.stenlund.janus.msg.ProductManagement;
-import eu.stenlund.janus.msg.TeamManagement;
+import eu.stenlund.janus.model.ProductVersion;
+import eu.stenlund.janus.msg.ProductVersionManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Base;
@@ -28,43 +25,34 @@ import io.smallrye.mutiny.Uni;
  * @since 2022-08-04
  * 
  */
-public class ProductManagementList {
+public class ProductVersionManagementList {
 
     /**
      * The team table
      */
     public Table table;
  
-    /**
-     * Create a new workarea from the products in the database.
-     * 
-     * @param users The teams for this page.
-     * @param total Total number of teams in the database.
-     * @param six The index for the first row in the table.
-     * @param max The max number of users in the table.
-     * @param locale The locale to render.
-     */
-    private ProductManagementList(List<Product> products, int total, int six, int max, String locale) {
+    private ProductVersionManagementList(List<ProductVersion> versions, int total, int six, int max, String locale) {
 
         // Get hold of the message bundle and root path
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path", "/");
-        ProductManagement msg = JanusTemplateHelper.getMessageBundle(ProductManagement.class, locale);
+        ProductVersionManagement msg = JanusTemplateHelper.getMessageBundle(ProductVersionManagement.class, locale);
 
         // Create action URL:s
         String returnURL = UriBuilder.fromPath(ROOT_PATH)
-        .segment("product")
+        .segment("productversion")
         .segment("list")
         .queryParam("six", six)
         .queryParam("max", max)
         .build().toString();
 
         String tableURL = UriBuilder.fromPath(ROOT_PATH)
-            .segment("product")
+            .segment("productversion")
             .segment("list")
             .build().toString();
 
         String createURL = UriBuilder.fromPath(ROOT_PATH)
-            .segment("product")
+            .segment("productversion")
             .segment("create")
             .queryParam("return", returnURL)
             .build().toString();
@@ -72,22 +60,21 @@ public class ProductManagementList {
         
         // Create the table header
         List<String> columns = new ArrayList<String>(4);
-        columns.add(msg.list_name());
-        columns.add(msg.list_current_version());
-        columns.add(msg.list_description());
+        columns.add(msg.list_product());
+        columns.add(msg.list_version());
+        columns.add(msg.list_state());
         columns.add(msg.list_action());
 
         // Create the table data matrix
-        List<List<Base>> data = new ArrayList<List<Base>>(products.size());
-        products.forEach(product -> {
+        List<List<Base>> data = new ArrayList<List<Base>>(versions.size());
+        versions.forEach(pv -> {
             List<Base> row = new ArrayList<Base>(columns.size());
-            row.add(new Text(product.name));
-            String s = product.current.state!=null?product.current.state.display:"No state";
-            row.add(new Text(product.current!=null?product.current.version + " (" + s + ")":"No version"));
-            row.add(new Text(product.description));
+            row.add(new Text(pv.product!=null?pv.product.name:""));
+            row.add(new Text(pv.version));
+            row.add(new Text(pv.state!=null?pv.state.display:""));
             String actionURL  = UriBuilder.fromPath(ROOT_PATH)
-                .segment("product")
-                .queryParam("uuid", product.id)
+                .segment("productversion")
+                .queryParam("uuid", pv.id)
                 .queryParam("return", returnURL)
                 .build().toString();
             row.add(new Button(msg.list_edit(), actionURL, JanusSSRHelper.unpolyFollow()));
@@ -105,12 +92,12 @@ public class ProductManagementList {
      * @param max Max number of items to retrieve
      * @return A user management list
      */
-    public static Uni<ProductManagementList> createModel(SessionFactory sf, int start, int max, String locale)
+    public static Uni<ProductVersionManagementList> createModel(SessionFactory sf, int start, int max, String locale)
     {
         return Uni.combine().all().unis(
-            sf.withSession(s -> Product.getListOfProducts(s, start, max)),
-            sf.withSession(s -> Product.getNumberOfProducts(s))).asTuple()
-        .map(lu -> new ProductManagementList(
+            sf.withSession(s -> ProductVersion.getListOfProductVersions(s, start, max)),
+            sf.withSession(s -> ProductVersion.getNumberOfProductVersions(s))).asTuple()
+        .map(lu -> new ProductVersionManagementList(
                 lu.getItem1(),
                 lu.getItem2().intValue(),
                 start,

@@ -1,4 +1,5 @@
 <div class="form-check form-check-inline">
+    <label class="form-check-label" for="{it.id.raw}">{it.label}</label>
     <input class="form-check-input" type="checkbox" name="{it.name.raw}" id="{it.id.raw}"
         {#if it.value??}
             value="{it.value.raw}"
@@ -7,5 +8,4 @@
             checked
         {/if}
         {it.extra.raw}/>
-    <label class="form-check-label" for="{it.id.raw}">{it.label}</label>
 </div>

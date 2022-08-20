@@ -66,12 +66,19 @@ public class Product extends JanusEntity {
     public ProductVersion current;
 
     /**
+     * All the teams that handles this product.
+     */
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "products")
+    public Set<Team> teams;
+
+    /**
      * Default constructor for product and initialize fields that need it.
      */
     public Product()
     {
         super();
         versions = new HashSet<ProductVersion>();
+        teams = new HashSet<Team>();
         current = null;
     }
 
@@ -103,6 +110,19 @@ public class Product extends JanusEntity {
     }
 
     /**
+     * Returns with the list of all products.
+     * 
+     * @param s The session.
+     * @return List of products.
+     */
+    public static Uni<List<Product>> getListOfProducts(Session s)
+    {
+        return s.createNamedQuery("Product_ListOfProducts", Product.class)
+            .getResultList();
+    }
+
+
+    /**
      * Retrieves a specific team based on its key identity.
      * 
      * @param s The session.
@@ -110,7 +130,7 @@ public class Product extends JanusEntity {
      * @return The product or null.
      */
     public static Uni<Product> getProduct(Session s, UUID uuid) {
-        return s.find(Product.class, uuid);
+        return uuid!=null?s.find(Product.class, uuid):null;
     }
 
     /**

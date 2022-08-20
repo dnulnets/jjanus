@@ -58,6 +58,9 @@ public interface Messages_sv extends Messages {
     @Message("Produkter")
     String menu_administration_products();
 
+    @Message("Produktversioner")
+    String menu_administration_productversions();
+
     @Message("Logga in")
     String login_login();    
 

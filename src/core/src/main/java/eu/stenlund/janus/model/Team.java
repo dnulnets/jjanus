@@ -62,13 +62,13 @@ public class Team extends JanusEntity {
     public Set<User> members;
 
     /**
-     * All of the product versions handled by a team
+     * All of the products handled by a team
      */
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "team_productversion"
+    @JoinTable(name = "team_product"
         , joinColumns = { @JoinColumn(name = "team") }
-        , inverseJoinColumns = {@JoinColumn(name = "\"productversion\"") })
-    public Set<ProductVersion> productversions;
+        , inverseJoinColumns = {@JoinColumn(name = "product") })
+    public Set<Product> products;
 
     /**
      * The teams backlog.
@@ -85,7 +85,7 @@ public class Team extends JanusEntity {
         super();
         backlog = new Backlog();
         members = new HashSet<User>();
-        productversions = new HashSet<ProductVersion>();
+        products = new HashSet<Product>();
     }
 
     /**

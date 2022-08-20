@@ -10,20 +10,20 @@ import io.quarkus.qute.i18n.MessageBundle;
  * @since 2022-07-11
  * 
  */
-@MessageBundle("productmsg")
-public interface ProductManagement {
+@MessageBundle("productversionmsg")
+public interface ProductVersionManagement {
 
-    @Message ("Product administration")
+    @Message ("Product version administration")
     String list_administration();
 
-    @Message("Name")
-    String list_name();
+    @Message("Product")
+    String list_product();
 
     @Message("Version")
-    String list_current_version();
+    String list_version();
 
-    @Message("Description")
-    String list_description();
+    @Message("State")
+    String list_state();
 
     @Message("Action")
     String list_action();
@@ -33,30 +33,6 @@ public interface ProductManagement {
 
     @Message("Create")
     String list_add();
-
-    @Message("Delete")
-    String product_delete();
-
-    @Message("Save")
-    String product_save();
-
-    @Message("Cancel")
-    String product_cancel();
-
-    @Message("Name")
-    String product_name();
-
-    @Message("Description")
-    String product_description();
-
-    @Message("A product must have a name")
-    String product_must_have_name();
-
-    @Message ("Product administration")
-    String product_administration();
-
-    @Message("Current version")
-    String product_current_versions();
 
     @Message("Delete")
     String productversion_delete();
