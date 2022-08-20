@@ -13,7 +13,7 @@ import io.quarkus.qute.i18n.Message;
 @Localized("sv")
 public interface ProductManagement_sv extends ProductManagement {
 
-    @Message ("Produktdministrering")
+    @Message ("Produktadministrering")
     String list_administration();
 
     @Message("Namn")
