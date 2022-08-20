@@ -12,6 +12,7 @@ import org.jboss.logging.Logger;
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusNoSuchItemException;
 import eu.stenlund.janus.model.Product;
+import eu.stenlund.janus.model.base.JanusEntity;
 import eu.stenlund.janus.msg.ProductManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
@@ -142,7 +143,7 @@ public class ProductManagementProduct {
         if (uuid == null) {
             return Uni.createFrom().item(new ProductManagementProduct(new Product(), uri, true, locale));
         } else {
-            return sf.withSession(s -> Product.getProduct(s, uuid)
+            return sf.withSession(s -> JanusEntity.get(Product.class, s, uuid)
                         .onItem()
                             .ifNull()
                                 .failWith(new JanusNoSuchItemException("Failed to read the product from the database using the given uuid."
@@ -172,8 +173,8 @@ public class ProductManagementProduct {
                                         UUID current)
     {
         return sf.withTransaction((s,t)->
-            Product.getProduct(s, uuid).
-            map(product-> {
+            JanusEntity.get(Product.class, s, uuid).map(product-> {
+                
                     // Update the user
                     product.name = name;
                     product.description = description;
@@ -202,9 +203,10 @@ public class ProductManagementProduct {
                     // Update the user
                     product.name = name;
                     product.description = description;
-                    
+
                     // Return with data
-                    return Product.createProduct(s, product);
+                    return JanusEntity.create (s, product);
+
                 }
         );
     }
@@ -219,6 +221,6 @@ public class ProductManagementProduct {
     public static Uni<Void> deleteProduct(SessionFactory sf,
                                             UUID uuid)
     {
-        return sf.withTransaction((s,t)->Product.deleteProduct(s, uuid));
+        return sf.withTransaction((s,t)->JanusEntity.delete(Product.class,s, uuid));
     }
 }

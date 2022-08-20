@@ -52,20 +52,9 @@ public class ProductState extends JanusEntity {
      * @param s The session.
      * @return A list of all available product versions.
      */
-    public static Uni<List<ProductState>> getListOfProductStates(Session s) {
+    public static Uni<List<ProductState>> getList(Session s) {
         return s.createNamedQuery("ProductState_ListOfProductState", ProductState.class)
                 .getResultList();
-    }
-
-    /**
-     * Gets a product state based on its uuid.
-     * 
-     * @param s The session factory.
-     * @param uuid The product states uuid.
-     * @return The product state or null.
-     */
-    public static Uni<ProductState> getProductState(Session s, UUID uuid) {
-        return uuid!=null?s.find(ProductState.class, uuid):null;
     }
 
 }

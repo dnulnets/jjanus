@@ -15,6 +15,7 @@ import eu.stenlund.janus.base.JanusNoSuchItemException;
 import eu.stenlund.janus.model.Backlog;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.model.User;
+import eu.stenlund.janus.model.base.JanusEntity;
 import eu.stenlund.janus.msg.TeamManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
@@ -129,21 +130,21 @@ public class TeamManagementTeam {
     public static Uni<TeamManagementTeam> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
     {
         if (uuid == null) {
-            return sf.withSession(s -> User.getListOfUsers(s))
+            return sf.withSession(s -> User.getList(s))
             .map(lr -> new TeamManagementTeam(
                     new Team(),
                     lr,
                     uri, true, locale));        
         } else {
             return Uni.combine().all().unis(
-                sf.withSession(s -> Team.getTeam(s, uuid)
+                sf.withSession(s -> JanusEntity.get (Team.class, s, uuid)
                     .onItem()
                         .ifNull()
                             .failWith(new JanusNoSuchItemException("Failed to read the team from the database using the given uuid."
                                 , "team"
                                 , uuid.toString()
                                 , uri.toString()))),
-                sf.withSession(s -> User.getListOfUsers(s))).asTuple()
+                sf.withSession(s -> User.getList(s))).asTuple()
             .map(lu -> new TeamManagementTeam(
                     lu.getItem1(),
                     lu.getItem2(),
@@ -169,7 +170,7 @@ public class TeamManagementTeam {
                                         UUID[] users)
     {
         return sf.withTransaction((s,t)->
-        Team.getTeam(s, uuid).
+        JanusEntity.get (Team.class, s, uuid).
         map(team-> {
                 // Update the user
                 team.name = name;
@@ -201,7 +202,7 @@ public class TeamManagementTeam {
                     team.name = name;
                     
                     // Return with data
-                    return Team.createTeam(s, team);
+                    return JanusEntity.create (s, team);
                 }
         );
     }
@@ -216,6 +217,6 @@ public class TeamManagementTeam {
     public static Uni<Void> deleteTeam(SessionFactory sf,
                                         UUID uuid)
     {
-        return sf.withTransaction((s,t)->Team.deleteTeam(s, uuid));
+        return sf.withTransaction((s,t)->JanusEntity.delete (Team.class, s, uuid));
     }
 }

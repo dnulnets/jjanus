@@ -110,8 +110,8 @@ public class UserManagementList {
     public static Uni<UserManagementList> createModel(SessionFactory sf, int start, int max, String locale)
     {
         return Uni.combine().all().unis(
-            sf.withSession(s -> User.getListOfUsers(s, start, max)),
-            sf.withSession(s -> User.getNumberOfUsers(s)))
+            sf.withSession(s -> User.getList(s, start, max)),
+            sf.withSession(s -> User.getCount(s)))
         .combinedWith((users, nof) -> new UserManagementList(
                 users,
                 nof.intValue(),

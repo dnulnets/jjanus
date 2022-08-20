@@ -17,6 +17,7 @@ import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.model.Role;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.model.User;
+import eu.stenlund.janus.model.base.JanusEntity;
 import eu.stenlund.janus.msg.UserManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
@@ -170,8 +171,8 @@ public class UserManagementUser {
     public static Uni<UserManagementUser> createModel(SessionFactory sf, UUID uuid, URI uri, String locale) {
         if (uuid == null)
             return Uni.combine().all().unis(
-                    sf.withSession(s -> Role.getListOfRoles(s)),
-                    sf.withSession(s -> Team.getListOfTeams(s)))
+                    sf.withSession(s -> Role.getList(s)),
+                    sf.withSession(s -> Team.getList(s)))
                     .combinedWith((roles, teams) -> new UserManagementUser(
                             new User(),
                             roles,
@@ -179,9 +180,9 @@ public class UserManagementUser {
                             uri, true, locale));
         else
             return Uni.combine().all().unis(
-                    sf.withSession(s -> User.getUser(s, uuid)),
-                    sf.withSession(s -> Role.getListOfRoles(s)),
-                    sf.withSession(s -> Team.getListOfTeams(s)))
+                    sf.withSession(s -> JanusEntity.get (User.class, s, uuid)),
+                    sf.withSession(s -> Role.getList(s)),
+                    sf.withSession(s -> Team.getList(s)))
                     .combinedWith((user, roles, teams) -> new UserManagementUser(
                             user, roles, teams,
                             uri, false, locale));
@@ -210,9 +211,9 @@ public class UserManagementUser {
         return sf.withTransaction((s, t) ->
 
         Uni.combine().all().unis(
-                User.getUser(s, uuid), // Get the user
-                Role.getListOfRoles(s), // Get all available roles
-                Team.getListOfTeams(s)). // Get all available teams
+                JanusEntity.get (User.class, s, uuid), // Get the user
+                Role.getList(s), // Get all available roles
+                Team.getList(s)). // Get all available teams
 
                 // Update the user with all new values
                 combinedWith((user, listOfRoles, listOfTeams) -> {
@@ -268,8 +269,8 @@ public class UserManagementUser {
         return sf.withTransaction((s, t) ->
 
         Uni.combine().all().unis(
-                Role.getListOfRoles(s), // Get all available roles
-                Team.getListOfTeams(s)). // Get all available teams
+                Role.getList(s), // Get all available roles
+                Team.getList(s)). // Get all available teams
 
                 // Create the user with all new values
                 combinedWith((listOfRoles, listOfTeams) -> {
@@ -303,7 +304,7 @@ public class UserManagementUser {
                 }).
 
                 // Add it to the database
-                chain(u->User.createUser(s, u)));
+                chain(u->JanusEntity.create(s, u)));
 
     }
 
@@ -316,6 +317,13 @@ public class UserManagementUser {
      */
     public static Uni<Void> deleteUser(SessionFactory sf,
             UUID uuid) {
-        return sf.withTransaction((s, t) -> User.deleteUser(s, uuid));
+
+        return sf.withTransaction((s, t) ->
+            JanusEntity.get(User.class, s, uuid).
+            map (u -> {
+                u.clearTeams();
+                return u;
+            }).
+            chain (u->s.remove(u)));
     }
 }

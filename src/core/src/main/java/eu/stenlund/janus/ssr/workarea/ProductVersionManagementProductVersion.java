@@ -15,6 +15,7 @@ import eu.stenlund.janus.base.JanusNoSuchItemException;
 import eu.stenlund.janus.model.Product;
 import eu.stenlund.janus.model.ProductState;
 import eu.stenlund.janus.model.ProductVersion;
+import eu.stenlund.janus.model.base.JanusEntity;
 import eu.stenlund.janus.msg.ProductManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
@@ -145,8 +146,8 @@ public class ProductVersionManagementProductVersion {
     {
         if (uuid == null) {
             return Uni.combine().all().unis(
-                sf.withSession(s -> Product.getListOfProducts(s)),
-                sf.withSession(s -> ProductState.getListOfProductStates(s)))
+                sf.withSession(s -> Product.getList(s)),
+                sf.withSession(s -> ProductState.getList(s)))
                 .combinedWith((products, states) -> new ProductVersionManagementProductVersion(
                         new ProductVersion(),
                         products,
@@ -155,9 +156,9 @@ public class ProductVersionManagementProductVersion {
 
         } else {
             return Uni.combine().all().unis(
-                    sf.withSession(s -> Product.getListOfProducts(s)),
-                    sf.withSession(s -> ProductState.getListOfProductStates(s)),
-                    sf.withSession(s -> ProductVersion.getProductVersion(s, uuid)))
+                    sf.withSession(s -> Product.getList(s)),
+                    sf.withSession(s -> ProductState.getList(s)),
+                    sf.withSession(s -> JanusEntity.get (ProductVersion.class, s, uuid)))
                 .combinedWith((products, states, version) -> new ProductVersionManagementProductVersion(
                         version,
                         products,
@@ -174,9 +175,9 @@ public class ProductVersionManagementProductVersion {
         Boolean closed)
     {
         return sf.withTransaction((ss, tt) -> Uni.combine().all().unis(
-                    sf.withSession(s -> ProductVersion.getProductVersion(s, uuid)),
-                    sf.withSession(s -> ProductState.getProductState(s, state)),
-                    sf.withSession(s -> Product.getProduct(s, product)))
+                    sf.withSession(s -> JanusEntity.get (ProductVersion.class, s, uuid)),
+                    sf.withSession(s -> JanusEntity.get(ProductState.class, s, state)),
+                    sf.withSession(s -> JanusEntity.get(Product.class, s, product)))
                 .combinedWith((pv, ps, p) -> {
                     pv.closed = closed.booleanValue();
                     pv.version = version;
@@ -194,8 +195,8 @@ public class ProductVersionManagementProductVersion {
         Boolean closed)
     {
         return sf.withTransaction((ss, tt) -> Uni.combine().all().unis(
-            sf.withSession(s -> ProductState.getProductState(s, state)),
-            sf.withSession(s -> Product.getProduct(s, product)))
+            sf.withSession(s -> JanusEntity.get(ProductState.class, s, state)),
+            sf.withSession(s -> JanusEntity.get(Product.class, s, product)))
         .combinedWith((ps, p) -> {
             ProductVersion pv = new ProductVersion();
             pv.closed = closed.booleanValue();
@@ -203,7 +204,7 @@ public class ProductVersionManagementProductVersion {
             pv.product = p;
             pv.state = ps;
             return pv;})
-        .chain(pv -> ProductVersion.createProductVersion(ss, pv)));
+        .chain(pv -> JanusEntity.create(ss, pv)));
 
     }
 
@@ -217,6 +218,6 @@ public class ProductVersionManagementProductVersion {
     public static Uni<Void> deleteProductVersion(SessionFactory sf,
                                             UUID uuid)
     {
-        return sf.withTransaction((s,t)->ProductVersion.deleteProductVersion(s, uuid));
+        return sf.withTransaction((s,t)->JanusEntity.delete (ProductVersion.class, s, uuid));
     }
 }

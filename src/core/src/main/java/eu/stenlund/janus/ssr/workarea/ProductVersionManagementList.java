@@ -95,8 +95,8 @@ public class ProductVersionManagementList {
     public static Uni<ProductVersionManagementList> createModel(SessionFactory sf, int start, int max, String locale)
     {
         return Uni.combine().all().unis(
-            sf.withSession(s -> ProductVersion.getListOfProductVersions(s, start, max)),
-            sf.withSession(s -> ProductVersion.getNumberOfProductVersions(s))).asTuple()
+            sf.withSession(s -> ProductVersion.getList(s, start, max)),
+            sf.withSession(s -> ProductVersion.getCount(s))).asTuple()
         .map(lu -> new ProductVersionManagementList(
                 lu.getItem1(),
                 lu.getItem2().intValue(),

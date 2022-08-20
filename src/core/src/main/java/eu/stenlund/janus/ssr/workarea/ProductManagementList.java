@@ -82,7 +82,10 @@ public class ProductManagementList {
         products.forEach(product -> {
             List<Base> row = new ArrayList<Base>(columns.size());
             row.add(new Text(product.name));
-            String s = product.current.state!=null?product.current.state.display:"No state";
+            String s = "No state";
+            if (product.current != null) {
+                s = product.current.state!=null?product.current.state.display:"No state";
+            }
             row.add(new Text(product.current!=null?product.current.version + " (" + s + ")":"No version"));
             row.add(new Text(product.description));
             String actionURL  = UriBuilder.fromPath(ROOT_PATH)
@@ -108,8 +111,8 @@ public class ProductManagementList {
     public static Uni<ProductManagementList> createModel(SessionFactory sf, int start, int max, String locale)
     {
         return Uni.combine().all().unis(
-            sf.withSession(s -> Product.getListOfProducts(s, start, max)),
-            sf.withSession(s -> Product.getNumberOfProducts(s))).asTuple()
+            sf.withSession(s -> Product.getList(s, start, max)),
+            sf.withSession(s -> Product.getCount(s))).asTuple()
         .map(lu -> new ProductManagementList(
                 lu.getItem1(),
                 lu.getItem2().intValue(),

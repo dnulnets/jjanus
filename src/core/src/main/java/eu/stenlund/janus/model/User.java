@@ -159,28 +159,6 @@ public class User extends JanusEntity {
     }
 
     /**
-     * Add a user to the database.
-     * 
-     * @param s    A mutiny session.
-     * @param user The user to add.
-     * @return An asynchronous result.
-     */
-    public static Uni<User> createUser(Session s, User user) {
-        return s.persist(user).replaceWith(user);
-    }
-
-    /**
-     * Retrieves a specific user based on its key identity.
-     * 
-     * @param s  The session.
-     * @param id The users UUID as a string.
-     * @return The user or null.
-     */
-    public static Uni<User> getUser(Session s, UUID uuid) {
-        return s.find(User.class, uuid);
-    }
-
-    /**
      * Finds a user by its username.
      * 
      * @param s   A mutiny session.
@@ -198,7 +176,7 @@ public class User extends JanusEntity {
      * @param s The session.
      * @return Number of users in the database.
      */
-    public static Uni<Long> getNumberOfUsers(Session s) {
+    public static Uni<Long> getCount(Session s) {
         return s.createNamedQuery("User_NumberOfUsers", Long.class)
                 .getSingleResult();
     }
@@ -213,7 +191,7 @@ public class User extends JanusEntity {
      * @param max   Max number of items to return.
      * @return List of users.
      */
-    public static Uni<List<User>> getListOfUsers(Session s, int start, int max) {
+    public static Uni<List<User>> getList(Session s, int start, int max) {
         return s.createNamedQuery("User_ListOfUsers", User.class)
                 .setFirstResult(start).setMaxResults(max).getResultList();
     }
@@ -224,20 +202,9 @@ public class User extends JanusEntity {
      * @param s The session.
      * @return List of users.
      */
-    public static Uni<List<User>> getListOfUsers(Session s) {
+    public static Uni<List<User>> getList(Session s) {
         return s.createNamedQuery("User_ListOfUsers", User.class)
                 .getResultList();
-    }
-
-    /**
-     * Delete a user given the UUID.
-     * 
-     * @param s    The session.
-     * @param uuid The UUID of the user.
-     * @return Nothing.
-     */
-    public static Uni<Void> deleteUser(Session s, UUID uuid) {
-        return getUser(s, uuid).chain(u -> s.remove(u));
     }
 
     /**

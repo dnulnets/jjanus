@@ -80,7 +80,7 @@ public class Role extends JanusEntity {
      * @param s The session.
      * @return A list of all the roles.
      */
-    public static Uni<List<Role>> getListOfRoles(Session s)
+    public static Uni<List<Role>> getList(Session s)
     {
         return s.createNamedQuery("Role_ListOfRoles", Role.class).getResultList();
     }

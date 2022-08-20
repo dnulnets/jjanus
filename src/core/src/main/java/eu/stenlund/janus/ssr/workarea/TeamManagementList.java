@@ -106,8 +106,8 @@ public class TeamManagementList {
     public static Uni<TeamManagementList> createModel(SessionFactory sf, int start, int max, String locale)
     {
         return Uni.combine().all().unis(
-            sf.withSession(s -> Team.getListOfTeams(s, start, max)),
-            sf.withSession(s -> Team.getNumberOfTeams(s))).asTuple()
+            sf.withSession(s -> Team.getList(s, start, max)),
+            sf.withSession(s -> Team.getCount(s))).asTuple()
         .map(lu -> new TeamManagementList(
                 lu.getItem1(),
                 lu.getItem2().intValue(),

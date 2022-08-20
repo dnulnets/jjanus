@@ -1,20 +1,14 @@
 package eu.stenlund.janus.model;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.reactive.mutiny.Mutiny.Session;
@@ -82,7 +76,7 @@ public class ProductVersion extends JanusEntity {
      * @param s The session.
      * @return Number of products in the database.
      */
-    public static Uni<Long> getNumberOfProductVersions(Session s)
+    public static Uni<Long> getCount(Session s)
     {
         return s.createNamedQuery("ProductVersion_NumberOfProductVersions", Long.class)
             .getSingleResult();
@@ -97,29 +91,10 @@ public class ProductVersion extends JanusEntity {
      * @param max Max number of items to return.
      * @return List of products.
      */
-    public static Uni<List<ProductVersion>> getListOfProductVersions(Session s, int start, int max)
+    public static Uni<List<ProductVersion>> getList(Session s, int start, int max)
     {
         return s.createNamedQuery("ProductVersion_ListOfProductVersions", ProductVersion.class)
             .setFirstResult(start).setMaxResults(max).getResultList();
     }
 
-    /**
-     * Retrieves a specific team based on its key identity.
-     * 
-     * @param s The session.
-     * @param id The product version UUID as a string.
-     * @return The product version or null.
-     */
-    public static Uni<ProductVersion> getProductVersion(Session s, UUID uuid) {
-        return uuid!=null?s.find(ProductVersion.class, uuid):null;
-    }
-
-    public static Uni<ProductVersion> createProductVersion(Session s, ProductVersion pv) {
-        return s.persist(pv).replaceWith(pv);   
-    }
-
-    public static Uni<Void> deleteProductVersion(Session s, UUID uuid)
-    {
-        return getProductVersion(s, uuid).chain(u -> s.remove(u));
-    }
 }

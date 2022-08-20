@@ -8,6 +8,10 @@ import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.reactive.mutiny.Mutiny.Session;
+import org.jboss.logging.Logger;
+
+import io.smallrye.mutiny.Uni;
 
 /**
  * The JanusEntity that acts as base class for all entities, it supports with
@@ -20,6 +24,8 @@ import org.hibernate.annotations.Parameter;
 @MappedSuperclass
 public class JanusEntity {
 
+    private static final Logger log = Logger.getLogger(JanusEntity.class);
+
     /**
      * The generic identity of the entity as a UUID.
      */
@@ -29,5 +35,17 @@ public class JanusEntity {
             @Parameter(name = org.hibernate.id.UUIDGenerator.UUID_GEN_STRATEGY_CLASS, value = "org.hibernate.id.uuid.CustomVersionOneStrategy")
     })
     public UUID id;
+
+    public static <T> Uni<T> get(Class<T> clazz, Session s, UUID uuid) {
+        return uuid!=null?s.find(clazz, uuid):null;
+    }
+
+    public static <T> Uni<Void> delete(Class<T> clazz, Session s, UUID uuid) {
+        return uuid!=null?s.find(clazz, uuid).chain(u -> s.remove(u)):null;
+    }
+
+    public static <T> Uni<T> create(Session s, T object) {
+        return s.persist(object).replaceWith(object);   
+    }
 
 }

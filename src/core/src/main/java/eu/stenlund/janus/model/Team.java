@@ -125,44 +125,10 @@ public class Team extends JanusEntity {
      * @param s The session.
      * @return Number of users in the database.
      */
-    public static Uni<Long> getNumberOfTeams(Session s)
+    public static Uni<Long> getCount(Session s)
     {
         return s.createNamedQuery("Team_NumberOfTeams", Long.class)
             .getSingleResult();
-    }
-
-    /**
-     * Retrieves a specific team based on its key identity.
-     * 
-     * @param s The session.
-     * @param id The teams UUID as a string.
-     * @return The team or null.
-     */
-    public static Uni<Team> getTeam(Session s, UUID uuid) {
-        return s.find(Team.class, uuid);
-    }
-
-    /**
-     * Delete a team given the UUID.
-     * 
-     * @param s The session.
-     * @param uuid The UUID of the team.
-     * @return Nothing.
-     */
-    public static Uni<Void> deleteTeam(Session s, UUID uuid)
-    {
-        return getTeam(s, uuid).chain(u -> s.remove(u));
-    }
-
-    /**
-     * Add a team to the database.
-     * 
-     * @param s    A mutiny session.
-     * @param user The team to add.
-     * @return An asynchronous result.
-     */
-    public static Uni<Team> createTeam(Session s, Team team) {
-        return s.persist(team).replaceWith(team);   
     }
 
     /**
@@ -174,7 +140,7 @@ public class Team extends JanusEntity {
      * @param max Max number of items to return.
      * @return List of users.
      */
-    public static Uni<List<Team>> getListOfTeams(Session s, int start, int max)
+    public static Uni<List<Team>> getList(Session s, int start, int max)
     {
         return s.createNamedQuery("Team_ListOfTeams", Team.class)
             .setFirstResult(start).setMaxResults(max).getResultList();
@@ -189,7 +155,7 @@ public class Team extends JanusEntity {
      * @param max Max number of items to return.
      * @return List of users.
      */
-    public static Uni<List<Team>> getListOfTeams(Session s)
+    public static Uni<List<Team>> getList(Session s)
     {
         return s.createNamedQuery("Team_ListOfTeams", Team.class).getResultList();
     }

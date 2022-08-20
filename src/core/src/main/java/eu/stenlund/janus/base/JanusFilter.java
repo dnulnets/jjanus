@@ -13,9 +13,8 @@ import org.jboss.resteasy.reactive.server.ServerResponseFilter;
 
 /**
  * The filters used for handling the state cookie for each request. Both parsing
- * and unparsing.
- * I were not able to make it work with the SessionScoped annotation for some
- * reason.
+ * and unparsing. I were not able to make it work with the SessionScoped annotation
+ * for some reason.
  *
  * @author Tomas Stenlund
  * @since 2022-07-16
