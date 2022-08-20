@@ -19,6 +19,7 @@ The first code has been created with a fully working RBAC security solution and 
 * Login and logout of the application
 * Administration of users, their roles and team designation, i.e. list, view, create, update and delete. Requires role admin.
 * Administration of teams and its members, i.e. list, view, create, update and delete. Requires role admin.
+* Administration of product and versions of products, i.e. list, view, create, update and delete. Requires role admin or product owner.
 
 It is just the rest of the application left ;-) Look at the issues tab to see what is currently ongoing.
 
