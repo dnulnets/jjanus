@@ -63,14 +63,14 @@ public class Start {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance start1(Base base);
 
+        /* Example pages, to be removed */
+        public static native TemplateInstance start1(Base base);
         public static native TemplateInstance start2(Base base);
 
+        /* Real pages, to be kept */
         public static native TemplateInstance login(StartLogin workarea);
-
         public static native TemplateInstance auth_error();
-
         public static native TemplateInstance extra();
     }
 
@@ -139,8 +139,7 @@ public class Start {
 
     /**
      * Remove the cookies associated with the auth form authentication and redirect
-     * to the
-     * login page.
+     * to the login page.
      * 
      * @return Response with a redirect to the login page
      */
@@ -167,17 +166,17 @@ public class Start {
     /**
      * Change the locale of the application, and redirect to return URI.
      * 
+     * NOTE! Should not be a GET should be made a POST instead.
+     * 
      * @param code   Language code
      * @param backTo Return URI
      * @return Returns with the redirect to the return URI
      */
     @GET
     @Path("locale")
-    public RestResponse<Object> locale(
-            @RestQuery("code") String code,
-            @RestQuery("return") String backTo) {
-        log.info ("Code = " + code);
-        log.info ("Return = " + backTo);
+    public RestResponse<Object> locale(@RestQuery("code") String code,
+                                        @RestQuery("return") String backTo)
+    {
         if (code != null)
             js.setLocale(code);
         if (backTo != null)

@@ -34,7 +34,7 @@ import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.smallrye.mutiny.Uni;
 
 /**
- * The resource for Team management. It handles teams and adding/removing users.
+ * The resource for product version management. It handles product versions and products.
  * 
  * @author Tomas Stenlund
  * @since 2022-08-01
@@ -57,7 +57,7 @@ public class ProductVersionManagement {
     JanusSession js;
 
     /**
-     * All of the checked templates for the Start resource.
+     * All of the checked templates for the product version resource.
      */
     @CheckedTemplate
     public static class Templates {
@@ -66,9 +66,9 @@ public class ProductVersionManagement {
     }
 
     /**
-     * List all of the products in the database.
+     * List all of the product versions in the database.
      * 
-     * @return The list of all products
+     * @return The list of all product versions
      */
     @GET
     @Path("list")
@@ -103,7 +103,7 @@ public class ProductVersionManagement {
     }
 
     /**
-     * Show the product data and a ui that allows you to change certain attributes of the product
+     * Show the product version data and a ui that allows you to change certain attributes of the product version.
      * 
      * @return The product page
      */
@@ -128,9 +128,9 @@ public class ProductVersionManagement {
     }
 
     /**
-     * Updates the products values.
+     * Updates the product versions values.
      * 
-     * @return The team list page
+     * @return The updated product versions list page
      */
     @POST
     @Path("")
@@ -161,9 +161,9 @@ public class ProductVersionManagement {
     }
 
     /**
-     * Creates a new team page.
+     * Creates a new prodyct version page.
      * 
-     * @return The team page
+     * @return The new product version page.
      */
     @GET
     @Path("create")
@@ -181,10 +181,10 @@ public class ProductVersionManagement {
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
-        /**
-     * Show the user data and a ui that allows you to change certain aspects of the user.
+    /**
+     * Creates a new product version and returns with the updated product versions list.
      * 
-     * @return The user page
+     * @return The updated product versions page
      */
     @POST
     @Path("create")
@@ -214,9 +214,9 @@ public class ProductVersionManagement {
     }
 
     /**
-     * Show the user data and a ui that allows you to change certain aspects of the user.
+     * Deletes a product version and returns with the updated product versions list.
      * 
-     * @return The user page
+     * @return The updated product versions list.
      */
     @POST
     @Path("delete")

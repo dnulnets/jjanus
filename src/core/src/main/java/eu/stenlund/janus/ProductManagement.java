@@ -34,10 +34,10 @@ import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.smallrye.mutiny.Uni;
 
 /**
- * The resource for Team management. It handles teams and adding/removing users.
+ * The resource for Product management. It handles products and versions.
  * 
  * @author Tomas Stenlund
- * @since 2022-08-01
+ * @since 2022-08-18
  * 
  */
 @Path("product")
@@ -57,7 +57,7 @@ public class ProductManagement {
     JanusSession js;
 
     /**
-     * All of the checked templates for the Start resource.
+     * All of the checked templates for the product resource.
      */
     @CheckedTemplate
     public static class Templates {
@@ -128,9 +128,9 @@ public class ProductManagement {
     }
 
     /**
-     * Updates the products values.
+     * Updates the products values and returns with a list of all products.
      * 
-     * @return The team list page
+     * @return The updated product list page.
      */
     @POST
     @Path("")
@@ -156,9 +156,9 @@ public class ProductManagement {
     }
 
     /**
-     * Creates a new team page.
+     * Creates a new product page.
      * 
-     * @return The team page
+     * @return The new product page
      */
     @GET
     @Path("create")
@@ -175,10 +175,10 @@ public class ProductManagement {
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
-        /**
-     * Show the user data and a ui that allows you to change certain aspects of the user.
+    /**
+     * Creates a new product and returns with an updated product list.
      * 
-     * @return The user page
+     * @return The updated product list page.
      */
     @POST
     @Path("create")
@@ -204,9 +204,9 @@ public class ProductManagement {
     }
 
     /**
-     * Show the user data and a ui that allows you to change certain aspects of the user.
+     * Deletes a product and returns with an updated product list page.
      * 
-     * @return The user page
+     * @return The updated product list page.
      */
     @POST
     @Path("delete")

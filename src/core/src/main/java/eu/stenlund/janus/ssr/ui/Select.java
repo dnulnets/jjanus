@@ -5,7 +5,7 @@ import java.util.List;
 import org.jboss.logging.Logger;
 
 /**
- * A button in the user interface, it contains both datamodel and view.
+ * A select interface, it contains the datamodel.
  *
  * @author Tomas Stenlund
  * @since 2022-08-11
@@ -15,11 +15,33 @@ public class Select extends Base {
 
     private static final Logger log = Logger.getLogger(Checkbox.class);
 
+    /**
+     * An item that can be selected.
+     */
     public static class Item {
+
+        /**
+         * The item is selected/checked.
+         */
         public boolean checked;
+
+        /**
+         * The label for the item.
+         */
         public String label;
+
+        /**
+         * The value of the item, used when posting the selected item.
+         */
         public String value;
 
+        /**
+         * The default constructor for the item.
+         * 
+         * @param label The label of the item.
+         * @param checked If the item is selected/checked or not.
+         * @param value The value of the item.
+         */
         public Item(String label, boolean checked, String value)
         {
             this.label = label;
@@ -28,10 +50,29 @@ public class Select extends Base {
         }
     }
 
+    /**
+     * The label of the selector.
+     */
     public String label;
+
+    /**
+     * The name of the selector. Used when posting the selections.
+     */
     public String name;
+
+    /**
+     * The identity of the selector.
+     */
     public String id;
+
+    /**
+     * Any extra attributes for the selector.
+     */
     public String extra;
+
+    /**
+     * The list of all items in the selector.
+     */
     public List<Item> items;
 
     @Override

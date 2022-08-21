@@ -57,7 +57,7 @@ public class TeamManagement {
     JanusSession js;
 
     /**
-     * All of the checked templates for the Start resource.
+     * All of the checked templates for the team resource.
      */
     @CheckedTemplate
     public static class Templates {
@@ -173,10 +173,10 @@ public class TeamManagement {
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
-        /**
-     * Show the user data and a ui that allows you to change certain aspects of the user.
+    /**
+     * Creates a new team and return with an updated list of teams.
      * 
-     * @return The user page
+     * @return The updated team list page
      */
     @POST
     @Path("create")
@@ -199,9 +199,9 @@ public class TeamManagement {
     }
 
     /**
-     * Show the user data and a ui that allows you to change certain aspects of the user.
+     * Delete a team and return with an updated team list.
      * 
-     * @return The user page
+     * @return The updated team list page.
      */
     @POST
     @Path("delete")

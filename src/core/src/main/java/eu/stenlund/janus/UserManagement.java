@@ -57,7 +57,7 @@ public class UserManagement {
     JanusSession js;
 
     /**
-     * All of the checked templates for the Start resource.
+     * All of the checked templates for the user resource.
      */
     @CheckedTemplate
     public static class Templates {
@@ -128,9 +128,9 @@ public class UserManagement {
     }
 
     /**
-     * Show the user data and a ui that allows you to change certain aspects of the user.
+     * Updates the user and return with an updated user list.
      * 
-     * @return The user page
+     * @return The updated user list page.
      */
     @POST
     @Path("")
@@ -177,10 +177,10 @@ public class UserManagement {
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
     }
 
-        /**
-     * Show the user data and a ui that allows you to change certain aspects of the user.
+    /**
+     * Creates a new user and returns with an updated user list page.
      * 
-     * @return The user page
+     * @return The updated user list page.
      */
     @POST
     @Path("create")
@@ -208,9 +208,9 @@ public class UserManagement {
     }
 
     /**
-     * Show the user data and a ui that allows you to change certain aspects of the user.
+     * Deletes a user and returns with the updated user list page.
      * 
-     * @return The user page
+     * @return The updated user list page.
      */
     @POST
     @Path("delete")
