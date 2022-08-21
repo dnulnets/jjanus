@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.reactive.mutiny.Mutiny.Session;
 
@@ -26,7 +27,8 @@ import io.smallrye.mutiny.Uni;
  * 
  */
 @Entity
-@Table(name = "productversion")
+@Table( name = "productversion",
+        uniqueConstraints=@UniqueConstraint(columnNames={"version", "product"}))
 @NamedQueries({
     @NamedQuery(name = "ProductVersion_ListOfProductVersions", query = "From ProductVersion m ORDER BY m.product.name, m.version"),
     @NamedQuery(name = "ProductVersion_NumberOfProductVersions", query = "Select count (v.id) from ProductVersion v")
@@ -36,11 +38,11 @@ public class ProductVersion extends JanusEntity {
     /**
      * Version of the product, e.g. R1.0.0
      */
-    @Column(unique = true, nullable = false, updatable = true)
+    @Column(unique = false, nullable = false, updatable = true)
     public String version;
 
     /**
-     * If the version is closed for new features
+     * If the version is closed for changes
      */
     @Column(unique = false, nullable = false, updatable = true)
     public boolean closed;
@@ -49,14 +51,14 @@ public class ProductVersion extends JanusEntity {
      * The product that this version is meant for.
      */
     @ManyToOne()
-    @JoinColumn(unique=true, name="product", nullable = false)
+    @JoinColumn(unique=false, name="product", nullable = false)
     public Product product;
 
     /**
      * State of the product version.
      */
     @ManyToOne()
-    @JoinColumn(name="state", nullable = false)
+    @JoinColumn(unique=false, name="state", nullable = false)
     public ProductState state;
 
     /**

@@ -49,13 +49,13 @@ public class User extends JanusEntity {
     /**
      * The name of the user.
      */
-    @Column(nullable = false, updatable = true)
+    @Column(unique=false, nullable = false, updatable = true)
     public String name;
 
     /**
      * The email to the user.
      */
-    @Column(nullable = false, updatable = true)
+    @Column(unique=false, nullable = false, updatable = true)
     public String email;
 
     /**
@@ -67,7 +67,7 @@ public class User extends JanusEntity {
     /**
      * The password for the user, bcrypted.
      */
-    @Column(nullable = false, updatable = true)
+    @Column(unique=false, nullable = false, updatable = true)
     public String password;
 
     /**

@@ -33,7 +33,7 @@ public class ProductState extends JanusEntity {
     /**
      * Displayname for the state
      */
-    @Column(unique = false, nullable = false, updatable = true)
+    @Column(unique = true, nullable = false, updatable = true)
     public String display;
 
     /**

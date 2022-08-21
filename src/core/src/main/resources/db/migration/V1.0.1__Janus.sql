@@ -93,8 +93,11 @@
     alter table if exists product 
        add constraint UK_jmivyxk9rmgysrmsqw15lqr5b unique (name);
 
+    alter table if exists productstate 
+       add constraint UK_4h3l89tiwppnue161gonm8m95 unique (display);
+
     alter table if exists productversion 
-       add constraint UK_mf8ppqcsrrpmp8evgfpi4ocbl unique (version);
+       add constraint UK1595wlh0xqcdk43cu58aghl7n unique (version, product);
 
     alter table if exists "role" 
        add constraint UK_o8bfng039ihyylu5vhv60143a unique (longName);
@@ -167,7 +170,6 @@
        add constraint FKte5t6n42fa7onvfamnqrgqg8b 
        foreign key ("user") 
        references "user";
-
 
 --
 -- Create default roles
