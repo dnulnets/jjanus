@@ -146,13 +146,13 @@ public class UserManagementUser {
         List<Select.Item> ritems = new ArrayList<Select.Item>(roles.size());
         roles.forEach(
                 role -> ritems.add(new Select.Item(role.longName, user.hasRole(role.name), role.id.toString())));
-        this.roles = new Select(msg.user_roles(), "roles", "id-roles", ritems, null);
+        this.roles = new Select(msg.user_roles(), "roles", "id-roles", ritems, true, null);
 
         // Create the forms multiselect teams
         List<Select.Item> items = new ArrayList<Select.Item>(teams.size());
         teams.forEach(
                 team -> items.add(new Select.Item(team.name, user.belongsToTeam(team.id), team.id.toString())));
-        this.teams = new Select(msg.user_teams(), "teams", "id-teams", items, null);
+        this.teams = new Select(msg.user_teams(), "teams", "id-teams", items, false, null);
 
         // Create the form
         form = new Form(Form.POST, newUser?createURL:updateURL, true, JanusSSRHelper.unpolySubmit(backURL));

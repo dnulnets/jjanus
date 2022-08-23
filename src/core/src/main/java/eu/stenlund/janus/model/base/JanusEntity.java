@@ -37,11 +37,12 @@ public class JanusEntity {
     public UUID id;
 
     public static <T> Uni<T> get(Class<T> clazz, Session s, UUID uuid) {
-        return uuid!=null?s.find(clazz, uuid):null;
+        log.info ("JanusEntity.get:" + uuid);
+        return uuid!=null?s.find(clazz, uuid):Uni.createFrom().nullItem();
     }
 
     public static <T> Uni<Void> delete(Class<T> clazz, Session s, UUID uuid) {
-        return uuid!=null?s.find(clazz, uuid).chain(u -> s.remove(u)):null;
+        return uuid!=null?s.find(clazz, uuid).chain(u -> s.remove(u)):Uni.createFrom().voidItem();
     }
 
     public static <T> Uni<T> create(Session s, T object) {

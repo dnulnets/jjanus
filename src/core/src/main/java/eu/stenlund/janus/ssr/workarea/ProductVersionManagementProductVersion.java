@@ -121,12 +121,12 @@ public class ProductVersionManagementProductVersion {
         // Create the product selection
         List<Select.Item> l = 
             products.stream().map(p -> new Select.Item(p.name, productVersion.product!=null?productVersion.product.id.compareTo(p.id)==0:false, p.id.toString())).toList();
-        product = new Select(msg.productversion_product(),"product", "id-product", l, null);
+        product = new Select(msg.productversion_product(),"product", "id-product", l, true, null);
 
         // Create the product state selection
         List<Select.Item> m = 
             states.stream().map(s -> new Select.Item(s.display, productVersion.state!=null?productVersion.state.id.compareTo(s.id)==0:false, s.id.toString())).toList();
-        state = new Select(msg.productversion_state(),"state", "id-state", m, null);
+        state = new Select(msg.productversion_state(),"state", "id-state", m, false, null);
 
         // Create the form
         form = new Form(Form.POST, newProductVersion?createURL:updateURL, true, JanusSSRHelper.unpolySubmit(backURL));
@@ -172,6 +172,10 @@ public class ProductVersionManagementProductVersion {
         UUID state,
         Boolean closed)
     {
+        log.info ("State: " + state);
+        log.info ("UUID: " + uuid);
+        log.info ("Product: " + product);
+
         return sf.withTransaction((ss, tt) -> Uni.combine().all().unis(
                     sf.withSession(s -> JanusEntity.get (ProductVersion.class, s, uuid)),
                     sf.withSession(s -> JanusEntity.get(ProductState.class, s, state)),

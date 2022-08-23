@@ -124,7 +124,7 @@ public class ProductManagementProduct {
             product.versions.stream().map(v -> new Select.Item(
                 v.version + " (" + (v.state!=null?v.state.display:"No state") + ")",
                 product.current!=null?product.current.id.compareTo(v.id)==0:false, v.id.toString())).toList();
-        current = new Select(msg.product_current_versions(),"current", "id-current", l, null);
+        current = new Select(msg.product_current_versions(),"current", "id-current", l, false, null);
 
         // Create the form
         form = new Form(Form.POST, newProduct?createURL:updateURL, true, JanusSSRHelper.unpolySubmit(backURL));
@@ -179,7 +179,8 @@ public class ProductManagementProduct {
                     product.name = name;
                     product.description = description;
                     product.current = null;
-                    product.versions.forEach(v -> product.current = (v.id.compareTo(current)==0)?v:product.current);
+                    if (current != null)
+                        product.versions.forEach(v -> product.current = (v.id.compareTo(current)==0)?v:product.current);
                     return product;
                 })
             );
@@ -200,7 +201,7 @@ public class ProductManagementProduct {
         return sf.withTransaction((s,t)-> {
                     Product product = new Product();
 
-                    // Update the user
+                    // Update the product
                     product.name = name;
                     product.description = description;
 

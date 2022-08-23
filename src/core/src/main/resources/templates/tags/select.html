@@ -1,6 +1,9 @@
 <div class="mb-3">
     <label class="form-label" for="{it.id.raw}">{it.label}</label>
     <select class="form-select" name="{it.name.raw}" id="{it.id.raw}" {it.extra.raw}>
+        {#if !it.required}
+            <option selected></option>
+        {/if}
         {#for item in it.items}
             {#if item.checked}
                 <option selected value="{item.value.raw}">{item.label}</option>

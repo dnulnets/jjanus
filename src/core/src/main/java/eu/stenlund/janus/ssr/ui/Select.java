@@ -31,7 +31,7 @@ public class Select extends Base {
         public String label;
 
         /**
-         * The value of the item, used when posting the selected item.
+         * The value of the option
          */
         public String value;
 
@@ -66,6 +66,11 @@ public class Select extends Base {
     public String id;
 
     /**
+     * If the select is required to have a value.
+     */
+    public boolean required;
+    
+    /**
      * Any extra attributes for the selector.
      */
     public String extra;
@@ -88,12 +93,13 @@ public class Select extends Base {
      * @param action The action when the button is pressed, if null the forms default action is used.
      * @param extra Any extra attributes to add for the input tag.
      */
-    public Select(String label, String name, String id, List<Item> values, String extra) {
+    public Select(String label, String name, String id, List<Item> values, boolean required, String extra) {
         this.label = label;
         this.name = name;
         this.id = id;
         this.items = values;
         this.extra = extra==null?"":extra;
+        this.required = required;
     }
 
 }

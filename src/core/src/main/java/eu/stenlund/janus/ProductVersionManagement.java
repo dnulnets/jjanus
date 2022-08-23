@@ -24,6 +24,7 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusSession;
+import eu.stenlund.janus.base.MaybeUUID;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.workarea.Base;
 import eu.stenlund.janus.ssr.workarea.ProductVersionManagementList;
@@ -139,7 +140,7 @@ public class ProductVersionManagement {
     public Uni<RestResponse<String>> product(@RestForm UUID uuid,
                                             @RestForm UUID product,
                                             @RestForm String version,
-                                            @RestForm UUID state,
+                                            @RestForm MaybeUUID state,
                                             @RestForm Boolean closed)
     {
         // We need data for all of the fields
@@ -153,7 +154,7 @@ public class ProductVersionManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductVersionManagementProductVersion.updateProductVersion(sf, uuid, version, product, state, closed).
+                ProductVersionManagementProductVersion.updateProductVersion(sf, uuid, version, product, state.orElse(null), closed).
                     chain(user -> ProductVersionManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
@@ -191,7 +192,7 @@ public class ProductVersionManagement {
     @RolesAllowed({"admin"})
     public Uni<RestResponse<String>> create(@RestForm UUID product,
                                             @RestForm String version,
-                                            @RestForm UUID state,
+                                            @RestForm MaybeUUID state,
                                             @RestForm Boolean closed)
     {
         // We need data for all of the fields
@@ -206,7 +207,7 @@ public class ProductVersionManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductVersionManagementProductVersion.createProductVersion(sf, null, version, product, state, closed).
+                ProductVersionManagementProductVersion.createProductVersion(sf, null, version, product, state.orElse(null), closed).
                     chain(user->ProductVersionManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).

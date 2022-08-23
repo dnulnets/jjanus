@@ -1,6 +1,7 @@
 package eu.stenlund.janus;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -24,6 +25,7 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusSession;
+import eu.stenlund.janus.base.MaybeUUID;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.workarea.Base;
 import eu.stenlund.janus.ssr.workarea.ProductManagementList;
@@ -139,7 +141,7 @@ public class ProductManagement {
     public Uni<RestResponse<String>> product(@RestForm UUID uuid,
                                             @RestForm String name,
                                             @RestForm String description,
-                                            @RestForm UUID current)
+                                            @RestForm MaybeUUID current)
     {
         // We need data for all of the fields
         if (JanusHelper.isBlank(name) || uuid ==null)
@@ -148,7 +150,7 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.updateProduct(sf, uuid, name, description, current).
+                ProductManagementProduct.updateProduct(sf, uuid, name, description, current.orElse(null)).
                     chain(user -> ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base, model) -> JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).

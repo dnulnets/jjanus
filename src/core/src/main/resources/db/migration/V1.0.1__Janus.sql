@@ -38,7 +38,7 @@
         closed boolean not null,
         version varchar(255) not null,
         product uuid not null,
-        state uuid not null,
+        state uuid,
         primary key (id)
     );
 

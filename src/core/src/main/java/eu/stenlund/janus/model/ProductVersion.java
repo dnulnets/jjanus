@@ -51,14 +51,14 @@ public class ProductVersion extends JanusEntity {
      * The product that this version is meant for.
      */
     @ManyToOne()
-    @JoinColumn(unique=false, name="product", nullable = false)
+    @JoinColumn(unique=false, name="product", nullable = false, updatable = true)
     public Product product;
 
     /**
      * State of the product version.
      */
     @ManyToOne()
-    @JoinColumn(unique=false, name="state", nullable = false)
+    @JoinColumn(unique=false, name="state", nullable = true, updatable = true)
     public ProductState state;
 
     /**
