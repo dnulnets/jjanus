@@ -37,7 +37,6 @@ public class JanusEntity {
     public UUID id;
 
     public static <T> Uni<T> get(Class<T> clazz, Session s, UUID uuid) {
-        log.info ("JanusEntity.get:" + uuid);
         return uuid!=null?s.find(clazz, uuid):Uni.createFrom().nullItem();
     }
 
