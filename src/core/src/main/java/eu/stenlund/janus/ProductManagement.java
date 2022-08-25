@@ -141,6 +141,7 @@ public class ProductManagement {
     public Uni<RestResponse<String>> product(@RestForm UUID uuid,
                                             @RestForm String name,
                                             @RestForm String description,
+                                            @RestForm UUID[] teams,
                                             @RestForm MaybeUUID current)
     {
         // We need data for all of the fields
@@ -150,7 +151,7 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.updateProduct(sf, uuid, name, description, current.orElse(null)).
+                ProductManagementProduct.updateProduct(sf, uuid, name, description, teams, current.orElse(null)).
                     chain(user -> ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base, model) -> JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
@@ -186,7 +187,8 @@ public class ProductManagement {
     @Path("create")
     @RolesAllowed({"admin"})
     public Uni<RestResponse<String>> create(@RestForm String name,
-                                            @RestForm String description)
+                                            @RestForm String description,
+                                            @RestForm UUID[] teams)
     {
         // We need data for all of the fields
         if (JanusHelper.isBlank(name))
@@ -198,7 +200,7 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.createProduct(sf, name, description).
+                ProductManagementProduct.createProduct(sf, name, description, teams).
                     chain(user->ProductManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).

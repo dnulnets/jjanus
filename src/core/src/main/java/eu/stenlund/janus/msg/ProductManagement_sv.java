@@ -58,28 +58,7 @@ public interface ProductManagement_sv extends ProductManagement {
     @Message("Nuvarande version")
     String product_current_version();
 
-    @Message("Ta bort")
-    String productversion_delete();
-
-    @Message("Spara")
-    String productversion_save();
-
-    @Message("Avbryt")
-    String productversion_cancel();
-
-    @Message("Version")
-    String productversion_version();
-
-    @Message("En produktversion måste ha en version")
-    String productversion_must_have_version();
-
-    @Message("Stängd version")
-    String productversion_closed();
-
-    @Message("Produkt")
-    String productversion_product();
-
-    @Message("Tillstånd")
-    String productversion_state();
+    @Message("Team")
+    String product_teams();
 
 }

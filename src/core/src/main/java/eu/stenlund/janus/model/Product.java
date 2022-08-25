@@ -81,6 +81,34 @@ public class Product extends JanusEntity {
     }
 
     /**
+     * Add a team to the product and also to the owning relation holder.
+     * 
+     * @param team Team to add.
+     */
+    public void addTeam(Team team) {
+        teams.add(team);
+        team.products.add(this);
+    }
+
+    /**
+     * Remove the team from the product and also on the owning relation holder.
+     * 
+     * @param team The team to remove.
+     */
+    public void removeTeam(Team team) {
+        teams.remove(team);
+        team.products.remove(this);
+    }
+
+    /**
+     * Remove all teams from the user and also from the owning relation holder.
+     */
+    public void clearTeams() {
+        teams.forEach(team -> team.products.remove(this));
+        teams.clear();
+    }
+
+    /**
      * Returns with the number of products in total.
      * 
      * @param s The session.
