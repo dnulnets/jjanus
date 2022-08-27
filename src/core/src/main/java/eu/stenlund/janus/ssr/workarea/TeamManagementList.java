@@ -71,6 +71,7 @@ public class TeamManagementList {
         // Create the table header
         List<String> columns = new ArrayList<String>(4);
         columns.add(msg.list_name());
+        columns.add(msg.list_products());
         columns.add(msg.list_number_of_users());
         columns.add(msg.list_users());
         columns.add(msg.list_action());
@@ -80,8 +81,10 @@ public class TeamManagementList {
         teams.forEach(team -> {
             List<Base> row = new ArrayList<Base>(columns.size());
             row.add(new Text(team.name));
+            String s = team.products.stream().map(u -> u.name).collect(Collectors.joining("<br/>"));
+            row.add(new Text(s,true));
             row.add(new Text(String.valueOf(team.members.size())));
-            String s = team.members.stream().map(u -> u.username).collect(Collectors.joining("<br/>"));
+            s = team.members.stream().map(u -> u.name + " (" + u.username + ")").collect(Collectors.joining("<br/>"));
             row.add(new Text(s,true));
             String actionURL  = UriBuilder.fromPath(ROOT_PATH)
                 .segment("team")

@@ -1,8 +1,11 @@
 package eu.stenlund.janus.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -147,4 +150,16 @@ public class Product extends JanusEntity {
             .getResultList();
     }
 
+    /**
+     * Utility function to find a Product in a list of products based on the uuid.
+     * 
+     * @param roles The list of products.
+     * @param uuid The UUID.
+     * @return The found product or null.
+     */
+    public static Product findProductById(Collection<Product> products, UUID uuid)
+    {
+        Optional<Product> product = products.stream().filter(t-> t.id.compareTo(uuid)==0).findFirst();
+        return product.orElse(null);
+    }
 }

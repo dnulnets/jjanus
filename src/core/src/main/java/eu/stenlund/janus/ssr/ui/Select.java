@@ -26,6 +26,11 @@ public class Select extends Base {
         public boolean checked;
 
         /**
+         * The item is disabled
+         */
+        public boolean disabled;
+
+        /**
          * The label for the item.
          */
         public String label;
@@ -42,10 +47,11 @@ public class Select extends Base {
          * @param checked If the item is selected/checked or not.
          * @param value The value of the item.
          */
-        public Item(String label, boolean checked, String value)
+        public Item(String label, boolean checked, boolean disabled, String value)
         {
             this.label = label;
             this.checked = checked;
+            this.disabled = disabled;
             this.value = value;
         }
     }

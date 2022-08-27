@@ -130,14 +130,14 @@ public class ProductManagementProduct {
         List<Select.Item> l = 
             product.versions.stream().map(v -> new Select.Item(
                 v.version + " (" + (v.state!=null?v.state.display:"No state") + ")",
-                product.current!=null?product.current.id.compareTo(v.id)==0:false, v.id.toString())).toList();
+                product.current!=null?product.current.id.compareTo(v.id)==0:false, false, v.id.toString())).toList();
         this.current = new Select(msg.product_current_versions(),"current", "id-current", l, false, null);
 
         // Create the teams
         List<Select.Item> m = 
             teams.stream().map(v -> {
                 Team t = Team.findTeamById(product.teams, v.id);
-                return new Select.Item(v.name, t!=null?v.id.compareTo(t.id)==0:false, v.id.toString());
+                return new Select.Item(v.name, t!=null?v.id.compareTo(t.id)==0:false, false, v.id.toString());
             }).toList();
         this.teams = new Select(msg.product_teams(),"teams", "id-teams", m, false, null);
 

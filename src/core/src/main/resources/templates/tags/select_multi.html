@@ -3,9 +3,17 @@
     <select class="form-select" name="{it.name.raw}" multiple id="{it.id.raw}" {it.extra.raw}>
         {#for item in it.items}
             {#if item.checked}
-                <option selected value="{item.value.raw}">{item.label}</option>
+                {#if item.disabled}
+                    <option disabled selected value="{item.value.raw}">{item.label}</option>
+                {#else}
+                    <option selected value="{item.value.raw}">{item.label}</option>
+                {/if}
             {#else}
-                <option value="{item.value.raw}">{item.label}</option>
+                {#if item.disabled}
+                    <option disabled value="{item.value.raw}">{item.label}</option>
+                {#else}
+                    <option value="{item.value.raw}">{item.label}</option>
+                {/if}
             {/if}
         {/for}
     </select>    

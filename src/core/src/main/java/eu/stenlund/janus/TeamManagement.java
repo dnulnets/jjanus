@@ -146,7 +146,7 @@ public class TeamManagement {
 
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-            TeamManagementTeam.updateTeam(sf, uuid, name, null).
+            TeamManagementTeam.updateTeam(sf, uuid, name).
                 chain(user -> TeamManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
         combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
         flatMap(Function.identity()).
@@ -191,7 +191,7 @@ public class TeamManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                TeamManagementTeam.createTeam(sf, name, null).
+                TeamManagementTeam.createTeam(sf, name).
                     chain(user->TeamManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
