@@ -185,8 +185,8 @@ public class TeamManagementTeam {
                                         UUID [] products)
     {
         return sf.withTransaction((ss,tt) -> Uni.combine().all().unis(
-            sf.withTransaction((s,t)-> JanusEntity.get (Team.class, s, uuid)),
-            sf.withTransaction((s,t)-> Product.getList(s))).
+            sf.withSession(s -> JanusEntity.get (Team.class, s, uuid)),
+            sf.withSession(s -> Product.getList(s))).
         combinedWith ((team, pl) -> {
 
             // Update the user
@@ -244,6 +244,13 @@ public class TeamManagementTeam {
     public static Uni<Void> deleteTeam(SessionFactory sf,
                                         UUID uuid)
     {
-        return sf.withTransaction((s,t)->JanusEntity.delete (Team.class, s, uuid));
+        return sf.withTransaction((ss, tt) ->
+            JanusEntity.get(Team.class, ss, uuid).
+            map (t -> {
+                t.clearMembers();
+                t.clearProducts();
+                return t;
+            }).
+            chain (t->ss.remove(t)));
     }
 }

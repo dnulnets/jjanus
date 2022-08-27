@@ -207,44 +207,43 @@ public class UserManagementUser {
             UUID[] roles,
             UUID[] teams,
             String password) {
-        return sf.withTransaction((s, t) ->
+        return sf.withTransaction((ss, tt) ->
+            Uni.combine().all().unis(
+                    sf.withSession(s->JanusEntity.get (User.class, s, uuid)), // Get the user
+                    sf.withSession(s->Role.getList(s)), // Get all available roles
+                    sf.withSession(s->Team.getList(s))). // Get all available teams
 
-        Uni.combine().all().unis(
-                JanusEntity.get (User.class, s, uuid), // Get the user
-                Role.getList(s), // Get all available roles
-                Team.getList(s)). // Get all available teams
+                    // Update the user with all new values
+                    combinedWith((user, listOfRoles, listOfTeams) -> {
 
-                // Update the user with all new values
-                combinedWith((user, listOfRoles, listOfTeams) -> {
+                        // Update the user
+                        user.name = name;
+                        user.username = username;
+                        user.email = email;
+                        if (!JanusHelper.isBlank(password))
+                            user.setPassword(password);
 
-                    // Update the user
-                    user.name = name;
-                    user.username = username;
-                    user.email = email;
-                    if (!JanusHelper.isBlank(password))
-                        user.setPassword(password);
-
-                    // Add roles
-                    user.roles.clear();
-                    for (UUID ruid : roles) {
-                        Role role = Role.findRoleById(listOfRoles, ruid);
-                        if (role != null)
-                            user.roles.add(role);
-                    }
-
-                    // Add teams
-                    user.clearTeams();
-                    for (UUID tuid : teams) {
-                        Team team = Team.findTeamById(listOfTeams, tuid);
-                        if (team != null) {
-                            user.teams.add(team);
-                            team.members.add(user);
+                        // Add roles
+                        user.roles.clear();
+                        for (UUID ruid : roles) {
+                            Role role = Role.findRoleById(listOfRoles, ruid);
+                            if (role != null)
+                                user.roles.add(role);
                         }
-                    }
 
-                    // Return with data
-                    return user;
-                }));
+                        // Add teams
+                        user.clearTeams();
+                        for (UUID tuid : teams) {
+                            Team team = Team.findTeamById(listOfTeams, tuid);
+                            if (team != null) {
+                                user.teams.add(team);
+                                team.members.add(user);
+                            }
+                        }
+
+                        // Return with data
+                        return user;
+                    }));
     }
 
     /**
@@ -265,11 +264,11 @@ public class UserManagementUser {
             UUID[] roles,
             UUID[] teams,
             String password) {
-        return sf.withTransaction((s, t) ->
+        return sf.withTransaction((ss, tt) ->
 
         Uni.combine().all().unis(
-                Role.getList(s), // Get all available roles
-                Team.getList(s)). // Get all available teams
+                sf.withSession(s->Role.getList(s)), // Get all available roles
+                sf.withSession(s->Team.getList(s))). // Get all available teams
 
                 // Create the user with all new values
                 combinedWith((listOfRoles, listOfTeams) -> {
@@ -303,7 +302,7 @@ public class UserManagementUser {
                 }).
 
                 // Add it to the database
-                chain(u->JanusEntity.create(s, u)));
+                chain(u->JanusEntity.create(ss, u)));
 
     }
 
@@ -317,12 +316,12 @@ public class UserManagementUser {
     public static Uni<Void> deleteUser(SessionFactory sf,
             UUID uuid) {
 
-        return sf.withTransaction((s, t) ->
-            JanusEntity.get(User.class, s, uuid).
+        return sf.withTransaction((ss, tt) ->
+            JanusEntity.get(User.class, ss, uuid).
             map (u -> {
                 u.clearTeams();
                 return u;
             }).
-            chain (u->s.remove(u)));
+            chain (u->ss.remove(u)));
     }
 }
