@@ -12,6 +12,7 @@ import org.jboss.logging.Logger;
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusNoSuchItemException;
 import eu.stenlund.janus.model.Product;
+import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.model.base.JanusEntity;
 import eu.stenlund.janus.msg.ProductManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
@@ -58,6 +59,11 @@ public class ProductManagementProduct {
     public Select current;
 
     /*
+     * The team that are responsible for the product
+     */
+    public Select teams;
+
+    /*
      * The URL:s for create and delete of the product.
      */
     public String createURL;
@@ -72,12 +78,13 @@ public class ProductManagementProduct {
      * Creates the workarea for the user interface based on existing user and roles.
      * 
      * @param product The user for this page.
+     * @param teams List of available teams.
      * @param roles The available roles in the application.
      * @param back The URL for sending the user back to the page before, e.g. when pressing cancel, save and delete.
      * @param newProduct Flag telling if it is a new user page or an update/edit page.
      * @param locale The locale of the page.
      */
-    public ProductManagementProduct(Product product, URI back, boolean newProduct, String locale) {
+    public ProductManagementProduct(Product product, List<Team> teams, URI back, boolean newProduct, String locale) {
 
         // Create action URL:s
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path","/");
@@ -123,8 +130,16 @@ public class ProductManagementProduct {
         List<Select.Item> l = 
             product.versions.stream().map(v -> new Select.Item(
                 v.version + " (" + (v.state!=null?v.state.display:"No state") + ")",
-                product.current!=null?product.current.id.compareTo(v.id)==0:false, v.id.toString())).toList();
-        current = new Select(msg.product_current_versions(),"current", "id-current", l, false, null);
+                product.current!=null?product.current.id.compareTo(v.id)==0:false, false, v.id.toString())).toList();
+        this.current = new Select(msg.product_current_versions(),"current", "id-current", l, false, null);
+
+        // Create the teams
+        List<Select.Item> m = 
+            teams.stream().map(v -> {
+                Team t = Team.findTeamById(product.teams, v.id);
+                return new Select.Item(v.name, t!=null?v.id.compareTo(t.id)==0:false, false, v.id.toString());
+            }).toList();
+        this.teams = new Select(msg.product_teams(),"teams", "id-teams", m, false, null);
 
         // Create the form
         form = new Form(Form.POST, newProduct?createURL:updateURL, true, JanusSSRHelper.unpolySubmit(backURL));
@@ -141,39 +156,45 @@ public class ProductManagementProduct {
     public static Uni<ProductManagementProduct> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
     {
         if (uuid == null) {
-            return Uni.createFrom().item(new ProductManagementProduct(new Product(), uri, true, locale));
+            return sf.withSession(s -> Team.getList(s)).
+                chain(teams -> Uni.createFrom().item(new ProductManagementProduct(new Product(), teams, uri, true, locale)));
         } else {
-            return sf.withSession(s -> JanusEntity.get(Product.class, s, uuid)
-                        .onItem()
-                            .ifNull()
-                                .failWith(new JanusNoSuchItemException("Failed to read the product from the database using the given uuid."
-                                    , "product"
-                                    , uuid.toString()
-                                    , uri.toString())))
-            .map(p -> new ProductManagementProduct(p, uri, false, locale));
+            return Uni.combine().all().unis(
+                sf.withSession(s -> JanusEntity.get(Product.class, s, uuid)).
+                    onItem().
+                        ifNull().
+                            failWith(new JanusNoSuchItemException("Failed to read the product from the database using the given uuid."
+                                , "product"
+                                , uuid.toString()
+                                , uri.toString())),
+                sf.withSession(s -> Team.getList(s))).
+            combinedWith((product, teams)->new ProductManagementProduct(product, teams, uri, false, locale));
         }
     }
 
     /**
-     * Update a team based on the user uuid and a new set of roles and attributes.
+     * Updates a product.
      * 
-     * @param sf The session factory.
-     * @param uuid The UUID of the user.
-     * @param username The new username.
-     * @param name The new name.
-     * @param email The new email.
-     * @param roles The list of new roles UUID.
-     * @param password A new password, can be null if password is not be be changed.
-     * @return A void.
+     * @param sf Session factory.
+     * @param uuid The UUID of the product.
+     * @param name The name of the product.
+     * @param description Description of the product.
+     * @param teams The teams responsible or the product.
+     * @param current The current version of the product.
+     * @return An updated product.
      */
     public static Uni<Product> updateProduct(SessionFactory sf,
                                         UUID uuid, 
                                         String name,
                                         String description,
+                                        UUID[] teams,
                                         UUID current)
     {
-        return sf.withTransaction((s,t)->
-            JanusEntity.get(Product.class, s, uuid).map(product-> {
+
+        return sf.withTransaction((ss,tt) -> Uni.combine().all().unis(
+                sf.withSession(s->JanusEntity.get(Product.class, s, uuid)),
+                sf.withSession(s->Team.getList(s))).
+            combinedWith((product, tl) -> {
                 
                     // Update the user
                     product.name = name;
@@ -181,9 +202,14 @@ public class ProductManagementProduct {
                     product.current = null;
                     if (current != null)
                         product.versions.forEach(v -> product.current = (v.id.compareTo(current)==0)?v:product.current);
+                    product.clearTeams();
+                    for(UUID tid : teams) {
+                        Team team = Team.findTeamById(tl, tid);
+                        if (team != null)
+                            product.addTeam(team);
+                    }
                     return product;
-                })
-            );
+            }));
     }
 
     /**
@@ -196,20 +222,24 @@ public class ProductManagementProduct {
      */
     public static Uni<Product> createProduct(SessionFactory sf,
                                         String name,
-                                        String description)
+                                        String description,
+                                        UUID[] teams)
     {
-        return sf.withTransaction((s,t)-> {
-                    Product product = new Product();
+        return sf.withTransaction((ss,tt) -> Team.getList(ss).
+        map(tl-> { 
+            Product product = new Product();
 
-                    // Update the product
-                    product.name = name;
-                    product.description = description;
-
-                    // Return with data
-                    return JanusEntity.create (s, product);
-
-                }
-        );
+            // Update the user
+            product.name = name;
+            product.description = description;
+            product.current = null;
+            for(UUID tid : teams) {
+                Team team = Team.findTeamById(tl, tid);
+                if (team != null)
+                    product.addTeam(team);
+            }
+            return product;
+        }).chain(product -> JanusEntity.create(ss, product)));
     }
 
     /**

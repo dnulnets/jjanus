@@ -58,28 +58,7 @@ public interface ProductManagement {
     @Message("Current version")
     String product_current_versions();
 
-    @Message("Delete")
-    String productversion_delete();
-
-    @Message("Save")
-    String productversion_save();
-
-    @Message("Cancel")
-    String productversion_cancel();
-
-    @Message("Version")
-    String productversion_version();
-
-    @Message("A product version must have a version")
-    String productversion_must_have_version();
-
-    @Message("Closed version")
-    String productversion_closed();
-
-    @Message("Product")
-    String productversion_product();
-
-    @Message("State")
-    String productversion_state();
+    @Message("Teams")
+    String product_teams();
 
 }

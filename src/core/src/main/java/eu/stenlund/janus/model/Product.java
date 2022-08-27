@@ -1,8 +1,11 @@
 package eu.stenlund.janus.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -81,6 +84,34 @@ public class Product extends JanusEntity {
     }
 
     /**
+     * Add a team to the product and also to the owning relation holder.
+     * 
+     * @param team Team to add.
+     */
+    public void addTeam(Team team) {
+        teams.add(team);
+        team.products.add(this);
+    }
+
+    /**
+     * Remove the team from the product and also on the owning relation holder.
+     * 
+     * @param team The team to remove.
+     */
+    public void removeTeam(Team team) {
+        teams.remove(team);
+        team.products.remove(this);
+    }
+
+    /**
+     * Remove all teams from the user and also from the owning relation holder.
+     */
+    public void clearTeams() {
+        teams.forEach(team -> team.products.remove(this));
+        teams.clear();
+    }
+
+    /**
      * Returns with the number of products in total.
      * 
      * @param s The session.
@@ -119,4 +150,16 @@ public class Product extends JanusEntity {
             .getResultList();
     }
 
+    /**
+     * Utility function to find a Product in a list of products based on the uuid.
+     * 
+     * @param roles The list of products.
+     * @param uuid The UUID.
+     * @return The found product or null.
+     */
+    public static Product findProductById(Collection<Product> products, UUID uuid)
+    {
+        Optional<Product> product = products.stream().filter(t-> t.id.compareTo(uuid)==0).findFirst();
+        return product.orElse(null);
+    }
 }

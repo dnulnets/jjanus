@@ -11,6 +11,7 @@ import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusNoSuchItemException;
+import eu.stenlund.janus.model.Product;
 import eu.stenlund.janus.model.Team;
 import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.model.base.JanusEntity;
@@ -19,6 +20,7 @@ import eu.stenlund.janus.ssr.JanusSSRHelper;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
 import eu.stenlund.janus.ssr.ui.Button;
 import eu.stenlund.janus.ssr.ui.Form;
+import eu.stenlund.janus.ssr.ui.Select;
 import eu.stenlund.janus.ssr.ui.TextInput;
 import io.smallrye.mutiny.Uni;
 
@@ -52,6 +54,16 @@ public class TeamManagementTeam {
     public TextInput uuid;
 
     /*
+     * All users in the team
+     */
+    public Select members;
+
+    /*
+     * Available and chosen products for the team.
+     */
+    public Select products;
+
+    /*
      * The URL:s for create and delete of the user.
      */
     public String createURL;
@@ -72,7 +84,7 @@ public class TeamManagementTeam {
      * @param newUser Flag telling if it is a new user page or an update/edit page.
      * @param locale The locale of the page.
      */
-    public TeamManagementTeam(Team team, List<User> users, URI back, boolean newUser, String locale) {
+    public TeamManagementTeam(Team team, List<Product> products, URI back, boolean newUser, String locale) {
 
         // Create action URL:s
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path","/");
@@ -113,6 +125,20 @@ public class TeamManagementTeam {
         name = new TextInput(msg.team_name(), "name", "id-name", team.name, msg.team_must_have_name(), JanusSSRHelper.required());
         uuid = new TextInput("UUID", "uuid", "id-uuid", team.id!=null?team.id.toString():null, null, JanusSSRHelper.readonly());
 
+    
+        // Create the products
+        List<Select.Item> m = 
+            products.stream().map(v -> {
+                Product t = Product.findProductById(team.products, v.id);
+                return new Select.Item(v.name, t!=null?v.id.compareTo(t.id)==0:false, false, v.id.toString());
+            }).toList();
+        this.products = new Select(msg.team_products(),"products", "id-products", m, false, null);
+
+        // Create the members
+        List<Select.Item> n = 
+            team.members.stream().map(v -> new Select.Item(v.name+" ("+v.username + ")", false, true, v.id.toString())).toList();
+        this.members = new Select (msg.team_members(), "members", "id-members", n, false, JanusSSRHelper.disabled());
+        
         // Create the form
         form = new Form(Form.POST, newUser?createURL:updateURL, true, JanusSSRHelper.unpolySubmit(backURL));
     }
@@ -121,51 +147,41 @@ public class TeamManagementTeam {
      * Creates the model from data in the database that can be used for the page.
      * 
      * @param sf The session factory.
-     * @param uuid The UUID of the user.
+     * @param uuid The UUID of the team.
      * @param uri The URI of the cancel or return URL.
-     * @return A populated UserManagementUser.
+     * @return A populated TeamMangagementTeam.
      */
     public static Uni<TeamManagementTeam> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
     {
         if (uuid == null) {
-            return sf.withSession(s -> User.getList(s))
-            .map(lr -> new TeamManagementTeam(
-                    new Team(),
-                    lr,
-                    uri, true, locale));        
+            return sf.withSession (s -> Product.getList(s)).
+                chain (pl -> Uni.createFrom().item(new TeamManagementTeam(new Team(),pl,uri, true, locale)));
+
         } else {
             return Uni.combine().all().unis(
+                sf.withSession(s->Product.getList(s)),
                 sf.withSession(s -> JanusEntity.get (Team.class, s, uuid)
                     .onItem()
                         .ifNull()
                             .failWith(new JanusNoSuchItemException("Failed to read the team from the database using the given uuid."
                                 , "team"
                                 , uuid.toString()
-                                , uri.toString()))),
-                sf.withSession(s -> User.getList(s))).
-            combinedWith((team, list)-> new TeamManagementTeam(
-                    team,
-                    list,
-                    uri, false, locale));
+                                , uri.toString())))).
+            combinedWith((list, team)-> new TeamManagementTeam(team, list, uri, false, locale));
         }
     }
 
     /**
-     * Update a team based on the user uuid and a new set of roles and attributes.
+     * Update a team based on the team uuid.
      * 
      * @param sf The session factory.
-     * @param uuid The UUID of the user.
-     * @param username The new username.
+     * @param uuid The UUID of the team.
      * @param name The new name.
-     * @param email The new email.
-     * @param roles The list of new roles UUID.
-     * @param password A new password, can be null if password is not be be changed.
-     * @return A void.
+     * @return an updated team.
      */
     public static Uni<Team> updateTeam(SessionFactory sf,
                                         UUID uuid, 
-                                        String name,
-                                        UUID[] users)
+                                        String name)
     {
         return sf.withTransaction((s,t)->
         JanusEntity.get (Team.class, s, uuid).
@@ -179,19 +195,14 @@ public class TeamManagementTeam {
     }
 
     /**
-     * Creates a new user.
+     * Creates a new team.
      * 
      * @param sf The session factory.
-     * @param username The username of the user.
-     * @param name The name of the user.
-     * @param email The email of the user.
-     * @param roles The UUID of the roles for the user.
-     * @param password The password of the user.
-     * @return A new user.
+     * @param name The name of the team.
+     * @return A new team.
      */
     public static Uni<Team> createTeam(SessionFactory sf,
-                                        String name,
-                                        UUID[] users)
+                                        String name)
     {
         return sf.withTransaction((s,t)-> {
                     Team team = new Team();
@@ -206,10 +217,10 @@ public class TeamManagementTeam {
     }
 
     /**
-     * Deletes a user based on the UUID.
+     * Deletes a team based on the UUID.
      * 
      * @param sf The session factory.
-     * @param uuid The UUID of the user.
+     * @param uuid The UUID of the team.
      * @return A void.
      */
     public static Uni<Void> deleteTeam(SessionFactory sf,

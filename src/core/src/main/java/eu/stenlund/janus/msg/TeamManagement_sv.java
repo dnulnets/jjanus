@@ -52,4 +52,12 @@ public interface TeamManagement_sv extends TeamManagement {
     @Message ("Teamadministrering")
     String team_administration();
 
+    @Message("Produkter")
+    String team_products();
+
+    @Message("Members")
+    String team_members();
+
+    @Message("Products")
+    String list_products();
 }
