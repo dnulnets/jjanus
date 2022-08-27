@@ -51,4 +51,13 @@ public interface TeamManagement {
 
     @Message ("Team administration")
     String team_administration();
+
+    @Message("Products")
+    String team_products();
+
+    @Message("Members")
+    String team_members();
+
+    @Message("Products")
+    String list_products();
 }

@@ -67,6 +67,16 @@ public class JanusSSRHelper {
     }
 
     /**
+     * HTML Attribute for inputs and other elements that supports disabled.
+     * 
+     * @return The HTML attribute.
+     */
+    public static String disabled()
+    {
+        return "disabled";
+    }
+
+    /**
      * Add attributes to igenore password managers whenever they are used, typically they should not bee activated
      * when chaning password for another user.
      * 

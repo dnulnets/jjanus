@@ -120,12 +120,12 @@ public class ProductVersionManagementProductVersion {
 
         // Create the product selection
         List<Select.Item> l = 
-            products.stream().map(p -> new Select.Item(p.name, productVersion.product!=null?productVersion.product.id.compareTo(p.id)==0:false, p.id.toString())).toList();
+            products.stream().map(p -> new Select.Item(p.name, productVersion.product!=null?productVersion.product.id.compareTo(p.id)==0:false, false, p.id.toString())).toList();
         product = new Select(msg.productversion_product(),"product", "id-product", l, true, null);
 
         // Create the product state selection
         List<Select.Item> m = 
-            states.stream().map(s -> new Select.Item(s.display, productVersion.state!=null?productVersion.state.id.compareTo(s.id)==0:false, s.id.toString())).toList();
+            states.stream().map(s -> new Select.Item(s.display, productVersion.state!=null?productVersion.state.id.compareTo(s.id)==0:false, false, s.id.toString())).toList();
         state = new Select(msg.productversion_state(),"state", "id-state", m, false, null);
 
         // Create the form

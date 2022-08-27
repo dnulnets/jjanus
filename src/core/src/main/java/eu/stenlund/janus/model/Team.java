@@ -1,5 +1,6 @@
 package eu.stenlund.janus.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -166,7 +167,7 @@ public class Team extends JanusEntity {
      * @param uuid The UUID.
      * @return The found role or null.
      */
-    public static Team findTeamById(List<Team> teams, UUID uuid)
+    public static Team findTeamById(Collection<Team> teams, UUID uuid)
     {
         Optional<Team> team = teams.stream().filter(t-> t.id.compareTo(uuid)==0).findFirst();
         return team.orElse(null);

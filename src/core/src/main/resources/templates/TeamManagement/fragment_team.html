@@ -11,6 +11,15 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col">
+                        {#select_multi workarea.products/}
+                    </div>
+                    <div class="col">
+                        {#select_multi workarea.members/}
+                    </div>
+                </div>
+
                 <div class="text-start pt-4">
                     {#button_submit workarea.saveButton/}
                     {#if !workarea.newTeam}
