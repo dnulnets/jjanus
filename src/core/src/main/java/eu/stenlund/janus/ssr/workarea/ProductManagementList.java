@@ -110,12 +110,7 @@ public class ProductManagementList {
         return Uni.combine().all().unis(
             sf.withSession(s -> Product.getList(s, start, max)),
             sf.withSession(s -> Product.getCount(s))).
-        combinedWith((list, count)-> new ProductManagementList(
-            list,
-            count.intValue(),
-            start,
-            max,
-            locale));
-    }  
+        combinedWith((list, count)-> new ProductManagementList(list, count.intValue(), start, max, locale));
+    }
 
 }

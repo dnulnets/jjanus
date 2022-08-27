@@ -172,10 +172,6 @@ public class ProductVersionManagementProductVersion {
         UUID state,
         Boolean closed)
     {
-        log.info ("State: " + state);
-        log.info ("UUID: " + uuid);
-        log.info ("Product: " + product);
-
         return sf.withTransaction((ss, tt) -> Uni.combine().all().unis(
                     sf.withSession(s -> JanusEntity.get (ProductVersion.class, s, uuid)),
                     sf.withSession(s -> JanusEntity.get(ProductState.class, s, state)),

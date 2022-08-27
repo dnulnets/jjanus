@@ -181,17 +181,27 @@ public class TeamManagementTeam {
      */
     public static Uni<Team> updateTeam(SessionFactory sf,
                                         UUID uuid, 
-                                        String name)
+                                        String name,
+                                        UUID [] products)
     {
-        return sf.withTransaction((s,t)->
-        JanusEntity.get (Team.class, s, uuid).
-        map(team-> {
-                // Update the user
-                team.name = name;
-                // Return with data
-                return team;
+        return sf.withTransaction((ss,tt) -> Uni.combine().all().unis(
+            sf.withTransaction((s,t)-> JanusEntity.get (Team.class, s, uuid)),
+            sf.withTransaction((s,t)-> Product.getList(s))).
+        combinedWith ((team, pl) -> {
+
+            // Update the user
+            team.name = name;
+
+            team.clearProducts();
+            for(UUID pid : products) {
+                Product product = Product.findProductById(pl, pid);
+                if (product != null)
+                    team.addProduct (product);
             }
-        ));
+
+            // Return with data
+            return team;
+        }));
     }
 
     /**
@@ -202,18 +212,26 @@ public class TeamManagementTeam {
      * @return A new team.
      */
     public static Uni<Team> createTeam(SessionFactory sf,
-                                        String name)
+                                        String name,
+                                        UUID [] products)
     {
-        return sf.withTransaction((s,t)-> {
+        return sf.withTransaction((s,t)-> 
+            Product.getList(s).chain(pl -> {
                     Team team = new Team();
 
                     // Update the user
                     team.name = name;
-                    
+
+                    for(UUID pid : products) {
+                        Product product = Product.findProductById(pl, pid);
+                        if (product != null)
+                            team.addProduct (product);
+                    }
+                            
                     // Return with data
                     return JanusEntity.create (s, team);
                 }
-        );
+        ));
     }
 
     /**

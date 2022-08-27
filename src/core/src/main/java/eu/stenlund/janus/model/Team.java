@@ -93,6 +93,37 @@ public class Team extends JanusEntity {
      * 
      * @param user The user to add.
      */
+    public void addProduct(Product product)
+    {
+        products.add(product);
+        product.teams.add (this);
+    }
+
+    /**
+     * Remove a member from the team and update the other side of the relation.
+     * 
+     * @param user The user to remove.
+     */
+    public void removeProduct(Product product)
+    {
+        products.remove(product);
+        product.teams.remove (this);
+    }
+
+    /**
+     * Remove all members of the team and update the other side of the relation.
+     */
+    public void clearProducts()
+    {
+        products.forEach(product->product.teams.remove(this));
+        products.clear();
+    }
+
+    /**
+     * Add a member to the team and update the other side of the relation.
+     * 
+     * @param user The user to add.
+     */
     public void addMember(User user)
     {
         members.add(user);

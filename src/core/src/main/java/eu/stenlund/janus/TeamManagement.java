@@ -138,7 +138,8 @@ public class TeamManagement {
     @RolesAllowed({"admin"})
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Uni<RestResponse<String>> team(@RestForm UUID uuid,
-                                            @RestForm String name)
+                                            @RestForm String name,
+                                            @RestForm UUID[] products)
     {
         // We need data for all of the fields
         if (JanusHelper.isBlank(name) || uuid ==null)
@@ -146,7 +147,7 @@ public class TeamManagement {
 
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-            TeamManagementTeam.updateTeam(sf, uuid, name).
+            TeamManagementTeam.updateTeam(sf, uuid, name, products).
                 chain(user -> TeamManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
         combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
         flatMap(Function.identity()).
@@ -181,7 +182,8 @@ public class TeamManagement {
     @POST
     @Path("create")
     @RolesAllowed({"admin"})
-    public Uni<RestResponse<String>> create(@RestForm String name)
+    public Uni<RestResponse<String>> create(@RestForm String name,
+                                            @RestForm UUID[] products)
     {
         // We need data for all of the fields
         if (JanusHelper.isBlank(name))
@@ -191,7 +193,7 @@ public class TeamManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                TeamManagementTeam.createTeam(sf, name).
+                TeamManagementTeam.createTeam(sf, name, products).
                     chain(user->TeamManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
