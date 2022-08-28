@@ -252,6 +252,12 @@ public class ProductManagementProduct {
     public static Uni<Void> deleteProduct(SessionFactory sf,
                                             UUID uuid)
     {
-        return sf.withTransaction((s,t)->JanusEntity.delete(Product.class,s, uuid));
+        return sf.withTransaction((ss, tt) ->
+            JanusEntity.get(Product.class, ss, uuid).
+            map (p -> {
+                p.clearTeams();
+                return p;
+            }).
+            chain (p->ss.remove(p)));
     }
 }
