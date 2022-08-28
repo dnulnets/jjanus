@@ -79,6 +79,9 @@ public interface Messages {
     @Message("Select product")
     String menu_product_select();
 
+    @Message("Logout")
+    String menu_logout();
+
     @Message("Login")
     String login_login();
     

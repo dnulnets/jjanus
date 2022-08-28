@@ -21,9 +21,14 @@ import io.smallrye.mutiny.Uni;
 public class Base {
     
     /**
-     * If the user has the admin role.
+     * If the user has the specific hardcoded roles
      */
-    public boolean admin = false;
+    public boolean adminRole = false;
+    public boolean productRole = false;
+    public boolean userRole = false;
+    public boolean teamRole = false;
+
+    public String username;
 
     /*
      * The selected product, if any
@@ -42,8 +47,13 @@ public class Base {
      */
     public Base(SecurityIdentity si, JanusSession js, Product product, Team team) {
 
-        if(si.hasRole("admin"))
-            admin = true;
+        /* Get data from the security identity */
+        adminRole = si.hasRole("admin");
+        productRole = si.hasRole("product");
+        teamRole = si.hasRole("team");
+        userRole = si.hasRole("user");
+        username = si.getAttribute("name")+" (" + si.getPrincipal().getName() + ")";
+
         this.product = product;
         this.team = team;
     }

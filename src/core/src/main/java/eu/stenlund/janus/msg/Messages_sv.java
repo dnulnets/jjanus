@@ -82,6 +82,8 @@ public interface Messages_sv extends Messages {
     @Message("Logga in")
     String login_login();    
 
+    @Message("Logga ut")
+    String menu_logout();
 
     @Message("Användarnamn krävs")
     String login_username_required();

@@ -73,7 +73,7 @@ public class ProductVersionManagement {
      */
     @GET
     @Path("list")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     public Uni<RestResponse<String>> list(  @RestQuery("six") String ssix,
                                             @RestQuery("max") String smax)
     {
@@ -110,7 +110,7 @@ public class ProductVersionManagement {
      */
     @GET
     @Path("")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     public Uni<RestResponse<String>> product(@RestQuery("uuid") UUID id,
                                             @RestQuery("return") URI uri)
     {
@@ -135,7 +135,7 @@ public class ProductVersionManagement {
      */
     @POST
     @Path("")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Uni<RestResponse<String>> product(@RestForm UUID uuid,
                                             @RestForm UUID product,
@@ -168,7 +168,7 @@ public class ProductVersionManagement {
      */
     @GET
     @Path("create")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     public Uni<RestResponse<String>> create(@RestQuery("return") URI uri)
 
     {
@@ -189,7 +189,7 @@ public class ProductVersionManagement {
      */
     @POST
     @Path("create")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     public Uni<RestResponse<String>> create(@RestForm UUID product,
                                             @RestForm String version,
                                             @RestForm MaybeUUID state,
@@ -221,7 +221,7 @@ public class ProductVersionManagement {
      */
     @POST
     @Path("delete")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     public Uni<RestResponse<String>> delete(@RestForm UUID uuid)
     {
         // Check that we got the id

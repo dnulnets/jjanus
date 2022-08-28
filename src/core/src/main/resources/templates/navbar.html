@@ -9,21 +9,23 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarAdmin" role="button" data-bs-toggle="dropdown">
-            {msg:menu_product}
-          </a>
-          <ul class="dropdown-menu dropdown-menu-light">
-            <li><a class="dropdown-item" href="#">{msg:menu_product_select}</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/product/list">{msg:menu_product_products}</a></li>
-            <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/productversion/list">{msg:menu_product_productversions}</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">{msg:menu_product_needs}</a></li>
-            <li><a class="dropdown-item" href="#">{msg:menu_product_requirements}</a></li>
-          </ul>
-        </li>
-        {#if base.admin}
+        {#if base.productRole or base.adminRole}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarAdmin" role="button" data-bs-toggle="dropdown">
+              {msg:menu_product}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-light">
+              <li><a class="dropdown-item" href="#">{msg:menu_product_select}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/product/list">{msg:menu_product_products}</a></li>
+              <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/productversion/list">{msg:menu_product_productversions}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">{msg:menu_product_needs}</a></li>
+              <li><a class="dropdown-item" href="#">{msg:menu_product_requirements}</a></li>
+            </ul>
+          </li>
+        {/if}
+        {#if base.adminRole}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarAdmin" role="button" data-bs-toggle="dropdown">
               {msg:menu_administration}
@@ -37,10 +39,22 @@
             </ul>
           </li>
         {/if}
-        <li class="nav-item">
-          <a class="nav-link" href="{janus:property('janus.http.root-path')}/logout">Logout</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarUser" role="button" data-bs-toggle="dropdown">
+            {base.username}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-light">
+            <li><a class="dropdown-item" href="{janus:property('janus.http.root-path')}/logout">{msg:menu_logout}</a></li>
+          </ul>
         </li>
       </ul>
+      <span class="navbar-text pe-3">
+          <span class="fw-bold">Product:</span> SMP
+      </span>
+      <span class="navbar-text pe-3">
+        <span class="fw-bold">Team:</span> Fragglarna
+    </span>
+    </div>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>

@@ -73,7 +73,7 @@ public class ProductManagement {
      */
     @GET
     @Path("list")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     public Uni<RestResponse<String>> list(  @RestQuery("six") String ssix,
                                             @RestQuery("max") String smax)
     {
@@ -110,7 +110,7 @@ public class ProductManagement {
      */
     @GET
     @Path("")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     public Uni<RestResponse<String>> product(@RestQuery("uuid") UUID id,
                                             @RestQuery("return") URI uri)
     {
@@ -135,7 +135,7 @@ public class ProductManagement {
      */
     @POST
     @Path("")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Uni<RestResponse<String>> product(@RestForm UUID uuid,
                                             @RestForm String name,
@@ -164,7 +164,7 @@ public class ProductManagement {
      */
     @GET
     @Path("create")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     public Uni<RestResponse<String>> create(@RestQuery("return") URI uri)
     {
         // Return with a user interface
@@ -184,7 +184,7 @@ public class ProductManagement {
      */
     @POST
     @Path("create")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     public Uni<RestResponse<String>> create(@RestForm String name,
                                             @RestForm String description,
                                             @RestForm UUID[] teams)
@@ -213,7 +213,7 @@ public class ProductManagement {
      */
     @POST
     @Path("delete")
-    @RolesAllowed({"admin"})
+    @RolesAllowed({"admin", "product"})
     public Uni<RestResponse<String>> delete(@RestForm UUID uuid)
     {
         // Check that we got the id
