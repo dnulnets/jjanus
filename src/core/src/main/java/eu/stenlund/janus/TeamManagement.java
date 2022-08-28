@@ -48,7 +48,7 @@ public class TeamManagement {
     private static final Logger log = Logger.getLogger(TeamManagement.class);
 
     @Inject
-    CurrentIdentityAssociation securityIdentityAssociation;
+    CurrentIdentityAssociation sia;
 
     @Inject
     Mutiny.SessionFactory sf;
@@ -95,7 +95,7 @@ public class TeamManagement {
         // Create the page
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 TeamList.createModel(sf, six, max, js.getLocale())
             ).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
@@ -121,7 +121,7 @@ public class TeamManagement {
         // Return with a user interface
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 TeamPage.createModel(sf, id, uri, js.getLocale())).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.team(base, model), js.getLocale())).
             flatMap(Function.identity()).
@@ -146,7 +146,7 @@ public class TeamManagement {
             throw new IllegalArgumentException("Missing required data");
 
         return Uni.combine().all().unis(
-            securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+            Base.createModel(sf, sia, js),
             TeamPage.updateTeam(sf, uuid, name, products).
                 chain(user -> TeamList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
         combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
@@ -167,7 +167,7 @@ public class TeamManagement {
         // Return with a user interface
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 TeamPage.createModel(sf, null, uri, js.getLocale())).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.team(base, model), js.getLocale())).
             flatMap(Function.identity()).
@@ -192,7 +192,7 @@ public class TeamManagement {
         // Return with a user interface
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 TeamPage.createTeam(sf, name, products).
                     chain(user->TeamList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
@@ -217,7 +217,7 @@ public class TeamManagement {
         // Return with a user interface
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 TeamPage.deleteTeam(sf, uuid).
                     chain(()->TeamList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base,model), js.getLocale())).

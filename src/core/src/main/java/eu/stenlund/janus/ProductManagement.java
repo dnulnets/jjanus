@@ -49,7 +49,7 @@ public class ProductManagement {
     private static final Logger log = Logger.getLogger(ProductManagement.class);
 
     @Inject
-    CurrentIdentityAssociation securityIdentityAssociation;
+    CurrentIdentityAssociation sia;
 
     @Inject
     Mutiny.SessionFactory sf;
@@ -96,7 +96,7 @@ public class ProductManagement {
         // Create the page
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 ProductList.createModel(sf, six, max, js.getLocale())).
             combinedWith((base, model) -> JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
@@ -121,7 +121,7 @@ public class ProductManagement {
         // Return with a user interface
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 ProductPage.createModel(sf, id, uri, js.getLocale())).
             combinedWith((base, model) -> JanusTemplateHelper.createResponseFrom(Templates.product(base, model), js.getLocale())).
             flatMap(Function.identity()).
@@ -149,7 +149,7 @@ public class ProductManagement {
 
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 ProductPage.updateProduct(sf, uuid, name, description, teams, current.orElse(null)).
                     chain(user -> ProductList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base, model) -> JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
@@ -170,7 +170,7 @@ public class ProductManagement {
         // Return with a user interface
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 ProductPage.createModel(sf, null, uri, js.getLocale())).
             combinedWith((base, model)->JanusTemplateHelper.createResponseFrom(Templates.product(base, model), js.getLocale())).
             flatMap(Function.identity()).
@@ -198,7 +198,7 @@ public class ProductManagement {
         // Return with a user interface
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 ProductPage.createProduct(sf, name, description, teams).
                     chain(user->ProductList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
@@ -223,7 +223,7 @@ public class ProductManagement {
         // Return with a user interface
         return Uni.
             combine().all().unis(
-                securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
+                Base.createModel(sf, sia, js),
                 ProductPage.deleteProduct(sf, uuid).
                     chain(()->ProductList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base,model), js.getLocale())).

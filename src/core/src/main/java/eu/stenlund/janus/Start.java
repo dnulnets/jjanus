@@ -25,7 +25,6 @@ import eu.stenlund.janus.ssr.model.StartLogin;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
-import io.quarkus.security.identity.SecurityIdentity;
 import io.smallrye.mutiny.Uni;
 
 /**
@@ -50,7 +49,7 @@ public class Start {
     String REDIRECT_COOKIE_NAME;
 
     @Inject
-    CurrentIdentityAssociation securityIdentityAssociation;
+    CurrentIdentityAssociation sia;
 
     @Inject
     Mutiny.SessionFactory sf;
@@ -96,9 +95,7 @@ public class Start {
     @RolesAllowed({ "any" })
     public Uni<RestResponse<String>> start1() {
 
-        Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
-
-        return di.map(si -> new Base(si))
+        return Base.createModel(sf, sia, js)
                 .chain(nb -> JanusTemplateHelper.createResponseFrom(Templates.start1(nb), js.getLocale()))
                 .onFailure()
                     .invoke(t -> ResponseBuilder.serverError().build());
@@ -109,9 +106,7 @@ public class Start {
     @RolesAllowed({ "any" })
     public Uni<RestResponse<String>> start2() {
 
-        Uni<SecurityIdentity> di = securityIdentityAssociation.getDeferredIdentity();
-        
-        return di.map(si -> new Base(si))
+        return Base.createModel(sf, sia, js)
                 .chain(nb -> JanusTemplateHelper.createResponseFrom(Templates.start2(nb), js.getLocale()))
                 .onFailure()
                     .invoke(t -> ResponseBuilder.serverError().build());

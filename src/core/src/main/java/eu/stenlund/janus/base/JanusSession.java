@@ -2,6 +2,7 @@ package eu.stenlund.janus.base;
 
 import java.time.Instant;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -36,6 +37,16 @@ public class JanusSession {
      */
     private int listSize;
 
+    /*
+     * Selected product
+     */
+    private UUID product;
+
+    /*
+     * Selected team
+     */
+    private UUID team;
+
     /**
      * The host for the request, i.e. the host of the URL the user used for browsing to the application.
      * It gets set by the JanusFilter when the requests comes in.
@@ -57,6 +68,8 @@ public class JanusSession {
         locale = Locale.getDefault().toString();
         listSize = ls;
         timeStamp = Instant.now().getEpochSecond();
+        product = null;
+        team = null;
     }
 
     public long getTimeStamp() {
@@ -96,6 +109,28 @@ public class JanusSession {
         changed = true;
     }
 
+    public void setProduct (UUID uuid)
+    {
+        product = uuid;
+        changed = true;
+    }
+
+    public UUID getProduct()
+    {
+        return product;
+    }
+
+    public UUID getTeam()
+    {
+        return team;
+    }
+
+    public void setTeam (UUID uuid)
+    {
+        team = uuid;
+        changed = true;
+    }
+
     public int getListSize() {
         return listSize;
     }
@@ -116,6 +151,8 @@ public class JanusSession {
         timeStamp = js.timeStamp;
         changed = false;
         listSize = js.listSize;
+        product = js.product;
+        team = js.team;
     }
 
     /**
@@ -130,6 +167,8 @@ public class JanusSession {
         jsp.locale = locale;
         jsp.timeStamp = timeStamp;
         jsp.listSize = listSize;
+        jsp.product = product;
+        jsp.team = team;
         return jsp;
     }
 }
