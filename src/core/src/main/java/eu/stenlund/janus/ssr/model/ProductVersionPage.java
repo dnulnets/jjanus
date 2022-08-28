@@ -1,4 +1,4 @@
-package eu.stenlund.janus.ssr.workarea;
+package eu.stenlund.janus.ssr.model;
 
 import java.net.URI;
 import java.util.List;
@@ -31,9 +31,9 @@ import io.smallrye.mutiny.Uni;
  * @since 2022-07-29
  * 
  */
-public class ProductVersionManagementProductVersion {
+public class ProductVersionPage {
 
-    private static final Logger log = Logger.getLogger(ProductManagementProduct.class);
+    private static final Logger log = Logger.getLogger(ProductVersionPage.class);
 
     /**
      * The form used.
@@ -76,7 +76,7 @@ public class ProductVersionManagementProductVersion {
     public boolean newProductVersion;
 
 
-    public ProductVersionManagementProductVersion(ProductVersion productVersion, List<Product> products, List<ProductState> states, URI back, boolean newProductVersion, String locale) {
+    public ProductVersionPage(ProductVersion productVersion, List<Product> products, List<ProductState> states, URI back, boolean newProductVersion, String locale) {
 
         // Create action URL:s
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path","/");
@@ -140,13 +140,13 @@ public class ProductVersionManagementProductVersion {
      * @param uri The URI of the cancel or return URL.
      * @return A populated UserManagementUser.
      */
-    public static Uni<ProductVersionManagementProductVersion> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
+    public static Uni<ProductVersionPage> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
     {
         if (uuid == null) {
             return Uni.combine().all().unis(
                 sf.withSession(s -> Product.getList(s)),
                 sf.withSession(s -> ProductState.getList(s)))
-                .combinedWith((products, states) -> new ProductVersionManagementProductVersion(
+                .combinedWith((products, states) -> new ProductVersionPage(
                         new ProductVersion(),
                         products,
                         states,
@@ -157,7 +157,7 @@ public class ProductVersionManagementProductVersion {
                     sf.withSession(s -> Product.getList(s)),
                     sf.withSession(s -> ProductState.getList(s)),
                     sf.withSession(s -> JanusEntity.get (ProductVersion.class, s, uuid)))
-                .combinedWith((products, states, version) -> new ProductVersionManagementProductVersion(
+                .combinedWith((products, states, version) -> new ProductVersionPage(
                         version,
                         products,
                         states,

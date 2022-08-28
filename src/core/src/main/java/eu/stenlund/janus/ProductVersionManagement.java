@@ -26,9 +26,9 @@ import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.base.MaybeUUID;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
-import eu.stenlund.janus.ssr.workarea.Base;
-import eu.stenlund.janus.ssr.workarea.ProductVersionManagementList;
-import eu.stenlund.janus.ssr.workarea.ProductVersionManagementProductVersion;
+import eu.stenlund.janus.ssr.model.Base;
+import eu.stenlund.janus.ssr.model.ProductVersionList;
+import eu.stenlund.janus.ssr.model.ProductVersionPage;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
@@ -62,8 +62,8 @@ public class ProductVersionManagement {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance list(Base base, ProductVersionManagementList workarea);
-        public static native TemplateInstance productversion(Base base, ProductVersionManagementProductVersion workarea);
+        public static native TemplateInstance list(Base base, ProductVersionList workarea);
+        public static native TemplateInstance productversion(Base base, ProductVersionPage workarea);
     }
 
     /**
@@ -97,7 +97,7 @@ public class ProductVersionManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductVersionManagementList.createModel(sf, six, max, js.getLocale())
+                ProductVersionList.createModel(sf, six, max, js.getLocale())
             ).combinedWith((base, model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -122,7 +122,7 @@ public class ProductVersionManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductVersionManagementProductVersion.createModel(sf, id, uri, js.getLocale())).
+                ProductVersionPage.createModel(sf, id, uri, js.getLocale())).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.productversion(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -154,8 +154,8 @@ public class ProductVersionManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductVersionManagementProductVersion.updateProductVersion(sf, uuid, version, product, state.orElse(null), closed).
-                    chain(user -> ProductVersionManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
+                ProductVersionPage.updateProductVersion(sf, uuid, version, product, state.orElse(null), closed).
+                    chain(user -> ProductVersionList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -176,7 +176,7 @@ public class ProductVersionManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductVersionManagementProductVersion.createModel(sf, null, uri, js.getLocale())).
+                ProductVersionPage.createModel(sf, null, uri, js.getLocale())).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.productversion(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -207,8 +207,8 @@ public class ProductVersionManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductVersionManagementProductVersion.createProductVersion(sf, null, version, product, state.orElse(null), closed).
-                    chain(user->ProductVersionManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
+                ProductVersionPage.createProductVersion(sf, null, version, product, state.orElse(null), closed).
+                    chain(user->ProductVersionList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -232,8 +232,8 @@ public class ProductVersionManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductVersionManagementProductVersion.deleteProductVersion(sf, uuid).
-                    chain(()->ProductVersionManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
+                ProductVersionPage.deleteProductVersion(sf, uuid).
+                    chain(()->ProductVersionList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base,model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());

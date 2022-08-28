@@ -1,4 +1,4 @@
-package eu.stenlund.janus.ssr.workarea;
+package eu.stenlund.janus.ssr.model;
 
 import java.net.URI;
 import java.util.List;
@@ -13,7 +13,6 @@ import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusNoSuchItemException;
 import eu.stenlund.janus.model.Product;
 import eu.stenlund.janus.model.Team;
-import eu.stenlund.janus.model.User;
 import eu.stenlund.janus.model.base.JanusEntity;
 import eu.stenlund.janus.msg.TeamManagement;
 import eu.stenlund.janus.ssr.JanusSSRHelper;
@@ -31,9 +30,9 @@ import io.smallrye.mutiny.Uni;
  * @since 2022-07-29
  * 
  */
-public class TeamManagementTeam {
+public class TeamPage {
 
-    private static final Logger log = Logger.getLogger(TeamManagementTeam.class);
+    private static final Logger log = Logger.getLogger(TeamPage.class);
 
     /**
      * The form used.
@@ -84,7 +83,7 @@ public class TeamManagementTeam {
      * @param newUser Flag telling if it is a new user page or an update/edit page.
      * @param locale The locale of the page.
      */
-    public TeamManagementTeam(Team team, List<Product> products, URI back, boolean newUser, String locale) {
+    public TeamPage(Team team, List<Product> products, URI back, boolean newUser, String locale) {
 
         // Create action URL:s
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path","/");
@@ -151,11 +150,11 @@ public class TeamManagementTeam {
      * @param uri The URI of the cancel or return URL.
      * @return A populated TeamMangagementTeam.
      */
-    public static Uni<TeamManagementTeam> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
+    public static Uni<TeamPage> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
     {
         if (uuid == null) {
             return sf.withSession (s -> Product.getList(s)).
-                chain (pl -> Uni.createFrom().item(new TeamManagementTeam(new Team(),pl,uri, true, locale)));
+                chain (pl -> Uni.createFrom().item(new TeamPage(new Team(),pl,uri, true, locale)));
 
         } else {
             return Uni.combine().all().unis(
@@ -167,7 +166,7 @@ public class TeamManagementTeam {
                                 , "team"
                                 , uuid.toString()
                                 , uri.toString())))).
-            combinedWith((list, team)-> new TeamManagementTeam(team, list, uri, false, locale));
+            combinedWith((list, team)-> new TeamPage(team, list, uri, false, locale));
         }
     }
 

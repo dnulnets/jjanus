@@ -20,8 +20,8 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
-import eu.stenlund.janus.ssr.workarea.Base;
-import eu.stenlund.janus.ssr.workarea.StartLogin;
+import eu.stenlund.janus.ssr.model.Base;
+import eu.stenlund.janus.ssr.model.StartLogin;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;

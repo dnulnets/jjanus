@@ -1,4 +1,4 @@
-package eu.stenlund.janus.ssr.workarea;
+package eu.stenlund.janus.ssr.model;
 
 import java.net.URI;
 import java.util.List;
@@ -30,9 +30,9 @@ import io.smallrye.mutiny.Uni;
  * @since 2022-07-29
  * 
  */
-public class ProductManagementProduct {
+public class ProductPage {
 
-    private static final Logger log = Logger.getLogger(ProductManagementProduct.class);
+    private static final Logger log = Logger.getLogger(ProductPage.class);
 
     /**
      * The form used.
@@ -84,7 +84,7 @@ public class ProductManagementProduct {
      * @param newProduct Flag telling if it is a new user page or an update/edit page.
      * @param locale The locale of the page.
      */
-    public ProductManagementProduct(Product product, List<Team> teams, URI back, boolean newProduct, String locale) {
+    public ProductPage(Product product, List<Team> teams, URI back, boolean newProduct, String locale) {
 
         // Create action URL:s
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path","/");
@@ -153,11 +153,11 @@ public class ProductManagementProduct {
      * @param uri The URI of the cancel or return URL.
      * @return A populated UserManagementUser.
      */
-    public static Uni<ProductManagementProduct> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
+    public static Uni<ProductPage> createModel (SessionFactory sf, UUID uuid, URI uri, String locale)
     {
         if (uuid == null) {
             return sf.withSession(s -> Team.getList(s)).
-                chain(teams -> Uni.createFrom().item(new ProductManagementProduct(new Product(), teams, uri, true, locale)));
+                chain(teams -> Uni.createFrom().item(new ProductPage(new Product(), teams, uri, true, locale)));
         } else {
             return Uni.combine().all().unis(
                 sf.withSession(s -> JanusEntity.get(Product.class, s, uuid)).
@@ -168,7 +168,7 @@ public class ProductManagementProduct {
                                 , uuid.toString()
                                 , uri.toString())),
                 sf.withSession(s -> Team.getList(s))).
-            combinedWith((product, teams)->new ProductManagementProduct(product, teams, uri, false, locale));
+            combinedWith((product, teams)->new ProductPage(product, teams, uri, false, locale));
         }
     }
 

@@ -1,4 +1,4 @@
-package eu.stenlund.janus.ssr.workarea;
+package eu.stenlund.janus.ssr.model;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import io.smallrye.mutiny.Uni;
  * @since 2022-07-29
  * 
  */
-public class UserManagementUser {
+public class UserPage {
 
     /**
      * Get hold of the applications URI info and builder
@@ -41,7 +41,7 @@ public class UserManagementUser {
     @Context
     UriInfo uriInfo;
 
-    private static final Logger log = Logger.getLogger(UserManagementUser.class);
+    private static final Logger log = Logger.getLogger(UserPage.class);
 
     /**
      * The form used.
@@ -95,7 +95,7 @@ public class UserManagementUser {
      * @param newUser Flag telling if it is a new user page or an update/edit page.
      * @param locale  The locale of the page.
      */
-    public UserManagementUser(User user, List<Role> roles, List<Team> teams, URI back, boolean newUser, String locale) {
+    public UserPage(User user, List<Role> roles, List<Team> teams, URI back, boolean newUser, String locale) {
 
         // Create action URL:s
         String ROOT_PATH = JanusHelper.getConfig(String.class, "janus.http.root-path", "/");
@@ -167,12 +167,12 @@ public class UserManagementUser {
      * @param uri  The URI of the cancel or return URL.
      * @return A populated UserManagementUser.
      */
-    public static Uni<UserManagementUser> createModel(SessionFactory sf, UUID uuid, URI uri, String locale) {
+    public static Uni<UserPage> createModel(SessionFactory sf, UUID uuid, URI uri, String locale) {
         if (uuid == null)
             return Uni.combine().all().unis(
                     sf.withSession(s -> Role.getList(s)),
                     sf.withSession(s -> Team.getList(s)))
-                    .combinedWith((roles, teams) -> new UserManagementUser(
+                    .combinedWith((roles, teams) -> new UserPage(
                             new User(),
                             roles,
                             teams,
@@ -182,7 +182,7 @@ public class UserManagementUser {
                     sf.withSession(s -> JanusEntity.get (User.class, s, uuid)),
                     sf.withSession(s -> Role.getList(s)),
                     sf.withSession(s -> Team.getList(s)))
-                    .combinedWith((user, roles, teams) -> new UserManagementUser(
+                    .combinedWith((user, roles, teams) -> new UserPage(
                             user, roles, teams,
                             uri, false, locale));
     }

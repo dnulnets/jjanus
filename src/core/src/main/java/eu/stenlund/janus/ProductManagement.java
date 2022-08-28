@@ -1,7 +1,6 @@
 package eu.stenlund.janus;
 
 import java.net.URI;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -27,9 +26,9 @@ import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.base.MaybeUUID;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
-import eu.stenlund.janus.ssr.workarea.Base;
-import eu.stenlund.janus.ssr.workarea.ProductManagementList;
-import eu.stenlund.janus.ssr.workarea.ProductManagementProduct;
+import eu.stenlund.janus.ssr.model.Base;
+import eu.stenlund.janus.ssr.model.ProductList;
+import eu.stenlund.janus.ssr.model.ProductPage;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
@@ -63,8 +62,8 @@ public class ProductManagement {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance list(Base base, ProductManagementList workarea);
-        public static native TemplateInstance product(Base base, ProductManagementProduct workarea);
+        public static native TemplateInstance list(Base base, ProductList workarea);
+        public static native TemplateInstance product(Base base, ProductPage workarea);
     }
 
     /**
@@ -98,7 +97,7 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementList.createModel(sf, six, max, js.getLocale())).
+                ProductList.createModel(sf, six, max, js.getLocale())).
             combinedWith((base, model) -> JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -123,7 +122,7 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.createModel(sf, id, uri, js.getLocale())).
+                ProductPage.createModel(sf, id, uri, js.getLocale())).
             combinedWith((base, model) -> JanusTemplateHelper.createResponseFrom(Templates.product(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -151,8 +150,8 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.updateProduct(sf, uuid, name, description, teams, current.orElse(null)).
-                    chain(user -> ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
+                ProductPage.updateProduct(sf, uuid, name, description, teams, current.orElse(null)).
+                    chain(user -> ProductList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base, model) -> JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -172,7 +171,7 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.createModel(sf, null, uri, js.getLocale())).
+                ProductPage.createModel(sf, null, uri, js.getLocale())).
             combinedWith((base, model)->JanusTemplateHelper.createResponseFrom(Templates.product(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -200,8 +199,8 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.createProduct(sf, name, description, teams).
-                    chain(user->ProductManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
+                ProductPage.createProduct(sf, name, description, teams).
+                    chain(user->ProductList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -225,8 +224,8 @@ public class ProductManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                ProductManagementProduct.deleteProduct(sf, uuid).
-                    chain(()->ProductManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
+                ProductPage.deleteProduct(sf, uuid).
+                    chain(()->ProductList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base,model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());

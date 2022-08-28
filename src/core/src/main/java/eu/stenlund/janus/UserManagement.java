@@ -25,9 +25,9 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 import eu.stenlund.janus.base.JanusHelper;
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.ssr.JanusTemplateHelper;
-import eu.stenlund.janus.ssr.workarea.Base;
-import eu.stenlund.janus.ssr.workarea.UserManagementList;
-import eu.stenlund.janus.ssr.workarea.UserManagementUser;
+import eu.stenlund.janus.ssr.model.Base;
+import eu.stenlund.janus.ssr.model.UserList;
+import eu.stenlund.janus.ssr.model.UserPage;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
@@ -61,8 +61,8 @@ public class UserManagement {
      */
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance list(Base base, UserManagementList workarea);
-        public static native TemplateInstance user(Base base, UserManagementUser workarea);
+        public static native TemplateInstance list(Base base, UserList workarea);
+        public static native TemplateInstance user(Base base, UserPage workarea);
     }
 
     /**
@@ -96,7 +96,7 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementList.createModel(sf, six, max, js.getLocale())).
+                UserList.createModel(sf, six, max, js.getLocale())).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -121,7 +121,7 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementUser.createModel(sf, id, uri, js.getLocale())).
+                UserPage.createModel(sf, id, uri, js.getLocale())).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.user(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -150,8 +150,8 @@ public class UserManagement {
 
         return Uni.combine().all().unis(
             securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-            UserManagementUser.updateUser(sf, uuid, username, name, email, roles, teams, password).
-                chain(user -> UserManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
+            UserPage.updateUser(sf, uuid, username, name, email, roles, teams, password).
+                chain(user -> UserList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
         combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
         flatMap(Function.identity()).
         onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -171,7 +171,7 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementUser.createModel(sf, null, uri, js.getLocale())).
+                UserPage.createModel(sf, null, uri, js.getLocale())).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.user(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -200,8 +200,8 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementUser.createUser(sf, username, name, email, roles, teams, password).
-                    chain(user->UserManagementList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
+                UserPage.createUser(sf, username, name, email, roles, teams, password).
+                    chain(user->UserList.createModel(sf, 0, js.getListSize(),js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());
@@ -225,8 +225,8 @@ public class UserManagement {
         return Uni.
             combine().all().unis(
                 securityIdentityAssociation.getDeferredIdentity().map(si -> new Base(si)),
-                UserManagementUser.deleteUser(sf, uuid).
-                    chain(()->UserManagementList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
+                UserPage.deleteUser(sf, uuid).
+                    chain(()->UserList.createModel(sf, 0, js.getListSize(), js.getLocale()))).
             combinedWith((base,model)->JanusTemplateHelper.createResponseFrom(Templates.list(base, model), js.getLocale())).
             flatMap(Function.identity()).
             onFailure().invoke(t -> ResponseBuilder.serverError().build());

@@ -1,4 +1,4 @@
-package eu.stenlund.janus.ssr.workarea;
+package eu.stenlund.janus.ssr.model;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 
