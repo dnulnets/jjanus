@@ -55,8 +55,8 @@
         <span class="fw-bold">Team:</span> Fragglarna
     </span>
     </div>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <form class="d-flex" role="search" action="{janus:property('janus.http.root-path')}/search" method="GET">
+        <input class="form-control me-2" type="search" name="what" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
     </div>

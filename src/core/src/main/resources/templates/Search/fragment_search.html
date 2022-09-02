@@ -1,0 +1,43 @@
+{#workarea title=msg:search_result}
+    <div>
+        <br/>
+        <div class="row">
+            <h2>{msg:search_products}</h2>
+        </div>
+        {#if !workarea.products.isEmpty}
+            {#for item in workarea.products}
+                <div class="row">
+                        <div class="col">
+                            {#link item/}
+                        </div>
+                </div>
+            {/for}
+        {#else}
+            <div class="row">
+                <div class="col">
+                    {msg:search_none_found}
+                </div>
+            </div>
+        {/if}
+        <br/>
+        <div class="row">
+            <h2>{msg:search_teams}</h2>
+        </div>
+        {#if !workarea.teams.isEmpty}
+            {#for item in workarea.teams}
+                <div class="row">
+                        <div class="col">
+                            {#link item/}
+                        </div>
+                </div>
+            {/for}
+        {#else}
+            <div class="row">
+                <div class="col">
+                    {msg:search_none_found}
+                </div>
+            </div>
+        {/if}
+    </div>
+{/workarea}
+

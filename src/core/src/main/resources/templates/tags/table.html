@@ -30,6 +30,8 @@
                                     <td>{#text column/}</td>
                                 {#is "button"}
                                     <td>{#button_link column/}</td>
+                                {#is "link"}
+                                    <td>{#link column/}</td>
                                 {#else}
                                     <td>GUI Component not supported.</td>
                             {/when}

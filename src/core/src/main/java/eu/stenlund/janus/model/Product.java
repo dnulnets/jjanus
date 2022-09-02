@@ -37,7 +37,8 @@ import io.smallrye.mutiny.Uni;
 @Table(name = "product")
 @NamedQueries({
     @NamedQuery(name = "Product_ListOfProducts", query = "from Product p order by p.name"),
-    @NamedQuery(name = "Product_NumberOfProducts", query = "Select count (p.id) from Product p")
+    @NamedQuery(name = "Product_NumberOfProducts", query = "Select count (p.id) from Product p"),
+    @NamedQuery(name = "Product_Search", query = "from Product p where p.name like :what order by p.name")
 })
 public class Product extends JanusEntity {
 
@@ -148,6 +149,20 @@ public class Product extends JanusEntity {
     {
         return s.createNamedQuery("Product_ListOfProducts", Product.class)
             .getResultList();
+    }
+
+    /**
+     * Returns a list of products that contains the string what in the name or in the description.
+     * 
+     * @param s The session,
+     * @param what The search string that must be conatined.
+     * @return List of products.
+     */
+    public static Uni<List<Product>> search(Session s, String what)
+    {
+        return s.createNamedQuery("Product_Search", Product.class).
+            setParameter("what", "%"+what+"%").
+            getResultList();
     }
 
     /**

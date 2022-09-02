@@ -1,6 +1,9 @@
 package eu.stenlund.janus.ssr.model;
 
+import java.security.Permission;
+
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
+import org.jboss.logging.Logger;
 
 import eu.stenlund.janus.base.JanusSession;
 import eu.stenlund.janus.model.Product;
@@ -20,6 +23,8 @@ import io.smallrye.mutiny.Uni;
  */
 public class Base {
     
+    private static final Logger log = Logger.getLogger(Base.class);
+
     /**
      * If the user has the specific hardcoded roles
      */
@@ -53,7 +58,6 @@ public class Base {
         teamRole = si.hasRole("team");
         userRole = si.hasRole("user");
         username = si.getAttribute("name")+" (" + si.getPrincipal().getName() + ")";
-
         this.product = product;
         this.team = team;
     }

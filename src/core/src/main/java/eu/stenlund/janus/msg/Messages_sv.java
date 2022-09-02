@@ -108,4 +108,16 @@ public interface Messages_sv extends Messages {
 
     @Message("Tillbaka")
     String error_back();
+
+    @Message("Sökresultat")
+    String search_result();
+
+    @Message("Produkter")
+    String search_products();
+
+    @Message("Team")
+    String search_teams();
+
+    @Message("Ingen hittad")
+    String search_none_found();
 }

@@ -109,4 +109,16 @@ public interface Messages {
     @Message("Return")
     String error_back();
 
+    @Message("Search result")
+    String search_result();
+
+    @Message("Products")
+    String search_products();
+
+    @Message("Teams")
+    String search_teams();
+
+    @Message("None found")
+    String search_none_found();
+
 }

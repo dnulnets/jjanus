@@ -39,7 +39,8 @@ import io.smallrye.mutiny.Uni;
 @Table(name = "team")
 @NamedQueries({
     @NamedQuery(name = "Team_ListOfTeams", query = "from Team t order by t.name"),
-    @NamedQuery(name = "Team_NumberOfTeams", query = "Select count (t.id) from Team t")
+    @NamedQuery(name = "Team_NumberOfTeams", query = "Select count (t.id) from Team t"),
+    @NamedQuery(name = "Team_Search", query = "from Team t where t.name like :what order by t.name"),
 })
 public class Team extends JanusEntity {
 
@@ -189,6 +190,20 @@ public class Team extends JanusEntity {
     public static Uni<List<Team>> getList(Session s)
     {
         return s.createNamedQuery("Team_ListOfTeams", Team.class).getResultList();
+    }
+
+    /**
+     * Returns with a list of teams that fits the search pattern.
+     * 
+     * @param s The session.
+     * @param what The search pattern.
+     * @return List of teams that fits the search pattern.
+     */
+    public static Uni<List<Team>> search(Session s, String what)
+    {
+        return s.createNamedQuery("Team_Search", Team.class).
+            setParameter("what", "%"+what+"%").
+            getResultList();
     }
 
     /**
