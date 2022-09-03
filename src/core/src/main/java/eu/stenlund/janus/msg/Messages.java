@@ -118,7 +118,20 @@ public interface Messages {
     @Message("Teams")
     String search_teams();
 
+    @Message("User needs")
+    String search_user_needs();
+
+    @Message("System requirements")
+    String search_requirements();
+
+    @Message("Issues")
+    String search_issues();
+
     @Message("None found")
     String search_none_found();
+
+    @Message("Not implemented yet")
+    String search_not_implemented();
+
 
 }

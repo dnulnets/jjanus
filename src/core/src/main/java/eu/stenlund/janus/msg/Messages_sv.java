@@ -118,6 +118,19 @@ public interface Messages_sv extends Messages {
     @Message("Team")
     String search_teams();
 
+    @Message("Användarbehov")
+    String search_user_needs();
+
+    @Message("Systemkrav")
+    String search_requirements();
+
+    @Message("Ärenden")
+    String search_issues();
+
     @Message("Ingen hittad")
     String search_none_found();
+
+    @Message("Inte implementerad ännu")
+    String search_not_implemented();
+
 }
